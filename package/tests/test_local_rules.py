@@ -468,6 +468,63 @@ def test_decontextualize_text_removes_single_first_name_at_sentence_start():
   assert result.removed_categories["name"] >= 2
 
 
+def test_decontextualize_text_removes_patient_first_name_introduced_in_note_prose():
+  source = (
+    "HISTORY OF PRESENT ILLNESS Marvin is a patient who returns for follow-up of ADHD "
+    "and anxiety. Marvin reported increased emotional sensitivity and difficulty with "
+    "friendships on methylphenidate. Both Marvin and his mother agreed to trial "
+    "guanfacine 1 mg."
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  assert "Marvin" not in result.destination_prompt
+  assert "who returns for follow-up" in result.destination_prompt
+  assert "ADHD" in result.destination_prompt
+  assert "anxiety" in result.destination_prompt
+  assert "methylphenidate" in result.destination_prompt
+  assert "guanfacine 1 mg" in result.destination_prompt
+  assert result.removed_categories["name"] >= 3
+
+
+def test_decontextualize_text_preserves_eponym_when_patient_first_name_matches_condition():
+  source = (
+    "Wilson is a patient who returns for follow-up of abnormal LFTs. "
+    "Wilson disease remains on the differential."
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  assert "Wilson is a patient" not in result.destination_prompt
+  assert "Wilson disease" in result.destination_prompt
+  assert "abnormal LFTs" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_common_first_name_only_note_mentions():
+  sources = (
+    "Marvin presents for follow-up of ADHD and anxiety. Marvin reported worse anxiety.",
+    "Marvin presented today for ADHD follow-up and worsening anxiety.",
+    "Marvin came in today for ADHD follow-up and worsening anxiety.",
+    "Marvin comes in today for ADHD follow-up and worsening anxiety.",
+    "Marvin's mother reports emotional sensitivity on methylphenidate.",
+    "Mother reports Marvin had emotional sensitivity on methylphenidate.",
+    "Mom reports Marvin had emotional sensitivity on methylphenidate.",
+    "The patient Marvin had emotional sensitivity on methylphenidate.",
+    "This patient Marvin had emotional sensitivity on methylphenidate.",
+    "Follow-up: Marvin had emotional sensitivity on methylphenidate.",
+    "Assessment: Marvin had emotional sensitivity on methylphenidate.",
+  )
+
+  for source in sources:
+    result = decontextualize_text(source, destination="chatgpt")
+
+    assert "Marvin" not in result.destination_prompt
+    assert (
+      "ADHD" in result.destination_prompt
+      or "methylphenidate" in result.destination_prompt
+    )
+
+
 def test_decontextualize_text_preserves_weight_when_needed_for_dosing():
   source = (
     "Emma Chen DOB 2023-10-06 MRN AB943709 weighs 14 kg and needs amoxicillin "

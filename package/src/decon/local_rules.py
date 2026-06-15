@@ -59,6 +59,24 @@ NAME_CUES = (
   r"DOB|MRN|on|has|with|presents|asks?|needs|due|from|is|came|called|wants|"
   r"says|lives|peri-menopausal"
 )
+PATIENT_NAME_INTRO_PATTERNS: tuple[re.Pattern[str], ...] = (
+  re.compile(rf"\b({NAME_TOKEN})\s+(?i:is\s+a\s+patient)\b"),
+  re.compile(rf"\b({NAME_TOKEN})\s+(?i:returns\s+for\s+(?:follow-up|followup))\b"),
+  re.compile(
+    rf"\b({NAME_TOKEN})\s+(?i:(?:presents|presented|came|comes))\b",
+  ),
+  re.compile(rf"\b({NAME_TOKEN})\s+(?i:was\s+seen)\b"),
+  re.compile(rf"\b({NAME_TOKEN})'s\s+(?i:(?:mother|mom|father|parent|caregiver))\b"),
+  re.compile(
+    rf"\b(?i:(?:mother|mom|father|parent|caregiver)\s+reports)\s+({NAME_TOKEN})\b",
+  ),
+  re.compile(rf"\b(?i:(?:the|this)\s+patient)\s+({NAME_TOKEN})\b"),
+  re.compile(
+    rf"\b(?i:(?:follow-up|followup|assessment|hpi|history|subjective))\s*:\s*({NAME_TOKEN})"
+    r"(?=\s+(?i:had|has|reports|reported|was|is|returns|presents|presented|came|comes)\b)",
+  ),
+)
+EPONYM_FOLLOWERS = r"syndrome|disease|criteria|sign|triad|classification|test"
 
 PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("prompt_injection", re.compile(
@@ -290,7 +308,37 @@ def _collect_spans(text: str) -> list[Span]:
         start, end = match.span(0)
       if start != end:
         spans.append(Span(category=category, start=start, end=end))
+  spans.extend(_propagated_patient_name_spans(text))
   return _select_non_overlapping(spans)
+
+
+def _propagated_patient_name_spans(text: str) -> list[Span]:
+  names = _introduced_patient_names(text)
+  spans = []
+  for name in names:
+    pattern = re.compile(r"(?<![A-Za-z0-9])" + re.escape(name) + r"(?![A-Za-z0-9])")
+    for match in pattern.finditer(text):
+      if _is_clinical_eponym_context(text, match.end()):
+        continue
+      spans.append(Span(category="name", start=match.start(), end=match.end()))
+  return spans
+
+
+def _introduced_patient_names(text: str) -> tuple[str, ...]:
+  names: list[str] = []
+  for pattern in PATIENT_NAME_INTRO_PATTERNS:
+    for match in pattern.finditer(text):
+      name = match.group(1)
+      if re.fullmatch(rf"(?i)(?:{RELATION_TERMS})", name):
+        continue
+      if name not in names:
+        names.append(name)
+  return tuple(names)
+
+
+def _is_clinical_eponym_context(text: str, end: int) -> bool:
+  after = text[end:end + 32].lstrip()
+  return bool(re.match(rf"(?i)(?:{EPONYM_FOLLOWERS})\b", after))
 
 
 def _select_non_overlapping(spans: Iterable[Span]) -> list[Span]:
@@ -339,6 +387,8 @@ def _replacement_for_span(text: str, span: Span, reference_date: date) -> str:
 
 def _normalize_safe_context(text: str) -> str:
   safe = text
+  safe = re.sub(r"\[NAME\]'s\b", "patient's", safe)
+  safe = re.sub(r"\bBoth\s+\[NAME\]\s+and\s+(?:his|her|their)\s+mother\b", "Both patient and mother", safe, flags=re.IGNORECASE)
   safe = re.sub(
     rf"\b(?:{DOB_LABEL})\s+(?=(?:newborn|\d{{1,2}}-month-old|\d{{1,3}}-year-old|90 or older)\b)",
     "",

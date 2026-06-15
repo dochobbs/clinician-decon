@@ -62,7 +62,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-94 passed
+97 passed
 ```
 
 Run the headless validation gate:
@@ -94,6 +94,7 @@ python3 package/scripts/run_validation.py --suite persona-regression
 - [Synthetic trace generation strategy](docs/qa/synthetic-trace-generation.md)
 - [Synthetic persona library](docs/qa/persona-library.md)
 - [Persona regression 2,000-case eval](docs/qa/2026-06-15-persona-regression-2000-eval.md)
+- [First-name-only note prose audit](docs/qa/2026-06-15-first-name-note-prose-audit.md)
 - [Persona trace generator design](docs/superpowers/specs/2026-06-15-persona-trace-generator-design.md)
 - [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
 - [Local 500-case usability eval](docs/qa/2026-06-15-local-usability-500-eval.md)

@@ -84,7 +84,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-94 passed
+97 passed
 ```
 
 ## Headless Validation
