@@ -71,6 +71,7 @@ Current local snapshot:
 - [Mac local app design](docs/superpowers/specs/2026-06-15-mac-local-decon-app-design.md)
 - [PHI field handling review](docs/superpowers/specs/2026-06-15-phi-field-handling-review.md)
 - [Skeptical physician red-team](docs/qa/2026-06-15-skeptical-physician-red-team.md)
+- [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
 - [Prototype implementation plan](docs/superpowers/plans/2026-06-15-local-decon-prototype.md)
 - [Clinician tool brief](package/docs/clinician-decon-tool-brief.md)
 - [Tabflows partner research](package/docs/tabflows-partner-research.md)
