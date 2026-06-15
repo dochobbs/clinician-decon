@@ -40,6 +40,50 @@ OpenMed + regex stack; this is only the app prototype's lightweight deterministi
 | `decon_combined_1132.json` | `chatgpt` | 1132 | 2526 | 1067 | 482 | 482 | 0.234s |
 | `decon_combined_1132.json` | `web_search` | 1132 | 2526 | 915 | 409 | 409 | 0.244s |
 
+## Post-Patch Delta: Learned Regex Port
+
+After porting the deterministic lessons from `from-cds-eval/local_cds/decon.py` into
+`package/src/decon/local_rules.py`, the two synthetic 500-query suites are back to zero detected
+fixture leaks for both ChatGPT and Web Search handoffs.
+
+Patch coverage added:
+
+- broad name grammar: hyphenated, apostrophe, Latin-extended, and particle surnames
+- compact age/sex normalization such as `35M` -> `35-year-old male`
+- undashed SSN with context
+- city/state without ZIP, city-only address tails, practice/facility names, and small-town context
+- nickname, parenthetical family name, Spanish relation/name, sibling, and indirect relation phrases
+- month/day temporal references and `last week`
+- body measurements and lab value variants such as `A1c of 9.2`, `48,000`, and `45k`
+- prompt-injection stripping before copy/open handoff
+
+Post-patch run, same fixtures and reference date:
+
+| Fixture | Destination | Rows | PHI terms | Leaked terms | Leak rows | Low+copy leak rows | Avg runtime | p95 runtime |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `decon_synth_500.json` | `chatgpt` | 500 | 737 | 0 | 0 | 0 | 0.101 ms | 0.181 ms |
+| `decon_synth_500.json` | `web_search` | 500 | 737 | 0 | 0 | 0 | 0.081 ms | 0.169 ms |
+| `decon_synth_500_b.json` | `chatgpt` | 500 | 860 | 0 | 0 | 0 | 0.086 ms | 0.176 ms |
+| `decon_synth_500_b.json` | `web_search` | 500 | 860 | 0 | 0 | 0 | 0.083 ms | 0.174 ms |
+| `decon_combined_1132.json` | `chatgpt` | 1132 | 2526 | 268 | 101 | 89 | 0.113 ms | 0.368 ms |
+| `decon_combined_1132.json` | `web_search` | 1132 | 2526 | 238 | 87 | 75 | 0.112 ms | 0.351 ms |
+
+This is a material recovery from the bad app-local baseline:
+
+| Fixture | Destination | Baseline leaked terms | Post-patch leaked terms | Baseline leak rows | Post-patch leak rows |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `decon_synth_500.json` | `chatgpt` | 318 | 0 | 162 | 0 |
+| `decon_synth_500.json` | `web_search` | 264 | 0 | 135 | 0 |
+| `decon_synth_500_b.json` | `chatgpt` | 379 | 0 | 194 | 0 |
+| `decon_synth_500_b.json` | `web_search` | 317 | 0 | 163 | 0 |
+| `decon_combined_1132.json` | `chatgpt` | 1067 | 268 | 482 | 101 |
+| `decon_combined_1132.json` | `web_search` | 915 | 238 | 409 | 87 |
+
+Remaining combined-suite leaks are concentrated in Amboss stress rows. The largest residual buckets
+are `amboss_r4_golden` and `amboss_r4_validation`, plus edge cases where the fixture labels exact
+age, medication dose, disease-name collisions, or deeply buried adversarial text as PHI. These are
+the reason the production path still needs the prior OpenMed + regex stack, not rules alone.
+
 ## 1,132-Case Summary By Destination
 
 ### ChatGPT
@@ -219,28 +263,28 @@ This is a contextual identifier problem, not just a direct-name problem.
 
 ## Interpretation
 
-This confirms the previous skeptical physician red-team finding at larger scale: the current
-prototype has a false-confidence problem. It is fast and local, but it should not allow copy when
-basic expected PHI terms remain in the copied prompt.
+The baseline run confirmed the previous skeptical physician red-team finding at larger scale: the
+small app-local prototype had a false-confidence problem. It was fast and local, but allowed copy
+when basic expected PHI terms remained in the copied prompt.
 
-The prior 500/1,132 result files remain highly relevant, but they evaluated the stronger
-OpenMed + regex stack. The current web app still needs either:
+The post-patch run fixes the obvious regression against the two synthetic 500-query suites by
+bringing the learned deterministic layer forward. It does not make the current local rules sufficient
+for clinician pilot use by themselves. The prior 500/1,132 result files remain highly relevant
+because they evaluated the stronger OpenMed + regex stack. The current web app still needs:
 
-1. integration of the OpenMed + regex pipeline, or
-2. a much stronger deterministic residual scanner and rule set before clinician pilot use.
+1. integration of the OpenMed + regex pipeline as the default decon engine, and
+2. a stricter residual scanner over `safe_context`, `safe_query`, and `destination_prompt` before
+   copy/open is allowed on adversarial or deeply contextual cases.
 
 ## Immediate Fix Order
 
-1. Add second-pass residual scanner over `safe_context`, `safe_query`, and `destination_prompt`.
-2. Block copy/open when residual expected direct identifier patterns remain.
-3. Expand name detection for ordinary first/last, hyphenated, apostrophe, compound, and
-   non-English-ish names.
-4. Add undashed SSN regex.
-5. Add city/state and city-only geography policy.
-6. Add nickname/relative and sibling/multi-patient rules.
-7. Add Spanish relationship/name patterns.
-8. Add organization/practice/school detector.
-9. Add CLI batch runner so this 1,132-case suite runs before every release.
+1. Wire OpenMed SuperClinical 434M + regex as the default local engine.
+2. Add second-pass residual scanner over `safe_context`, `safe_query`, and `destination_prompt`.
+3. Block copy/open when residual expected direct identifier patterns remain.
+4. Add CLI batch runner so this 1,132-case suite runs before every release.
+5. Decide and document the product policy for exact age and medication dose retention, because the
+   Amboss fixture treats some clinically useful values as PHI while the product currently preserves
+   exact age when it is useful.
 
 ## Reproduction Command
 

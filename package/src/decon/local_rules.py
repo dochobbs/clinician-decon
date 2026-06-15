@@ -32,43 +32,137 @@ class LocalDeconResult:
   action_label: str
 
 
-AGE_UNITS = r"yo|y/o|year old|years old|months old|mo"
+AGE_UNITS = r"yo|y/o|yrs?|years? old|months? old|months?|mo"
+EXPLICIT_AGE_UNITS = r"yo|y/o|yrs?|years? old|months? old|mo"
 LAB_TERMS = r"A1c|HbA1c|INR|TSH|LDH|WBC|platelets?|ferritin|lipase|amylase"
+MONTH_TERMS = (
+  r"January|February|March|April|May|June|July|August|September|October|November|"
+  r"December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec"
+)
 RELATION_TERMS = (
-  r"Mom|Mother|Dad|Father|Grandma|Grandpa|Aunt|Uncle|Wife|Husband|Spouse|Partner|"
-  r"Sister|Brother|Daughter|Son|Guardian|Caregiver"
+  r"Mom|Mama|Mami|Mother|Dad|Papa|Father|Grandma|Grandpa|Aunt|Auntie|Uncle|"
+  r"Tia|Tio|Abuela|Abuelo|Wife|Husband|Spouse|Partner|Sister|Brother|Daughter|"
+  r"Son|Guardian|Caregiver"
 )
 STREET_TYPES = (
   r"St|Street|Ave|Avenue|Rd|Road|Dr|Drive|Blvd|Boulevard|Ln|Lane|Way|Ct|Court|"
   r"Pkwy|Parkway"
 )
+NAME_TOKEN = (
+  r"(?:[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+|[A-ZÀ-ÖØ-Þ])"
+  r"(?:[-'][A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+)?"
+)
+NAME_PARTICLES = r"van|von|der|den|de|del|da|la|le|di|du|dos|das"
+FULL_NAME = rf"{NAME_TOKEN}(?:\s+(?:(?:{NAME_PARTICLES})\s+)*{NAME_TOKEN}){{1,3}}"
+NAME_CUES = (
+  r"DOB|MRN|on|has|with|presents|asks?|needs|due|from|is|came|called|wants|"
+  r"says|lives|peri-menopausal"
+)
 
 PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
+  ("prompt_injection", re.compile(
+    r"\b(?:ignore|disregard|override)\s+(?:your\s+|all\s+)?(?:previous|prior|above)\s+"
+    r"instructions\b[^.?!]*(?:[.?!]|$)",
+    re.IGNORECASE,
+  )),
+  ("contextual_identifier", re.compile(r"\bonly case\b", re.IGNORECASE)),
   ("address", re.compile(
     rf"\b\d{{1,6}}\s+(?:[A-Za-z0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?",
     re.IGNORECASE,
   )),
+  ("location", re.compile(
+    rf"\b(?i:(?:lives?|resides|located)\s+(?:at|in))\s+"
+    rf"\d{{1,6}}\s+(?:[A-Za-z0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?,\s*"
+    rf"({NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}})\b",
+  )),
+  ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2},\s*[A-Z]{2}\b")),
   ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?\b")),
+  ("location", re.compile(
+    rf"\b(?i:(?:from|near|in|at))\s+({NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}})"
+    r"(?=\s*(?:[-,.;)]|$))",
+  )),
   ("zip", re.compile(r"\b(?:ZIP|zip code)\s*[:#]?\s*(\d{5}(?:-\d{4})?)\b", re.IGNORECASE)),
   ("email", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
   ("phone", re.compile(r"(?:\+1[\s-]?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}\b")),
+  ("ssn", re.compile(
+    r"\b(?:SSN|Social[\s-]?Security[\s-]?(?:Number|#)?)\s*[:#]?\s*"
+    r"(\d{3}[-\s]?\d{2}[-\s]?\d{4}|\d{9})\b",
+    re.IGNORECASE,
+  )),
   ("ssn", re.compile(r"\b\d{3}-\d{2}-\d{4}\b")),
   ("mrn", re.compile(r"\b(?:MRN|MR#|medical record(?: number)?)\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{3,})\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b[A-Z]{1,5}-\d{3,5}-\d{3,6}\b")),
   ("url", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
+  ("practice", re.compile(
+    r"\b(?:Lakes\s+Pediatrics|Children['’]s(?:\s+Hospital)?|Mayo\s+Clinic|Cleveland\s+Clinic|"
+    r"[A-Z][A-Za-z'’.-]+\s+(?:Pediatrics|Clinic|Hospital|Family Medicine|Medical Group|"
+    r"Health|Urgent Care))\b",
+    re.IGNORECASE,
+  )),
+  ("insurance", re.compile(
+    r"\b(?:Blue\s+Cross|BCBS|Aetna|Cigna|UnitedHealth(?:care)?|Kaiser|Humana|"
+    r"Anthem|Medicaid|Medicare|Tricare)\b",
+    re.IGNORECASE,
+  )),
   ("date", re.compile(r"\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}-\d{1,2}-\d{1,2})\b")),
   ("date", re.compile(
     r"\b(?:today|yesterday|last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))\b",
     re.IGNORECASE,
   )),
-  ("clinical_value", re.compile(rf"\b(?:{LAB_TERMS})\s*[:=]?\s*\d[\d.,]*\b", re.IGNORECASE)),
-  ("age", re.compile(rf"\b\d{{1,3}}\s*(?:{AGE_UNITS})\b", re.IGNORECASE)),
-  ("name", re.compile(r"\b(?:Mr|Mrs|Ms|Miss|Dr)\.?\s+([A-Z][a-z]{2,}(?:\s+[A-Z][a-z]{2,})?)\b")),
-  ("name", re.compile(rf"\b(?:{RELATION_TERMS})\s+([A-Z][a-z]{{2,}})\b")),
-  ("name", re.compile(rf"\b(?:{RELATION_TERMS})\s+\(([A-Z][a-z]{{2,}})\)\b")),
+  ("date", re.compile(rf"\b(?:{MONTH_TERMS})\.?\s+\d{{1,2}}(?:st|nd|rd|th)?\b", re.IGNORECASE)),
+  ("date", re.compile(r"\blast\s+week\b", re.IGNORECASE)),
+  ("body_measurement", re.compile(r"\bBMI\s*\d{1,2}(?:\.\d+)?\b", re.IGNORECASE)),
+  ("body_measurement", re.compile(r"\b\d{2,3}\s*(?:lbs?|kg|pounds?)\b", re.IGNORECASE)),
+  ("body_measurement", re.compile(r"\b\d{1,2}'\s*\d{1,2}\"|\b\d{1,2}\s*ft\s*\d{1,2}\s*in\b", re.IGNORECASE)),
+  ("clinical_value", re.compile(
+    rf"\b(?:{LAB_TERMS})\s*(?:came\s+back\s+at|was|were|is|of|at|[:=])?\s*"
+    r"\d[\d.,]*(?:k)?\b",
+    re.IGNORECASE,
+  )),
+  ("age", re.compile(r"\b\d{1,3}\s*(?:M|F)\b", re.IGNORECASE)),
+  ("age", re.compile(rf"\b(?:he'?s|she'?s|patient is|pt is)\s+(\d{{1,3}}\s+months?)\b", re.IGNORECASE)),
+  ("age", re.compile(rf"\b\d{{1,3}}\s*(?:{EXPLICIT_AGE_UNITS})\b", re.IGNORECASE)),
+  ("relation", re.compile(
+    r"\b(?:the\s+)?(?:twins'?|siblings'?)\s+(?:older|younger|baby|little)?\s*"
+    r"(?:brother|sister|sibling|kid|child)\b",
+    re.IGNORECASE,
+  )),
+  ("nickname", re.compile(r"\b(?i:(?:Lil|Little|Big|Lil'))\s+(?:[A-Z](?:\.|\b)|[A-Z][a-z]{1,3})\b")),
+  ("name", re.compile(
+    rf"\b(?i:(?:La\s+mam[aá]|El\s+pap[aá]|Mi\s+hij[oa]|Su\s+hij[oa]|El\s+paciente|"
+    rf"La\s+paciente)\s+(?:de\s+)?){NAME_TOKEN}\b",
+  )),
+  ("name", re.compile(rf"\b(?:Mr|Mrs|Ms|Miss|Dr)\.?\s+({NAME_TOKEN})(?='s\b|\b)")),
+  ("name", re.compile(rf"\b(?:Mr|Mrs|Ms|Miss|Dr)\.?\s+({FULL_NAME})\b")),
+  ("name", re.compile(rf"\b(?i:(?:{RELATION_TERMS}))\s+({NAME_TOKEN})\b")),
+  ("name", re.compile(rf"\b(?i:(?:{RELATION_TERMS}))\s+\(({NAME_TOKEN})\)(?=\W|$)")),
+  ("name", re.compile(rf"\b(?i:little)\s+({NAME_TOKEN})\b")),
+  ("name", re.compile(
+    rf"\b(?i:(?:SUBJECTIVE|HPI|CC|HISTORY|ASSESSMENT))\s*:\s*({FULL_NAME})"
+    r"(?=\s*(?:,|\d))",
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:Patient|Pt))\s+({NAME_TOKEN})"
+    r"(?=\s+(?:has|presents|needs|asks|is|was|reports|states)\b)",
+  )),
+  ("name", re.compile(
+    rf"^({NAME_TOKEN})(?=\s+(?:has|presents|needs|asks|is|was|reports|states)\b)"
+  )),
+  ("name", re.compile(rf"\b(?:calls?\s+(?:him|her|them)|known\s+as|nicknamed)\s+({NAME_TOKEN})\b")),
+  ("name", re.compile(
+    rf"\b(?i:(?:Pt|Patient|Family of|chart for|for patient|for pt))\s+({FULL_NAME})"
+    rf"(?=\s*(?:,|\(|\b(?i:(?:{NAME_CUES}))\b|\d{{1,3}}\s*(?:M|F)\b|\d{{1,3}}\s*(?:{EXPLICIT_AGE_UNITS})\b))",
+  )),
+  ("name", re.compile(
+    rf"\b({NAME_TOKEN})\s+\(\s*\d{{1,3}}\s*(?:M|F|{EXPLICIT_AGE_UNITS})\s*\)",
+  )),
+  ("name", re.compile(
+    rf"^({FULL_NAME})(?=\s*(?:,|\(|\b(?i:(?:{NAME_CUES}))\b|\d{{1,3}}\s*(?:M|F)\b|"
+    rf"\d{{1,3}}\s*(?:{EXPLICIT_AGE_UNITS})\b))"
+  )),
   ("name", re.compile(
     rf"\b(?!(?:{RELATION_TERMS})\s)"
-    rf"([A-Z][a-z]{{2,}}\s+[A-Z][a-z]{{2,}})\s+"
+    rf"({FULL_NAME})\s+"
     rf"(?:DOB|MRN|came|asks?|called|has|with|\d{{1,3}}\s*(?:{AGE_UNITS}))\b"
   )),
 )
@@ -78,13 +172,21 @@ RESIDUAL_HIGH_RISK: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("possible ZIP code remains", re.compile(r"\b(?:ZIP|zip code)\s*[:#]?\s*\d{5}(?:-\d{4})?\b", re.IGNORECASE)),
   ("possible email remains", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
   ("possible phone remains", re.compile(r"\b\d{3}[\s.-]?\d{3}[\s.-]?\d{4}\b")),
+  ("possible SSN remains", re.compile(r"\b(?:SSN|Social Security)\s*[:#]?\s*(?:\d{3}-\d{2}-\d{4}|\d{9})\b", re.IGNORECASE)),
   ("possible SSN remains", re.compile(r"\b\d{3}-\d{2}-\d{4}\b")),
   ("possible patient URL remains", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
+  ("possible prompt injection remains", re.compile(r"\b(?:ignore|disregard|override)\s+(?:previous|prior|above)\s+instructions\b", re.IGNORECASE)),
+  ("possible city/state location remains", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2},\s*[A-Z]{2}\b")),
+  ("possible practice or facility remains", re.compile(r"\b[A-Z][A-Za-z'’.-]+\s+(?:Pediatrics|Clinic|Hospital|Medical Group|Health|Urgent Care)\b")),
 )
 
 RESIDUAL_MEDIUM_RISK: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("possible exact date remains", re.compile(r"\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b")),
   ("possible direct name remains", re.compile(r"\b(?:Mr|Mrs|Ms|Miss)\.?\s+[A-Z][a-z]{2,}\b")),
+  ("possible patient name remains", re.compile(
+    rf"\b(?:Pt|Patient|Family of|chart for|for patient|for pt)\s+{FULL_NAME}\b",
+    re.IGNORECASE,
+  )),
 )
 
 QUERY_NOISE_PATTERNS: tuple[re.Pattern[str], ...] = (
@@ -95,6 +197,8 @@ QUERY_NOISE_PATTERNS: tuple[re.Pattern[str], ...] = (
 
 RELATION_REPLACEMENTS: tuple[tuple[re.Pattern[str], str], ...] = (
   (re.compile(r"\b(?:Mom|Mother|Dad|Father)\s+\[NAME\]", re.IGNORECASE), "parent"),
+  (re.compile(r"\b(?:Mom|Mother|Dad|Father)\s+\(\[NAME\]\)", re.IGNORECASE), "parent"),
+  (re.compile(r"\blittle\s+\[NAME\]", re.IGNORECASE), "child"),
   (re.compile(r"\b(?:Wife|Husband|Spouse|Partner)\s+\[NAME\]", re.IGNORECASE), "spouse"),
   (re.compile(r"\b(?:Sister|Brother)\s+\[NAME\]", re.IGNORECASE), "sibling"),
   (re.compile(r"\b(?:Daughter|Son)\s+\[NAME\]", re.IGNORECASE), "child"),
@@ -143,8 +247,16 @@ def _apply_spans(text: str, spans: list[Span], reference_date: date) -> tuple[st
 
 def _replacement_for_span(text: str, span: Span, reference_date: date) -> str:
   raw = text[span.start:span.end]
+  if span.category == "prompt_injection":
+    return ""
+  if span.category == "contextual_identifier":
+    return "Rare case"
+  if span.category == "relation":
+    return "sibling contact"
   if span.category == "age":
     return _normalize_age(raw)
+  if span.category == "body_measurement":
+    return _generalize_body_measurement(raw)
   if span.category == "clinical_value":
     return _generalize_clinical_value(raw)
   if span.category == "date":
@@ -164,6 +276,7 @@ def _normalize_safe_context(text: str) -> str:
     flags=re.IGNORECASE,
   )
   safe = re.sub(r"\b(?:MRN|MR#)\s+\[MRN\]", "[MRN]", safe, flags=re.IGNORECASE)
+  safe = re.sub(r"\bSSN\s+\[SSN\]", "[SSN]", safe, flags=re.IGNORECASE)
   for pattern, replacement in RELATION_REPLACEMENTS:
     safe = pattern.sub(replacement, safe)
   safe = re.sub(r"\s+([,.;:])", r"\1", safe)
@@ -171,6 +284,17 @@ def _normalize_safe_context(text: str) -> str:
 
 
 def _normalize_age(raw: str) -> str:
+  compact_match = re.search(
+    r"\b(?P<amount>\d{1,3})\s*(?P<sex>M|F)\b",
+    raw,
+    flags=re.IGNORECASE,
+  )
+  if compact_match:
+    amount = int(compact_match.group("amount"))
+    sex = "male" if compact_match.group("sex").lower() == "m" else "female"
+    if amount >= 90:
+      return f"90 or older {sex}"
+    return f"{amount}-year-old {sex}"
   match = re.search(
     rf"\b(?P<amount>\d{{1,3}})\s*(?P<unit>{AGE_UNITS})\b",
     raw,
@@ -180,7 +304,7 @@ def _normalize_age(raw: str) -> str:
     return "[AGE]"
   amount = int(match.group("amount"))
   unit = match.group("unit").lower()
-  if unit in ("mo", "months old"):
+  if unit in ("mo", "month", "months", "month old", "months old"):
     return f"{amount}-month-old"
   if amount >= 90:
     return "90 or older"
@@ -225,8 +349,18 @@ def _derive_age_for_date(text: str, span: Span, reference_date: date) -> str | N
 
 
 def _extract_safe_age(source: str, reference_date: date) -> str | None:
+  compact_age = re.search(r"\b\d{1,3}\s*(?:M|F)\b", source, flags=re.IGNORECASE)
+  if compact_age:
+    return _normalize_age(compact_age.group(0))
+  contextual_month_age = re.search(
+    r"\b(?:he'?s|she'?s|patient is|pt is)\s+(\d{1,3}\s+months?)\b",
+    source,
+    flags=re.IGNORECASE,
+  )
+  if contextual_month_age:
+    return _normalize_age(contextual_month_age.group(1))
   explicit_age = re.search(
-    rf"\b\d{{1,3}}\s*(?:{AGE_UNITS})\b",
+    rf"\b\d{{1,3}}\s*(?:{EXPLICIT_AGE_UNITS})\b",
     source,
     flags=re.IGNORECASE,
   )
@@ -266,7 +400,8 @@ def _generalize_date(raw: str) -> str:
 
 def _generalize_clinical_value(raw: str) -> str:
   match = re.search(
-    rf"\b(?P<label>{LAB_TERMS})\s*[:=]?\s*(?P<value>\d[\d.,]*)\b",
+    rf"\b(?P<label>{LAB_TERMS})\s*(?:came\s+back\s+at|was|were|is|of|at|[:=])?\s*"
+    r"(?P<value>\d[\d.,]*(?:k)?)\b",
     raw,
     re.IGNORECASE,
   )
@@ -274,9 +409,11 @@ def _generalize_clinical_value(raw: str) -> str:
     return "[CLINICAL_VALUE]"
   label = match.group("label")
   normalized_label = "A1c" if label.lower() in ("a1c", "hba1c") else label.upper()
-  value_text = match.group("value").replace(",", "")
+  value_text = match.group("value").replace(",", "").lower()
+  multiplier = 1000 if value_text.endswith("k") else 1
+  value_text = value_text.removesuffix("k")
   try:
-    value = float(value_text)
+    value = float(value_text) * multiplier
   except ValueError:
     return f"{normalized_label} value"
   if normalized_label == "A1c":
@@ -290,6 +427,22 @@ def _generalize_clinical_value(raw: str) -> str:
       return "low TSH"
     return "TSH value"
   return f"{normalized_label} value"
+
+
+def _generalize_body_measurement(raw: str) -> str:
+  bmi_match = re.search(r"\bBMI\s*(?P<value>\d{1,2}(?:\.\d+)?)\b", raw, re.IGNORECASE)
+  if bmi_match:
+    value = float(bmi_match.group("value"))
+    if value >= 30:
+      return "obesity-range BMI"
+    if value >= 25:
+      return "overweight-range BMI"
+    return "BMI value"
+  if re.search(r"\b\d{1,2}'\s*\d{1,2}\"|\b\d{1,2}\s*ft\s*\d{1,2}\s*in\b", raw, re.IGNORECASE):
+    return "height value"
+  if re.search(r"\b\d{2,3}\s*(?:lbs?|kg|pounds?)\b", raw, re.IGNORECASE):
+    return "weight value"
+  return "[BODY_MEASUREMENT]"
 
 
 def _safe_query_from_context(safe_context: str) -> str:
