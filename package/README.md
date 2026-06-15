@@ -35,6 +35,23 @@ decon \
   "Marcus Johnson, DOB 3/15/2013, needs his 12-year-old vaccines per AAP"
 ```
 
+## Run the local app prototype
+
+From this directory:
+
+```bash
+PYTHONPATH=src python -m decon.app_server
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8769
+```
+
+The prototype runs locally and uses the rules-based decon path. Destination buttons copy the
+cleaned prompt and open the selected third-party site; prompt text is never placed in URLs.
+
 ## Test
 
 ```bash

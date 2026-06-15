@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f766e">
+  <title>Decon</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <h1>Decon</h1>
+        <p class="subhead">Local clinical prompt decontextualization</p>
+      </div>
+      <div id="setupStatus" class="status status-waiting">Checking setup</div>
+    </header>
+
+    <section class="workspace" aria-label="Decon workspace">
+      <section class="pane">
+        <div class="pane-header">
+          <h2>Source</h2>
+          <select id="destination" aria-label="Destination">
+            <option value="chatgpt">ChatGPT</option>
+            <option value="gemini">Gemini</option>
+            <option value="claude">Claude</option>
+            <option value="openevidence">OpenEvidence</option>
+            <option value="web_search">Web Search</option>
+            <option value="copy_only">Copy Only</option>
+          </select>
+        </div>
+        <textarea id="sourceText" spellcheck="false" placeholder="Paste clinical text here"></textarea>
+        <div class="action-row">
+          <button id="runButton" class="primary">Decontextualize</button>
+          <button id="sampleButton" class="secondary">Load Sample</button>
+          <button id="clearButton" class="secondary">Clear</button>
+        </div>
+      </section>
+
+      <section class="pane">
+        <div class="pane-header">
+          <h2>Safe Prompt</h2>
+          <div id="riskBadge" class="risk risk-idle">Not run</div>
+        </div>
+        <textarea id="outputText" spellcheck="false" readonly></textarea>
+        <div class="action-row">
+          <button id="copyOpenButton" class="primary" disabled>Copy & Open</button>
+          <button id="copyButton" class="secondary" disabled>Copy Only</button>
+        </div>
+      </section>
+    </section>
+
+    <section class="details" aria-label="Decon details">
+      <div>
+        <h2>Removed Categories</h2>
+        <div id="categoryList" class="chips"></div>
+      </div>
+      <div>
+        <h2>Risk Reasons</h2>
+        <div id="reasonList" class="reasons"></div>
+      </div>
+      <div class="trust">
+        <h2>Local Boundary</h2>
+        <p>Decon runs on this machine. Review the cleaned prompt before pasting it into any external tool.</p>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -66,6 +66,25 @@ Use `package/` as the fork seed and promote the best parts of
 3. Keep cloud LLM rewrite as an optional BAA-covered or explicitly enabled fallback.
 4. Use the `from-cds-eval/data/` and `from-cds-eval/results/` artifacts as regression tests.
 
+## Runnable Prototype
+
+The first local app prototype lives in `package/`.
+
+```bash
+cd /Users/dochobbs/Downloads/Consult/clinician-decon/package
+PYTHONPATH=src python -m decon.app_server
+```
+
+Open `http://127.0.0.1:8769`.
+
+Current prototype scope:
+
+- local rules-based decon engine
+- setup/model status endpoint
+- PWA-style paste/decon/review screen
+- ChatGPT, Gemini, Claude, OpenEvidence, Web Search, and Copy Only destinations
+- copy-and-open handoff without putting prompt text in URLs
+
 ## Verification Snapshot
 
 Before gathering, the standalone package tests passed in the original project:
