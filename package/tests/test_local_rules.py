@@ -631,6 +631,54 @@ def test_decontextualize_text_removes_repeated_sibling_name_later_in_question():
   assert "varicella" in result.destination_prompt
 
 
+def test_decontextualize_text_removes_sibling_name_in_relationship_noise():
+  source = (
+    "Mom Shirley says sibling Emma is worried. 2-year-old weighs 14 kg and needs "
+    "amoxicillin for fever. What dose?"
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  assert "Shirley" not in result.destination_prompt
+  assert "Emma" not in result.destination_prompt
+  assert "sibling" in result.destination_prompt
+  assert "14 kg" in result.destination_prompt
+  assert "amoxicillin" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_phone_note_caller_name():
+  source = (
+    "Phone note: caller Maria at 512-555-9374. 5-year-old weighs 12 kg and needs "
+    "cephalexin for fever. What dose?"
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  assert "Maria" not in result.destination_prompt
+  assert "512-555-9374" not in result.destination_prompt
+  assert "5-year-old" in result.destination_prompt
+  assert "12 kg" in result.destination_prompt
+  assert "cephalexin" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_json_patient_name_value():
+  source = (
+    '{"patient_name":"Sofia Chen","mrn":"LP-2025-75719","callback":"512-555-6596",'
+    '"question":"72-year-old adult with eGFR 28, taking metformin 1000 mg BID. '
+    'Should dose be adjusted or stopped?"}'
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  assert "Sofia" not in result.destination_prompt
+  assert "Chen" not in result.destination_prompt
+  assert "LP-2025-75719" not in result.destination_prompt
+  assert "512-555-6596" not in result.destination_prompt
+  assert "72-year-old" in result.destination_prompt
+  assert "eGFR 28" in result.destination_prompt
+  assert "metformin 1000 mg BID" in result.destination_prompt
+
+
 def test_decontextualize_text_removes_ocr_spaced_identifiers_and_derives_age():
   source = (
     "OCR export: M R N 8 2 9 3 4 1 5; D.O.B. 2017-04-10; "
@@ -653,6 +701,27 @@ def test_decontextualize_text_removes_ocr_spaced_identifiers_and_derives_age():
   assert "cafe-au-lait" in result.destination_prompt
   assert "axillary freckling" in result.destination_prompt
   assert "NF1" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_ocr_spaced_alphanumeric_mrn():
+  source = (
+    "OCR export: M R N L P 2 0 2 5 4 0 0 0 0; D.O.B. 2019-06-14; "
+    "callback 5 1 2 5 5 5 0 1 4 7. 7-year-old with HLH, cafe-au-lait "
+    "macules, and elevated LFTs. What is the recommended diagnostic workup?"
+  )
+
+  result = decontextualize_text(
+    source,
+    destination="chatgpt",
+    reference_date=date(2026, 6, 15),
+  )
+
+  assert "L P 2 0 2 5 4 0 0 0 0" not in result.destination_prompt
+  assert "2019-06-14" not in result.destination_prompt
+  assert "5 1 2 5 5 5 0 1 4 7" not in result.destination_prompt
+  assert "7-year-old" in result.destination_prompt
+  assert "HLH" in result.destination_prompt
+  assert "cafe-au-lait" in result.destination_prompt
 
 
 def test_decontextualize_text_removes_spanish_full_name_and_named_relative():

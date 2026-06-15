@@ -119,7 +119,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     r"([A-Z0-9][A-Z0-9-]{3,})\b",
     re.IGNORECASE,
   )),
-  ("mrn", re.compile(r"\bM\s*R\s*N\s*((?:\d\s*){6,12})\b", re.IGNORECASE)),
+  ("mrn", re.compile(r"\bM\s+R\s+N\s+((?:[A-Z0-9]\s+){5,19}[A-Z0-9])\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b(?:MRN|MR#|medical record(?: number)?)\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{3,})\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b[A-Z]{1,5}-\d{3,8}(?:-\d{3,8})?\b")),
   ("url", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
@@ -170,6 +170,15 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("name", re.compile(
     rf"\b(?i:(?:La\s+mam[aá]|El\s+pap[aá]|Mi\s+hij[oa]|Su\s+hij[oa]|El\s+paciente|"
     rf"La\s+paciente)\s+(?:de\s+)?({NAME_TOKEN})\b)",
+  )),
+  ("name", re.compile(
+    rf'"(?i:patient_name)"\s*:\s*"({FULL_NAME})"'
+  )),
+  ("name", re.compile(
+    rf"\b(?i:caller)\s+({NAME_TOKEN})(?=\s+at\b)"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:sibling)\s+({NAME_TOKEN})(?=\s+(?:is|was|has|had|needs|worried|worries)\b)"
   )),
   ("name", re.compile(
     rf"\b(?i:(?:the\s+)?patient\s+(?:I'?m|I\s+am)\s+asking\s+about\s+is)\s+"
@@ -261,6 +270,7 @@ RELATION_REPLACEMENTS: tuple[tuple[re.Pattern[str], str], ...] = (
   (re.compile(r"\blittle\s+\[NAME\]", re.IGNORECASE), "child"),
   (re.compile(r"\b(?:Wife|Husband|Spouse|Partner)\s+\[NAME\]", re.IGNORECASE), "spouse"),
   (re.compile(r"\b(?:Sister|Brother)\s+\[NAME\]", re.IGNORECASE), "sibling"),
+  (re.compile(r"\bsibling\s+\[NAME\]", re.IGNORECASE), "sibling"),
   (re.compile(r"\b(?:Daughter|Son)\s+\[NAME\]", re.IGNORECASE), "child"),
   (re.compile(r"\b(?:Grandma|Grandpa)\s+\[NAME\]", re.IGNORECASE), "grandparent"),
   (re.compile(r"\b(?:Guardian|Caregiver)\s+\[NAME\]", re.IGNORECASE), "caregiver"),

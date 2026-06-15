@@ -1,6 +1,7 @@
 from datetime import date
 
 from decon.validation_runner import (
+  CURRENT_SUITES,
   passes_thresholds,
   run_validation,
 )
@@ -17,6 +18,29 @@ def test_current_validation_suites_pass_with_zero_failures():
   assert result["summary"]["source_cases"] == 1000
   assert result["summary"]["outputs"] == 3000
   assert result["summary"]["clinical_labeled_outputs"] == 3000
+  assert result["summary"]["phi_leaked_outputs"] == 0
+  assert result["summary"]["missing_critical_fact_outputs"] == 0
+  assert result["summary"]["clinical_usable_rate"] == 1.0
+  assert passes_thresholds(result, fail_on_phi=True, min_clinical_usable=1.0) == []
+
+
+def test_persona_regression_suite_is_registered_as_current_gate():
+  assert "persona-regression" in CURRENT_SUITES
+  assert CURRENT_SUITES["persona-regression"].name == (
+    "decon_persona_regression_2000_2026-06-15.json"
+  )
+
+
+def test_persona_regression_validation_suite_passes_with_zero_failures():
+  result = run_validation(
+    suites=("persona-regression",),
+    destinations=("chatgpt",),
+    reference_date=date(2026, 6, 15),
+  )
+
+  assert result["summary"]["source_cases"] == 2000
+  assert result["summary"]["outputs"] == 2000
+  assert result["summary"]["clinical_labeled_outputs"] == 2000
   assert result["summary"]["phi_leaked_outputs"] == 0
   assert result["summary"]["missing_critical_fact_outputs"] == 0
   assert result["summary"]["clinical_usable_rate"] == 1.0

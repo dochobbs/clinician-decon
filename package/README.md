@@ -84,7 +84,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-80 passed
+94 passed
 ```
 
 ## Headless Validation
@@ -114,6 +114,22 @@ PHI leaked outputs: 0
 Unsafe copy-allowed leaks: 0
 Clinical labeled outputs: 3000
 Clinically usable outputs: 3000
+```
+
+Run the larger persona-driven regression gate:
+
+```bash
+python3 package/scripts/run_validation.py --suite persona-regression
+```
+
+Generate the checked-in persona regression suite:
+
+```bash
+python3 package/scripts/generate_traces.py \
+  --count 2000 \
+  --seed 20260615 \
+  --output package/data/decon_persona_regression_2000_2026-06-15.json \
+  --report package/reports/persona-regression-2000-2026-06-15.json
 ```
 
 Write a JSON report for CI:

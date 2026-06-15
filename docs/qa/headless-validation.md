@@ -89,6 +89,12 @@ python3 package/scripts/run_validation.py \
   --report package/reports/latest-validation.json
 ```
 
+Run the larger persona-driven regression gate:
+
+```bash
+python3 package/scripts/run_validation.py --suite persona-regression
+```
+
 Print the full JSON payload:
 
 ```bash
@@ -114,6 +120,7 @@ python3 package/scripts/run_validation.py --min-clinical-usable 0.99
 | `current` | alias | yes | Runs `usability` plus `adversarial`. |
 | `usability` | clinical-usability | yes | Confirms clinically necessary facts survive decon. |
 | `adversarial` | clinical-usability | yes | Probes hard PHI and prompt-shape failures. |
+| `persona-regression` | clinical-usability | no | Runs the 2,000-case persona/archetype generated suite. |
 | `legacy-phi` | alias | no | Runs older copied PHI-only suites except the combined duplicate. |
 | `legacy-synth-500` | PHI-only | no | Broad synthetic PHI coverage from prior work. |
 | `legacy-synth-500-b` | PHI-only | no | Second broad synthetic draw from prior work. |

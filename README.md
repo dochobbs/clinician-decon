@@ -62,7 +62,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-80 passed
+94 passed
 ```
 
 Run the headless validation gate:
@@ -77,6 +77,12 @@ Current validation snapshot:
 1,000 source cases, 3,000 destination outputs, 0 PHI leaks, 0 missing clinical facts
 ```
 
+Run the larger persona-driven regression gate:
+
+```bash
+python3 package/scripts/run_validation.py --suite persona-regression
+```
+
 ## Important Docs
 
 - [Source map](SOURCE_MAP.md)
@@ -87,6 +93,8 @@ Current validation snapshot:
 - [Headless validation runbook](docs/qa/headless-validation.md)
 - [Synthetic trace generation strategy](docs/qa/synthetic-trace-generation.md)
 - [Synthetic persona library](docs/qa/persona-library.md)
+- [Persona regression 2,000-case eval](docs/qa/2026-06-15-persona-regression-2000-eval.md)
+- [Persona trace generator design](docs/superpowers/specs/2026-06-15-persona-trace-generator-design.md)
 - [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
 - [Local 500-case usability eval](docs/qa/2026-06-15-local-usability-500-eval.md)
 - [Local 500-case adversarial eval](docs/qa/2026-06-15-local-adversarial-500-eval.md)

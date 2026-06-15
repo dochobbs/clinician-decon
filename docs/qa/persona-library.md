@@ -11,6 +11,18 @@ package/data/personas/v1.json
 It is the shared vocabulary for generating higher-quality synthetic traces. The point is to
 avoid random low-value examples while still scaling beyond a small hand-authored gold set.
 
+The first generator that consumes this library is:
+
+```text
+package/scripts/generate_traces.py
+```
+
+Its first checked-in generated suite is:
+
+```text
+package/data/decon_persona_regression_2000_2026-06-15.json
+```
+
 ## What It Contains
 
 The `v1` library has four sections:

@@ -1,0 +1,74 @@
+{
+  "summary": {
+    "cases": 2000,
+    "seed": 20260615,
+    "reference_date": "2026-06-15",
+    "clinical_labeled_cases": 2000,
+    "cases_with_phi": 2000
+  },
+  "by_archetype": {
+    "allergy-antibiotic-alternative": 200,
+    "asthma-action-plan": 200,
+    "hlh-severe-labs": 200,
+    "pediatric-vaccine-catchup": 200,
+    "portal-callback-triage": 200,
+    "pregnancy-medication-safety": 200,
+    "rare-disease-web-search": 200,
+    "renal-dose-adjustment": 200,
+    "sibling-multipatient-note": 200,
+    "weight-based-dosing": 200
+  },
+  "by_category": {
+    "persona_allergy_antibiotic": 200,
+    "persona_asthma_action": 200,
+    "persona_hlh_severe_labs": 200,
+    "persona_pediatric_vaccine": 200,
+    "persona_portal_callback": 200,
+    "persona_pregnancy_medication": 200,
+    "persona_rare_disease_search": 200,
+    "persona_renal_dosing": 200,
+    "persona_sibling_multipatient": 200,
+    "persona_weight_based_dosing": 200
+  },
+  "by_clinician_persona": {
+    "dpc-continuity-physician": 322,
+    "evidence-focused-specialist": 318,
+    "medication-safety-reviewer": 367,
+    "pediatric-vaccine-planner": 192,
+    "phone-triage-clinician": 217,
+    "rushed-primary-care-clinician": 395,
+    "specialist-referral-reviewer": 189
+  },
+  "by_patient_context_persona": {
+    "allergy-antibiotic-alternative": 200,
+    "asthma-action-plan-child": 200,
+    "hlh-severe-lab-question": 200,
+    "pediatric-catchup-vaccine-child": 200,
+    "portal-message-callback": 200,
+    "pregnancy-medication-question": 200,
+    "rare-disease-small-town-child": 200,
+    "renal-dose-adjustment-adult": 200,
+    "sibling-multipatient-visit": 200,
+    "weight-based-dosing-child": 200
+  },
+  "by_source_channel_persona": {
+    "dictation-transcript": 148,
+    "ehr-summary-copy": 398,
+    "json-chart-fragment": 205,
+    "ocr-chart-export": 140,
+    "phone-call-note": 324,
+    "portal-message-thread": 324,
+    "referral-packet": 128,
+    "web-search-box": 333
+  },
+  "by_perturbation": {
+    "canonical-clean": 477,
+    "clinical-lookalike": 247,
+    "obfuscated-contact": 215,
+    "ocr-spacing": 55,
+    "prompt-injection": 176,
+    "relationship-noise": 311,
+    "section-header-note": 362,
+    "url-embedded-phi": 157
+  }
+}

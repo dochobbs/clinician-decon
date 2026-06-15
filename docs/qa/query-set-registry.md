@@ -11,20 +11,71 @@ Related docs:
 - `docs/qa/headless-validation.md`: how to run the validation gate from a clone or CI.
 - `docs/qa/synthetic-trace-generation.md`: how to generate higher-quality synthetic traces from
   clinician-reviewed archetypes.
-- `docs/qa/persona-library.md`: the versioned persona vocabulary for future synthetic trace
-  generation.
+- `docs/qa/persona-library.md`: the versioned persona vocabulary used by the persona-driven
+  generator.
+- `docs/qa/2026-06-15-persona-regression-2000-eval.md`: first 2,000-case persona-regression
+  run, failure trace, fixes, and final result.
 
 ## Current Regression Gates
 
-The current validated gates do not yet use the persona library directly. `package/data/personas/v1.json`
-is the planned input vocabulary for the next archetype generator so future generated suites can
-record exactly which clinician, patient context, source channel, and perturbation produced each
-case.
+The default `current` gate still runs the 500-case usability suite plus the 500-case adversarial
+suite. `persona-regression` is a larger explicit gate that uses the versioned persona and
+archetype libraries.
 
 | Query set | Rows | Source | Purpose | Latest result |
 | --- | ---: | --- | --- | --- |
 | `package/data/decon_usability_500_2026-06-15.json` | 500 | `generate_usability_cases(500, seed=20260615, reference_date=2026-06-15)` in `package/src/decon/usability_eval.py` | Clinician-usability suite: checks whether decon preserves required clinical facts while removing PHI. | `docs/qa/2026-06-15-local-usability-500-eval.md`: 1,500 / 1,500 safe, clinically usable, and handoff usable. |
 | `package/data/decon_adversarial_500_2026-06-15.json` | 500 | `generate_adversarial_cases(500, seed=20260615, reference_date=2026-06-15)` in `package/src/decon/usability_eval.py` | Adversarial stress suite for common failure modes: prompt injection, buried identity, repeated names, OCR identifiers, URL PHI, Spanish family phrasing, small-town uniqueness, copy-pasted notes, contact/date mashups, and eponym collisions. | `docs/qa/2026-06-15-local-adversarial-500-eval.md`: 1,500 / 1,500 safe, clinically usable, and handoff usable. |
+| `package/data/decon_persona_regression_2000_2026-06-15.json` | 2,000 | `package/scripts/generate_traces.py --count 2000 --seed 20260615` using `package/data/personas/v1.json` and `package/data/archetypes/v1.json` | Persona-driven regression suite: combines clinician persona, patient context, source channel, perturbation, and clinical archetype metadata. | `docs/qa/2026-06-15-persona-regression-2000-eval.md`: first run found 2,742 / 6,000 PHI-leaked outputs; final run 6,000 / 6,000 safe, clinically usable, and handoff usable. |
+
+## Persona Regression 2,000 Trace
+
+Generator:
+
+```bash
+python3 package/scripts/generate_traces.py \
+  --count 2000 \
+  --seed 20260615 \
+  --output package/data/decon_persona_regression_2000_2026-06-15.json \
+  --report package/reports/persona-regression-2000-2026-06-15.json
+```
+
+Validation:
+
+```bash
+python3 package/scripts/run_validation.py --suite persona-regression
+```
+
+Seed and date:
+
+- Seed: `20260615`
+- Reference date: `2026-06-15`
+- Destinations: `chatgpt`, `gemini`, `web_search`
+- Outputs per run: `2,000 cases x 3 destinations = 6,000 outputs`
+
+Coverage:
+
+- `10` archetypes, exactly `200` cases each.
+- `8` source-channel personas.
+- `8` perturbation profiles.
+- `2,000 / 2,000` cases include expected PHI and required clinical facts.
+
+The first run found true local-rule misses:
+
+- JSON chart fragments preserving `"patient_name":"Full Name"`.
+- Phone notes preserving `caller <Name> at <PHONE>`.
+- Relationship-noise prompts preserving `sibling <Name> is worried`.
+- OCR-spaced alphanumeric MRNs such as `M R N L P 2 0 2 5 4 0 0 0 0`.
+
+Final run after targeted fixes:
+
+- Safe outputs: `6,000 / 6,000`
+- Clinically usable outputs: `6,000 / 6,000`
+- Handoff usable outputs: `6,000 / 6,000`
+- PHI-leaked outputs: `0 / 6,000`
+- Missing-critical-fact outputs: `0 / 6,000`
+- Average runtime: `0.289 ms`
+- p95 runtime: `0.399 ms`
 
 ## Adversarial 500 Trace
 

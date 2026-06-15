@@ -1,0 +1,234 @@
+{
+  "schema_version": "1.0",
+  "created_date": "2026-06-15",
+  "purpose": "Clinician-reviewable archetypes for persona-driven synthetic decontextualization traces.",
+  "archetypes": [
+    {
+      "id": "pediatric-vaccine-catchup",
+      "category": "persona_pediatric_vaccine",
+      "task": "Pediatric catch-up vaccine guidance",
+      "template": "Parent asks whether an under-immunized {age}-year-old needs {vaccine} today after missing prior doses.",
+      "clinician_personas": ["pediatric-vaccine-planner", "rushed-primary-care-clinician"],
+      "patient_context_personas": ["pediatric-catchup-vaccine-child"],
+      "source_channel_personas": ["ehr-summary-copy", "portal-message-thread", "web-search-box"],
+      "perturbation_profiles": ["canonical-clean", "relationship-noise", "prompt-injection", "section-header-note"],
+      "slot_options": {
+        "age": ["9", "10", "11", "12", "13"],
+        "vaccine": ["HPV vaccine", "MMR catch-up", "varicella catch-up", "Tdap booster"]
+      },
+      "phi_slots": ["full_name", "first_name", "last_name", "dob", "mrn"],
+      "critical_fact_templates": [
+        {"label": "age", "acceptable_terms": ["{age}-year-old"]},
+        {"label": "immunization status", "acceptable_terms": ["under-immunized", "under immunized"]},
+        {"label": "vaccine", "acceptable_terms": ["{vaccine}", "{vaccine_head}"]}
+      ]
+    },
+    {
+      "id": "weight-based-dosing",
+      "category": "persona_weight_based_dosing",
+      "task": "Pediatric weight-based dosing",
+      "template": "{age}-year-old weighs {weight} kg and needs {medication} for {condition}. What dose and max dose should be used?",
+      "clinician_personas": ["medication-safety-reviewer", "rushed-primary-care-clinician"],
+      "patient_context_personas": ["weight-based-dosing-child"],
+      "source_channel_personas": ["ehr-summary-copy", "phone-call-note", "dictation-transcript"],
+      "perturbation_profiles": ["canonical-clean", "clinical-lookalike", "relationship-noise", "section-header-note"],
+      "slot_options": {
+        "age": ["2", "3", "4", "5", "6"],
+        "weight": ["12", "14", "16", "18", "22", "26"],
+        "medication": ["amoxicillin", "cephalexin", "ibuprofen"],
+        "condition": ["AOM", "cellulitis", "fever"]
+      },
+      "phi_slots": ["full_name", "first_name", "last_name", "dob", "mrn", "phone"],
+      "critical_fact_templates": [
+        {"label": "age", "acceptable_terms": ["{age}-year-old"]},
+        {"label": "weight", "acceptable_terms": ["{weight} kg"]},
+        {"label": "medication", "acceptable_terms": ["{medication}"]},
+        {"label": "condition", "acceptable_terms": ["{condition}"]}
+      ]
+    },
+    {
+      "id": "hlh-severe-labs",
+      "category": "persona_hlh_severe_labs",
+      "task": "HLH criteria with severe labs",
+      "template": "Fever for {fever_days} days with ferritin {ferritin}, WBC {wbc}, platelets {platelets}, LDH {ldh}. Does this meet HLH criteria?",
+      "clinician_personas": ["evidence-focused-specialist", "specialist-referral-reviewer"],
+      "patient_context_personas": ["hlh-severe-lab-question"],
+      "source_channel_personas": ["referral-packet", "ocr-chart-export", "ehr-summary-copy"],
+      "perturbation_profiles": ["canonical-clean", "ocr-spacing", "clinical-lookalike", "section-header-note"],
+      "slot_options": {
+        "age": ["6", "9", "14"],
+        "fever_days": ["5", "6", "7"],
+        "ferritin": ["18,000", "32,000", "48,000"],
+        "wbc": ["1.2", "2.0", "3.1"],
+        "platelets": ["28k", "45k", "72k"],
+        "ldh": ["1600", "2800", "4100"]
+      },
+      "phi_slots": ["full_name", "first_name", "last_name", "dob", "mrn", "practice", "town"],
+      "critical_fact_templates": [
+        {"label": "fever duration", "acceptable_terms": ["{fever_days} days"]},
+        {"label": "ferritin severity", "acceptable_terms": ["{ferritin}"]},
+        {"label": "WBC severity", "acceptable_terms": ["WBC {wbc}"]},
+        {"label": "platelet severity", "acceptable_terms": ["platelets {platelets}"]},
+        {"label": "LDH severity", "acceptable_terms": ["LDH {ldh}"]},
+        {"label": "condition", "acceptable_terms": ["HLH"]}
+      ]
+    },
+    {
+      "id": "renal-dose-adjustment",
+      "category": "persona_renal_dosing",
+      "task": "Renal dosing adjustment",
+      "template": "{age}-year-old adult with eGFR {egfr}, taking {medication}. Should dose be adjusted or stopped?",
+      "clinician_personas": ["medication-safety-reviewer", "evidence-focused-specialist"],
+      "patient_context_personas": ["renal-dose-adjustment-adult"],
+      "source_channel_personas": ["ehr-summary-copy", "json-chart-fragment", "web-search-box"],
+      "perturbation_profiles": ["canonical-clean", "clinical-lookalike", "url-embedded-phi", "section-header-note"],
+      "slot_options": {
+        "age": ["52", "64", "72", "81"],
+        "egfr": ["22", "28", "34", "42"],
+        "medication": ["metformin 1000 mg BID", "gabapentin 300 mg TID", "apixaban 5 mg BID"]
+      },
+      "phi_slots": ["full_name", "first_name", "last_name", "dob", "mrn", "email"],
+      "critical_fact_templates": [
+        {"label": "age", "acceptable_terms": ["{age}-year-old"]},
+        {"label": "kidney function", "acceptable_terms": ["eGFR {egfr}", "GFR {egfr}"]},
+        {"label": "medication dose", "acceptable_terms": ["{medication}"]}
+      ]
+    },
+    {
+      "id": "pregnancy-medication-safety",
+      "category": "persona_pregnancy_medication",
+      "task": "Pregnancy medication safety",
+      "template": "{weeks} weeks pregnant with {condition}. Is {medication} safe and what alternatives are recommended?",
+      "clinician_personas": ["medication-safety-reviewer", "dpc-continuity-physician"],
+      "patient_context_personas": ["pregnancy-medication-question"],
+      "source_channel_personas": ["portal-message-thread", "phone-call-note", "ehr-summary-copy"],
+      "perturbation_profiles": ["canonical-clean", "obfuscated-contact", "relationship-noise", "prompt-injection"],
+      "slot_options": {
+        "age": ["24", "29", "34"],
+        "weeks": ["10", "18", "28", "32"],
+        "condition": ["UTI symptoms", "nausea and vomiting", "influenza exposure"],
+        "medication": ["nitrofurantoin", "ondansetron", "oseltamivir"]
+      },
+      "phi_slots": ["full_name", "first_name", "last_name", "dob", "phone", "email"],
+      "critical_fact_templates": [
+        {"label": "gestational age", "acceptable_terms": ["{weeks} weeks pregnant"]},
+        {"label": "condition", "acceptable_terms": ["{condition}"]},
+        {"label": "medication", "acceptable_terms": ["{medication}"]}
+      ]
+    },
+    {
+      "id": "asthma-action-plan",
+      "category": "persona_asthma_action",
+      "task": "Asthma action plan and triage threshold",
+      "template": "{age}-year-old with asthma flare, O2 sat {sat}%, using albuterol {puffs} puffs q4h and still wheezing. What is the ER threshold?",
+      "clinician_personas": ["phone-triage-clinician", "rushed-primary-care-clinician"],
+      "patient_context_personas": ["asthma-action-plan-child"],
+      "source_channel_personas": ["phone-call-note", "portal-message-thread", "web-search-box"],
+      "perturbation_profiles": ["canonical-clean", "relationship-noise", "obfuscated-contact", "url-embedded-phi"],
+      "slot_options": {
+        "age": ["4", "6", "8", "10"],
+        "sat": ["91", "92", "93", "94"],
+        "puffs": ["2", "4", "6"]
+      },
+      "phi_slots": ["full_name", "first_name", "last_name", "dob", "phone", "school"],
+      "critical_fact_templates": [
+        {"label": "age", "acceptable_terms": ["{age}-year-old"]},
+        {"label": "oxygen saturation", "acceptable_terms": ["O2 sat {sat}%", "sat {sat}%"]},
+        {"label": "medication use", "acceptable_terms": ["albuterol {puffs} puffs"]},
+        {"label": "symptom", "acceptable_terms": ["wheezing"]},
+        {"label": "triage intent", "acceptable_terms": ["ER threshold"]}
+      ]
+    },
+    {
+      "id": "allergy-antibiotic-alternative",
+      "category": "persona_allergy_antibiotic",
+      "task": "Antibiotic alternative with allergy context",
+      "template": "{age}-year-old with {diagnosis} and {allergy}. What antibiotic alternative is appropriate?",
+      "clinician_personas": ["medication-safety-reviewer", "dpc-continuity-physician"],
+      "patient_context_personas": ["allergy-antibiotic-alternative"],
+      "source_channel_personas": ["portal-message-thread", "json-chart-fragment", "web-search-box"],
+      "perturbation_profiles": ["canonical-clean", "clinical-lookalike", "obfuscated-contact", "section-header-note"],
+      "slot_options": {
+        "age": ["7", "16", "34", "61"],
+        "diagnosis": ["sinusitis", "AOM", "pneumonia", "cellulitis"],
+        "allergy": ["amoxicillin allergy", "penicillin anaphylaxis", "sulfa rash"]
+      },
+      "phi_slots": ["full_name", "first_name", "last_name", "dob", "email", "phone"],
+      "critical_fact_templates": [
+        {"label": "age", "acceptable_terms": ["{age}-year-old"]},
+        {"label": "diagnosis", "acceptable_terms": ["{diagnosis}"]},
+        {"label": "allergy", "acceptable_terms": ["{allergy}"]},
+        {"label": "intent", "acceptable_terms": ["antibiotic alternative"]}
+      ]
+    },
+    {
+      "id": "sibling-multipatient-note",
+      "category": "persona_sibling_multipatient",
+      "task": "Sibling multi-patient note",
+      "template": "Seeing siblings today: older child is {older_age} years old and needs ADHD med check; younger child is {younger_months} months old and needs {vaccine}. Should the younger child get it today or separate shots?",
+      "clinician_personas": ["dpc-continuity-physician", "pediatric-vaccine-planner"],
+      "patient_context_personas": ["sibling-multipatient-visit"],
+      "source_channel_personas": ["dictation-transcript", "ehr-summary-copy", "phone-call-note"],
+      "perturbation_profiles": ["canonical-clean", "relationship-noise", "prompt-injection", "section-header-note"],
+      "slot_options": {
+        "age": ["7", "8", "9"],
+        "older_age": ["7", "8", "9"],
+        "younger_months": ["12", "13", "15"],
+        "vaccine": ["MMR", "MMRV", "varicella"]
+      },
+      "phi_slots": ["full_name", "first_name", "last_name", "sibling_name", "caregiver_name", "phone"],
+      "critical_fact_templates": [
+        {"label": "older child age", "acceptable_terms": ["{older_age}-year-old"]},
+        {"label": "younger child age", "acceptable_terms": ["{younger_months}-month-old"]},
+        {"label": "older child topic", "acceptable_terms": ["ADHD med check", "ADHD"]},
+        {"label": "vaccine", "acceptable_terms": ["{vaccine}"]}
+      ]
+    },
+    {
+      "id": "portal-callback-triage",
+      "category": "persona_portal_callback",
+      "task": "Portal callback triage",
+      "template": "Parent reports fever for {fever_days} days, red eyes, and rash. Could this be Kawasaki and what red flags need urgent evaluation?",
+      "clinician_personas": ["phone-triage-clinician", "rushed-primary-care-clinician"],
+      "patient_context_personas": ["portal-message-callback"],
+      "source_channel_personas": ["portal-message-thread", "phone-call-note", "json-chart-fragment"],
+      "perturbation_profiles": ["canonical-clean", "relationship-noise", "obfuscated-contact", "prompt-injection"],
+      "slot_options": {
+        "age": ["2", "4", "6", "8"],
+        "fever_days": ["5", "6", "7"]
+      },
+      "phi_slots": ["full_name", "first_name", "last_name", "caregiver_name", "phone", "portal_id", "email"],
+      "critical_fact_templates": [
+        {"label": "fever duration", "acceptable_terms": ["{fever_days} days"]},
+        {"label": "red eyes", "acceptable_terms": ["red eyes"]},
+        {"label": "rash", "acceptable_terms": ["rash"]},
+        {"label": "condition", "acceptable_terms": ["Kawasaki"]},
+        {"label": "triage intent", "acceptable_terms": ["red flags", "urgent evaluation"]}
+      ]
+    },
+    {
+      "id": "rare-disease-web-search",
+      "category": "persona_rare_disease_search",
+      "task": "Rare disease workup search",
+      "template": "{age}-year-old with {disease}, {finding}, and {lab_signal}. What is the recommended diagnostic workup?",
+      "clinician_personas": ["evidence-focused-specialist", "specialist-referral-reviewer"],
+      "patient_context_personas": ["rare-disease-small-town-child"],
+      "source_channel_personas": ["web-search-box", "referral-packet", "ocr-chart-export"],
+      "perturbation_profiles": ["canonical-clean", "clinical-lookalike", "url-embedded-phi", "section-header-note"],
+      "slot_options": {
+        "age": ["7", "10", "14"],
+        "disease": ["Wilson disease", "NF1", "HLH"],
+        "finding": ["KF rings", "cafe-au-lait macules", "splenomegaly"],
+        "lab_signal": ["elevated LFTs", "axillary freckling", "ferritin 18,000"]
+      },
+      "phi_slots": ["full_name", "first_name", "last_name", "dob", "practice", "town", "school"],
+      "critical_fact_templates": [
+        {"label": "age", "acceptable_terms": ["{age}-year-old"]},
+        {"label": "rare condition", "acceptable_terms": ["{disease}"]},
+        {"label": "finding", "acceptable_terms": ["{finding}"]},
+        {"label": "lab signal", "acceptable_terms": ["{lab_signal}"]},
+        {"label": "intent", "acceptable_terms": ["diagnostic workup", "workup"]}
+      ]
+    }
+  ]
+}

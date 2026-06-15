@@ -188,10 +188,12 @@ archetype expansions should add a frozen validation split.
 Current repo gates:
 
 - `package/data/personas/v1.json`
+- `package/data/archetypes/v1.json`
 - `package/data/decon_usability_500_2026-06-15.json`
 - `package/data/decon_adversarial_500_2026-06-15.json`
+- `package/data/decon_persona_regression_2000_2026-06-15.json`
 
-The two current labeled case suites provide:
+The default `current` gate provides:
 
 - `1,000` labeled source cases
 - `3,000` destination outputs across ChatGPT, Gemini, and Web Search
@@ -204,17 +206,31 @@ Run them with:
 python3 package/scripts/run_validation.py --suite current
 ```
 
-## Next Implementation Step
+The persona-driven regression gate provides:
 
-Add an archetype generator that writes versioned datasets:
+- `2,000` labeled source cases
+- `6,000` destination outputs across ChatGPT, Gemini, and Web Search
+- `0` detected PHI leaks in the final current run
+- `0` missing required clinical facts in the final current run
+
+Run it with:
+
+```bash
+python3 package/scripts/run_validation.py --suite persona-regression
+```
+
+## Implemented Generator
+
+The first archetype generator writes versioned datasets:
 
 ```bash
 python3 package/scripts/generate_traces.py \
+  --personas package/data/personas/v1.json \
   --archetypes package/data/archetypes/v1.json \
   --count 2000 \
   --seed 20260615 \
-  --split regression \
-  --output package/data/decon_regression_2000_2026-06-15.json
+  --output package/data/decon_persona_regression_2000_2026-06-15.json \
+  --report package/reports/persona-regression-2000-2026-06-15.json
 ```
 
 The generated output should then run through the same headless validation command.
