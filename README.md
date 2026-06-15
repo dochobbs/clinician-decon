@@ -62,7 +62,19 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-65 passed
+80 passed
+```
+
+Run the headless validation gate:
+
+```bash
+python3 package/scripts/run_validation.py
+```
+
+Current validation snapshot:
+
+```text
+1,000 source cases, 3,000 destination outputs, 0 PHI leaks, 0 missing clinical facts
 ```
 
 ## Important Docs
@@ -72,10 +84,13 @@ Current local snapshot:
 - [PHI field handling review](docs/superpowers/specs/2026-06-15-phi-field-handling-review.md)
 - [Skeptical physician red-team](docs/qa/2026-06-15-skeptical-physician-red-team.md)
 - [Decon query set registry](docs/qa/query-set-registry.md)
+- [Headless validation runbook](docs/qa/headless-validation.md)
+- [Synthetic trace generation strategy](docs/qa/synthetic-trace-generation.md)
 - [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
 - [Local 500-case usability eval](docs/qa/2026-06-15-local-usability-500-eval.md)
 - [Local 500-case adversarial eval](docs/qa/2026-06-15-local-adversarial-500-eval.md)
 - [Prototype implementation plan](docs/superpowers/plans/2026-06-15-local-decon-prototype.md)
+- [Mac installer implementation plan](docs/superpowers/plans/2026-06-15-mac-installer-implementation-plan.md)
 - [Clinician tool brief](package/docs/clinician-decon-tool-brief.md)
 - [Tabflows partner research](package/docs/tabflows-partner-research.md)
 

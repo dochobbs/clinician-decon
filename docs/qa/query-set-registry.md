@@ -6,6 +6,12 @@ This registry traces the decontextualization query sets in this repo: where they
 what they are meant to test, how to reproduce generated sets, and which report currently
 records the latest local result.
 
+Related docs:
+
+- `docs/qa/headless-validation.md`: how to run the validation gate from a clone or CI.
+- `docs/qa/synthetic-trace-generation.md`: how to generate higher-quality synthetic traces from
+  clinician-reviewed archetypes.
+
 ## Current Regression Gates
 
 | Query set | Rows | Source | Purpose | Latest result |

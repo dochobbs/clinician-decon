@@ -84,8 +84,48 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-65 passed
+80 passed
 ```
+
+## Headless Validation
+
+From a source checkout:
+
+```bash
+cd /Users/dochobbs/Downloads/Consult/clinician-decon
+python3 package/scripts/run_validation.py
+```
+
+After package install:
+
+```bash
+decon-validate
+```
+
+Current default gate:
+
+```text
+Decon validation PASS
+Suites: usability, adversarial
+Destinations: chatgpt, gemini, web_search
+Source cases: 1000
+Outputs: 3000
+PHI leaked outputs: 0
+Unsafe copy-allowed leaks: 0
+Clinical labeled outputs: 3000
+Clinically usable outputs: 3000
+```
+
+Write a JSON report for CI:
+
+```bash
+python3 package/scripts/run_validation.py \
+  --suite current \
+  --report package/reports/latest-validation.json
+```
+
+See `../docs/qa/headless-validation.md` for the full runbook and
+`../docs/qa/synthetic-trace-generation.md` for the trace-generation strategy.
 
 Run the local usability suite:
 

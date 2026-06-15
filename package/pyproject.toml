@@ -21,6 +21,7 @@ dev = [
 [project.scripts]
 decon = "decon.cli:main"
 decon-app = "decon.app_server:main"
+decon-validate = "decon.validation_cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
