@@ -1,20 +1,78 @@
 # Clinician Decon
 
-Gathered working directory for the clinician-facing decontextualization tool.
+Clinician Decon is a local-first prototype for turning PHI-containing clinical text into a
+reviewable, paste-ready prompt for tools such as ChatGPT, Gemini, Claude, OpenEvidence, or web
+search.
 
-Created on 2026-06-15 from the existing `Amboss/decon` standalone package and later
-`cds-eval` decon research/evaluation work.
+The goal is simple: let a clinician paste from a PHI-protected workflow, remove or generalize
+identifiers on their own machine, review the cleaned prompt, then copy it into a non-BAA tool
+without sending raw PHI through this app.
 
-## What This Is For
+Created on 2026-06-15 from the existing `Amboss/decon` package and later `cds-eval`
+decontextualization research. The original source locations were copied, not moved.
 
-This directory is the new staging area for turning the decon work into a simple clinician tool:
+## Current Prototype
 
-- paste PHI-containing chart/message/lab text from a protected workflow
-- run local or BAA-covered PHI minimization
-- produce a reviewed, paste-ready prompt for an external LLM or web/evidence tool
-- preserve the lessons from Haiku, regex, OpenMed, multilingual, local, and hybrid approaches
+The runnable app lives in `package/`.
 
-The original source locations were copied, not moved. Originals remain in place.
+```bash
+cd /Users/dochobbs/Downloads/Consult/clinician-decon/package
+PYTHONPATH=src python -m decon.app_server
+```
+
+Open:
+
+```text
+http://127.0.0.1:8769
+```
+
+Current behavior:
+
+- local rules-based PHI minimization
+- browser-based paste, decon, review, copy, and open workflow
+- destination options for ChatGPT, Gemini, Claude, OpenEvidence, Web Search, and Copy Only
+- no prompt text embedded in third-party URLs
+- setup/model status endpoint for the future local model installer
+- safe derived fields for common cases, such as DOB to age and `A1c 8.2` to `elevated A1c`
+
+## Safety Model
+
+V1 is local-first and fail-closed by default:
+
+- Raw pasted text is processed on `127.0.0.1`.
+- Removed PHI values are not shown in the audit panel, only categories.
+- Third-party handoff is copy-to-clipboard plus opening the destination home page.
+- Names, MRNs, phone numbers, email, SSNs, URLs, street addresses, and ZIP-level geography are
+  removed or replaced with placeholders.
+- Clinically useful facts may be preserved in safer form, such as age, coarse timing,
+  generalized family relationships, or broad lab signals.
+
+This prototype helps minimize PHI before using non-BAA tools. It does not replace legal review,
+institutional policy, or clinician judgment.
+
+## Verification
+
+Run the package tests:
+
+```bash
+cd /Users/dochobbs/Downloads/Consult/clinician-decon/package
+PYTHONPATH=src python -m pytest
+```
+
+Current local snapshot:
+
+```text
+34 passed
+```
+
+## Important Docs
+
+- [Source map](SOURCE_MAP.md)
+- [Mac local app design](docs/superpowers/specs/2026-06-15-mac-local-decon-app-design.md)
+- [PHI field handling review](docs/superpowers/specs/2026-06-15-phi-field-handling-review.md)
+- [Prototype implementation plan](docs/superpowers/plans/2026-06-15-local-decon-prototype.md)
+- [Clinician tool brief](package/docs/clinician-decon-tool-brief.md)
+- [Tabflows partner research](package/docs/tabflows-partner-research.md)
 
 ## Directory Layout
 
@@ -65,37 +123,3 @@ Use `package/` as the fork seed and promote the best parts of
 2. Add the local regex + OpenMed NER pipeline as the default path.
 3. Keep cloud LLM rewrite as an optional BAA-covered or explicitly enabled fallback.
 4. Use the `from-cds-eval/data/` and `from-cds-eval/results/` artifacts as regression tests.
-
-## Runnable Prototype
-
-The first local app prototype lives in `package/`.
-
-```bash
-cd /Users/dochobbs/Downloads/Consult/clinician-decon/package
-PYTHONPATH=src python -m decon.app_server
-```
-
-Open `http://127.0.0.1:8769`.
-
-Current prototype scope:
-
-- local rules-based decon engine
-- setup/model status endpoint
-- PWA-style paste/decon/review screen
-- ChatGPT, Gemini, Claude, OpenEvidence, Web Search, and Copy Only destinations
-- copy-and-open handoff without putting prompt text in URLs
-
-## Verification Snapshot
-
-Before gathering, the standalone package tests passed in the original project:
-
-```text
-15 passed in 0.08s
-```
-
-After gathering, run tests from the copied package with:
-
-```bash
-cd /Users/dochobbs/Downloads/Consult/clinician-decon/package
-python -m pytest -q
-```
