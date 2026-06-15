@@ -124,8 +124,9 @@ python3 package/scripts/run_validation.py \
   --report package/reports/latest-validation.json
 ```
 
-See `../docs/qa/headless-validation.md` for the full runbook and
-`../docs/qa/synthetic-trace-generation.md` for the trace-generation strategy.
+See `../docs/qa/headless-validation.md` for the full runbook,
+`../docs/qa/synthetic-trace-generation.md` for the trace-generation strategy, and
+`../docs/qa/persona-library.md` for the versioned synthetic persona vocabulary.
 
 Run the local usability suite:
 

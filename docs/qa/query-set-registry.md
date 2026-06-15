@@ -11,8 +11,15 @@ Related docs:
 - `docs/qa/headless-validation.md`: how to run the validation gate from a clone or CI.
 - `docs/qa/synthetic-trace-generation.md`: how to generate higher-quality synthetic traces from
   clinician-reviewed archetypes.
+- `docs/qa/persona-library.md`: the versioned persona vocabulary for future synthetic trace
+  generation.
 
 ## Current Regression Gates
+
+The current validated gates do not yet use the persona library directly. `package/data/personas/v1.json`
+is the planned input vocabulary for the next archetype generator so future generated suites can
+record exactly which clinician, patient context, source channel, and perturbation produced each
+case.
 
 | Query set | Rows | Source | Purpose | Latest result |
 | --- | ---: | --- | --- | --- |

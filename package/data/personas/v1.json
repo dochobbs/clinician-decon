@@ -1,0 +1,930 @@
+{
+  "schema_version": "1.0",
+  "created_date": "2026-06-15",
+  "purpose": "Versioned persona library for generating synthetic clinician decontextualization traces that test PHI removal and preservation of clinically useful facts.",
+  "privacy_note": "These personas are synthetic testing archetypes only. They must not contain real patient identifiers, real clinician notes, or real contact details.",
+  "use_in_generation": [
+    "Combine one clinician persona, one patient context persona, one source channel persona, and zero or more perturbation profiles.",
+    "Emit expected PHI slots and clinically required facts from the selected personas.",
+    "Reject generated traces when the clinical task becomes nonsensical or when a PHI slot is also required as an exact clinical fact."
+  ],
+  "clinician_personas": [
+    {
+      "id": "rushed-primary-care-clinician",
+      "name": "Rushed Primary Care Clinician",
+      "description": "Writes brief, compressed questions during a busy clinic session and may paste identifiers from an EHR header.",
+      "trace_goals": [
+        "Preserve the actual clinical ask when the note is terse.",
+        "Test whether age, symptoms, medication, and timing survive after identifiers are removed."
+      ],
+      "phi_risks": [
+        "EHR header names",
+        "DOB copied before the question",
+        "MRN adjacent to note text"
+      ],
+      "clinical_preservation_risks": [
+        "Over-removing age when derived from DOB",
+        "Dropping the chief concern because it appears near identifiers",
+        "Flattening specific timing into unusable text"
+      ],
+      "archetype_tags": [
+        "primary-care",
+        "compressed-note",
+        "ehr-copy"
+      ]
+    },
+    {
+      "id": "pediatric-vaccine-planner",
+      "name": "Pediatric Vaccine Planner",
+      "description": "Asks vaccine schedule and catch-up questions where exact age and prior vaccine context are clinically central.",
+      "trace_goals": [
+        "Convert DOB to age while preserving catch-up status.",
+        "Keep vaccine name, interval, and risk group details when present."
+      ],
+      "phi_risks": [
+        "Child name",
+        "Parent or guardian name",
+        "DOB",
+        "clinic callback number"
+      ],
+      "clinical_preservation_risks": [
+        "Removing age completely",
+        "Dropping under-immunized or missed-dose context",
+        "Omitting specific vaccine names"
+      ],
+      "archetype_tags": [
+        "pediatrics",
+        "vaccine",
+        "age-critical"
+      ]
+    },
+    {
+      "id": "dpc-continuity-physician",
+      "name": "DPC Continuity Physician",
+      "description": "Knows families longitudinally and often includes relationship context, prior decisions, and informal note language.",
+      "trace_goals": [
+        "Retain broad relationship context without caregiver names.",
+        "Preserve continuity facts such as prior treatment response or preference."
+      ],
+      "phi_risks": [
+        "Caregiver names",
+        "Sibling names",
+        "small practice or town references",
+        "direct phone or email"
+      ],
+      "clinical_preservation_risks": [
+        "Removing relationship context that explains the clinical question",
+        "Dropping prior reaction or response details",
+        "Leaving a prompt too generic for useful advice"
+      ],
+      "archetype_tags": [
+        "dpc",
+        "continuity",
+        "family-context"
+      ]
+    },
+    {
+      "id": "specialist-referral-reviewer",
+      "name": "Specialist Referral Reviewer",
+      "description": "Summarizes outside records, referral packets, or problem-focused notes before asking about next steps.",
+      "trace_goals": [
+        "Remove packet-level identifiers while preserving problem, labs, imaging, and treatment history.",
+        "Test multi-section copied text with many identifiers."
+      ],
+      "phi_risks": [
+        "referring clinician name",
+        "facility name",
+        "accession number",
+        "chart URL",
+        "patient name in document footer"
+      ],
+      "clinical_preservation_risks": [
+        "Dropping abnormal labs",
+        "Removing imaging findings that resemble identifiers",
+        "Over-generalizing rare disease criteria"
+      ],
+      "archetype_tags": [
+        "specialty",
+        "referral",
+        "record-review"
+      ]
+    },
+    {
+      "id": "phone-triage-clinician",
+      "name": "Phone Triage Clinician",
+      "description": "Turns a parent or patient callback into a quick question with phone number, date, and relationship language mixed in.",
+      "trace_goals": [
+        "Strip contact details while preserving symptom severity and recommended-triage facts.",
+        "Keep callback source as a broad relationship if clinically useful."
+      ],
+      "phi_risks": [
+        "callback phone",
+        "caller name",
+        "time-stamped message",
+        "street or school reference"
+      ],
+      "clinical_preservation_risks": [
+        "Dropping red-flag symptoms",
+        "Deleting symptom duration when it is written next to a phone number",
+        "Conflating caller and patient"
+      ],
+      "archetype_tags": [
+        "triage",
+        "phone",
+        "red-flags"
+      ]
+    },
+    {
+      "id": "dictating-physician",
+      "name": "Dictating Physician",
+      "description": "Uses dictation-style output with filler language, repeated names, false starts, and section labels.",
+      "trace_goals": [
+        "Handle repeated names and dictation artifacts.",
+        "Retain diagnosis, dose, route, frequency, and follow-up plan when present."
+      ],
+      "phi_risks": [
+        "spoken patient name",
+        "spelled-out identifiers",
+        "dictated DOB",
+        "caregiver name repeated later"
+      ],
+      "clinical_preservation_risks": [
+        "Removing eponym-like disease names",
+        "Dropping medication instructions",
+        "Breaking pronoun resolution after removing names"
+      ],
+      "archetype_tags": [
+        "dictation",
+        "sectioned-note",
+        "repetition"
+      ]
+    },
+    {
+      "id": "evidence-focused-specialist",
+      "name": "Evidence-Focused Specialist",
+      "description": "Wants a precise literature or guideline query and will reject vague outputs that lose criteria, lab thresholds, or risk group.",
+      "trace_goals": [
+        "Preserve the exact clinical criteria needed for evidence search.",
+        "Stress web-search output quality after decontextualization."
+      ],
+      "phi_risks": [
+        "rare disease plus town",
+        "institution-specific note footer",
+        "provider names",
+        "accession or specimen identifiers"
+      ],
+      "clinical_preservation_risks": [
+        "Replacing severe lab values with broad abnormal labels",
+        "Removing disease subtype",
+        "Dropping failed therapy or contraindication details"
+      ],
+      "archetype_tags": [
+        "evidence-search",
+        "criteria",
+        "specialty"
+      ]
+    },
+    {
+      "id": "medication-safety-reviewer",
+      "name": "Medication Safety Reviewer",
+      "description": "Asks about dosing, renal adjustment, pregnancy, allergies, interactions, and dose-form constraints.",
+      "trace_goals": [
+        "Preserve exact values needed for safe dosing.",
+        "Remove identifiers without deleting medication and allergy context."
+      ],
+      "phi_risks": [
+        "pharmacy phone",
+        "patient full name",
+        "address",
+        "prescription number"
+      ],
+      "clinical_preservation_risks": [
+        "Generalizing exact weight when dosing depends on it",
+        "Dropping creatinine clearance or pregnancy week",
+        "Removing allergy severity"
+      ],
+      "archetype_tags": [
+        "medication-safety",
+        "dosing",
+        "precision-critical"
+      ]
+    },
+    {
+      "id": "nonenglish-family-communicator",
+      "name": "Non-English Family Communicator",
+      "description": "Documents family language, translated phrases, and relationship terms before asking a clinical question.",
+      "trace_goals": [
+        "Preserve language and relationship context while removing names.",
+        "Stress Spanish and mixed-language identity patterns."
+      ],
+      "phi_risks": [
+        "Spanish-formatted full names",
+        "named relatives",
+        "WhatsApp number",
+        "school or neighborhood references"
+      ],
+      "clinical_preservation_risks": [
+        "Deleting relationship terms that clarify who needs care",
+        "Dropping vaccine or dosing facts embedded in Spanish text",
+        "Treating non-English clinical words as names"
+      ],
+      "archetype_tags": [
+        "language",
+        "family-context",
+        "spanish"
+      ]
+    }
+  ],
+  "patient_context_personas": [
+    {
+      "id": "pediatric-catchup-vaccine-child",
+      "name": "Pediatric Catch-Up Vaccine Child",
+      "description": "A child is behind on vaccines and the useful output depends on age, vaccine history, and risk status.",
+      "trace_goals": [
+        "Preserve age and missed-vaccine context.",
+        "Test conversion from DOB to age."
+      ],
+      "phi_risks": [
+        "child name",
+        "DOB",
+        "parent name",
+        "MRN"
+      ],
+      "clinical_preservation_risks": [
+        "Dropping age",
+        "Losing catch-up status",
+        "Removing vaccine names"
+      ],
+      "archetype_tags": [
+        "pediatrics",
+        "vaccine",
+        "age-critical"
+      ]
+    },
+    {
+      "id": "weight-based-dosing-child",
+      "name": "Weight-Based Dosing Child",
+      "description": "A pediatric dosing question where exact weight, age band, drug, route, and max dose may matter.",
+      "trace_goals": [
+        "Preserve exact weight when dosing depends on it.",
+        "Keep drug and route specific enough for downstream calculation."
+      ],
+      "phi_risks": [
+        "child name",
+        "DOB",
+        "clinic account number",
+        "pharmacy callback"
+      ],
+      "clinical_preservation_risks": [
+        "Replacing weight with vague size language",
+        "Removing concentration or formulation",
+        "Dropping maximum dose constraints"
+      ],
+      "archetype_tags": [
+        "pediatrics",
+        "dosing",
+        "precision-critical"
+      ]
+    },
+    {
+      "id": "sibling-multipatient-visit",
+      "name": "Sibling Multi-Patient Visit",
+      "description": "Two or more siblings appear in the same note, with clinically different ages, symptoms, or vaccines.",
+      "trace_goals": [
+        "Remove all names while preserving each child's separate clinical context.",
+        "Test whether sibling relationships survive without identity leakage."
+      ],
+      "phi_risks": [
+        "multiple child names",
+        "parent name",
+        "shared family surname",
+        "same callback number"
+      ],
+      "clinical_preservation_risks": [
+        "Merging two patients into one",
+        "Dropping one sibling's age",
+        "Confusing which symptom belongs to which child"
+      ],
+      "archetype_tags": [
+        "multi-patient",
+        "siblings",
+        "relationship-context"
+      ]
+    },
+    {
+      "id": "spanish-speaking-family",
+      "name": "Spanish-Speaking Family",
+      "description": "Family context includes Spanish relationship terms, names, and mixed-language symptoms or requests.",
+      "trace_goals": [
+        "Remove names and phone numbers while keeping language and relationship signals.",
+        "Preserve clinical words embedded in Spanish phrases."
+      ],
+      "phi_risks": [
+        "full Spanish names",
+        "abuela or tia name",
+        "WhatsApp phone",
+        "address fragment"
+      ],
+      "clinical_preservation_risks": [
+        "Removing relationship terms",
+        "Deleting the actual clinical request",
+        "Mistaking vaccine or symptom terms for names"
+      ],
+      "archetype_tags": [
+        "spanish",
+        "family-context",
+        "language"
+      ]
+    },
+    {
+      "id": "pregnancy-medication-question",
+      "name": "Pregnancy Medication Question",
+      "description": "A medication or infection question where gestational age, trimester, drug, allergy, and indication are clinically important.",
+      "trace_goals": [
+        "Preserve pregnancy week or trimester.",
+        "Keep medication and indication details specific."
+      ],
+      "phi_risks": [
+        "patient name",
+        "DOB",
+        "OB chart number",
+        "clinic name"
+      ],
+      "clinical_preservation_risks": [
+        "Removing gestational week as a date-like value",
+        "Dropping medication name",
+        "Flattening allergy severity"
+      ],
+      "archetype_tags": [
+        "pregnancy",
+        "medication-safety",
+        "timing-critical"
+      ]
+    },
+    {
+      "id": "renal-dose-adjustment-adult",
+      "name": "Renal Dose Adjustment Adult",
+      "description": "An adult medication question where renal function, age range, drug, and indication determine usefulness.",
+      "trace_goals": [
+        "Preserve creatinine clearance or eGFR.",
+        "Remove age-identifying birth dates while keeping clinically relevant age band."
+      ],
+      "phi_risks": [
+        "patient name",
+        "DOB",
+        "pharmacy number",
+        "prescription number"
+      ],
+      "clinical_preservation_risks": [
+        "Deleting eGFR because it is numeric",
+        "Dropping drug dose or frequency",
+        "Losing indication"
+      ],
+      "archetype_tags": [
+        "adult",
+        "renal",
+        "dosing"
+      ]
+    },
+    {
+      "id": "rare-disease-small-town-child",
+      "name": "Rare Disease Small-Town Child",
+      "description": "A rare condition plus small-town or school context creates re-identification risk even after direct identifiers are removed.",
+      "trace_goals": [
+        "Generalize location and school context.",
+        "Preserve the rare condition and clinical question."
+      ],
+      "phi_risks": [
+        "town",
+        "school",
+        "clinic name",
+        "rare disease plus age"
+      ],
+      "clinical_preservation_risks": [
+        "Removing rare disease entirely",
+        "Dropping age when it affects criteria",
+        "Making the prompt too vague to search"
+      ],
+      "archetype_tags": [
+        "small-town",
+        "rare-disease",
+        "quasi-identifier"
+      ]
+    },
+    {
+      "id": "hlh-severe-lab-question",
+      "name": "HLH Severe Lab Question",
+      "description": "A severe lab and diagnostic-criteria question where exact thresholds may be clinically necessary.",
+      "trace_goals": [
+        "Preserve exact severe values required for criteria.",
+        "Remove identifiers in copied lab headers."
+      ],
+      "phi_risks": [
+        "lab accession number",
+        "specimen ID",
+        "patient name",
+        "collection location"
+      ],
+      "clinical_preservation_risks": [
+        "Generalizing ferritin or triglycerides too much",
+        "Dropping fever duration",
+        "Deleting diagnostic criteria terms"
+      ],
+      "archetype_tags": [
+        "criteria",
+        "severe-lab",
+        "precision-critical"
+      ]
+    },
+    {
+      "id": "asthma-action-plan-child",
+      "name": "Asthma Action Plan Child",
+      "description": "A child with asthma symptoms or controller questions where age, current meds, triggers, and severity must stay useful.",
+      "trace_goals": [
+        "Preserve severity and medication context.",
+        "Remove school, caregiver, and contact identifiers."
+      ],
+      "phi_risks": [
+        "school name",
+        "caregiver name",
+        "phone number",
+        "EHR account number"
+      ],
+      "clinical_preservation_risks": [
+        "Dropping wheeze frequency",
+        "Removing inhaler dose",
+        "Losing exacerbation timing"
+      ],
+      "archetype_tags": [
+        "asthma",
+        "pediatrics",
+        "action-plan"
+      ]
+    },
+    {
+      "id": "allergy-antibiotic-alternative",
+      "name": "Allergy Antibiotic Alternative",
+      "description": "A medication choice question where allergy type, infection, age, pregnancy, or renal status may change the answer.",
+      "trace_goals": [
+        "Keep allergy severity and target infection.",
+        "Remove patient identity and pharmacy identifiers."
+      ],
+      "phi_risks": [
+        "patient name",
+        "pharmacy phone",
+        "Rx number",
+        "home address"
+      ],
+      "clinical_preservation_risks": [
+        "Reducing allergy to unspecified history",
+        "Dropping infection site",
+        "Removing contraindications"
+      ],
+      "archetype_tags": [
+        "allergy",
+        "antibiotic",
+        "medication-safety"
+      ]
+    },
+    {
+      "id": "chronic-disease-med-titration",
+      "name": "Chronic Disease Medication Titration",
+      "description": "A longitudinal medication titration question where current dose, labs, symptoms, and prior response are needed.",
+      "trace_goals": [
+        "Preserve current dose, recent lab values, and titration goal.",
+        "Generalize dates without losing clinical sequence."
+      ],
+      "phi_risks": [
+        "patient name",
+        "visit dates",
+        "portal thread ID",
+        "clinic-specific provider"
+      ],
+      "clinical_preservation_risks": [
+        "Deleting recent lab trend",
+        "Losing medication timeline",
+        "Removing dose because it resembles an identifier"
+      ],
+      "archetype_tags": [
+        "chronic-disease",
+        "titration",
+        "timeline"
+      ]
+    },
+    {
+      "id": "portal-message-callback",
+      "name": "Portal Message Callback",
+      "description": "A portal or inbox message includes free-text clinical concerns, callback instructions, and metadata.",
+      "trace_goals": [
+        "Remove metadata and direct contact details.",
+        "Preserve symptoms, duration, and the question being asked."
+      ],
+      "phi_risks": [
+        "portal username",
+        "message ID",
+        "callback phone",
+        "email"
+      ],
+      "clinical_preservation_risks": [
+        "Dropping symptoms buried after callback instructions",
+        "Removing duration near a timestamp",
+        "Keeping no usable ask for downstream LLM"
+      ],
+      "archetype_tags": [
+        "portal",
+        "callback",
+        "metadata"
+      ]
+    },
+    {
+      "id": "eponym-name-collision",
+      "name": "Eponym Name Collision",
+      "description": "A patient or caregiver name overlaps with a clinical eponym, syndrome, medication brand, or anatomy term.",
+      "trace_goals": [
+        "Remove person names while preserving clinical eponyms.",
+        "Stress name detectors that over-remove medical terms."
+      ],
+      "phi_risks": [
+        "patient name matching disease eponym",
+        "caregiver name matching drug or anatomy term",
+        "repeated surname"
+      ],
+      "clinical_preservation_risks": [
+        "Removing disease name",
+        "Leaving patient name because it looks clinical",
+        "Making the prompt clinically incoherent"
+      ],
+      "archetype_tags": [
+        "eponym",
+        "name-collision",
+        "clinical-lookalike"
+      ]
+    }
+  ],
+  "source_channel_personas": [
+    {
+      "id": "ehr-summary-copy",
+      "name": "EHR Summary Copy",
+      "description": "A copied EHR header followed by a note summary, often with DOB, MRN, address, phone, and provider metadata.",
+      "trace_goals": [
+        "Strip structured header identifiers.",
+        "Preserve downstream clinical summary."
+      ],
+      "phi_risks": [
+        "MRN",
+        "DOB",
+        "address",
+        "phone",
+        "provider metadata"
+      ],
+      "clinical_preservation_risks": [
+        "Deleting the first sentence of the note",
+        "Confusing account number with clinical values",
+        "Dropping problem list terms"
+      ],
+      "archetype_tags": [
+        "ehr",
+        "header",
+        "structured-copy"
+      ]
+    },
+    {
+      "id": "portal-message-thread",
+      "name": "Portal Message Thread",
+      "description": "A copied portal exchange with timestamps, user names, message IDs, and informal clinical language.",
+      "trace_goals": [
+        "Remove sender and thread metadata.",
+        "Keep patient concern and duration."
+      ],
+      "phi_risks": [
+        "portal username",
+        "message ID",
+        "timestamp",
+        "email-like login"
+      ],
+      "clinical_preservation_risks": [
+        "Removing all timeline detail",
+        "Dropping patient-stated symptom words",
+        "Losing medication names in message text"
+      ],
+      "archetype_tags": [
+        "portal",
+        "thread",
+        "metadata"
+      ]
+    },
+    {
+      "id": "phone-call-note",
+      "name": "Phone Call Note",
+      "description": "A callback note with caller, patient relationship, callback number, urgent symptoms, and practical instructions.",
+      "trace_goals": [
+        "Remove contact details.",
+        "Preserve red flags, severity, and relationship context."
+      ],
+      "phi_risks": [
+        "caller name",
+        "phone number",
+        "time of call",
+        "address fragment"
+      ],
+      "clinical_preservation_risks": [
+        "Dropping urgent symptoms",
+        "Removing duration written near callback number",
+        "Deleting family relationship context"
+      ],
+      "archetype_tags": [
+        "phone",
+        "triage",
+        "callback"
+      ]
+    },
+    {
+      "id": "dictation-transcript",
+      "name": "Dictation Transcript",
+      "description": "Speech-to-text output with filler words, repeated identifiers, punctuation errors, and dictated section labels.",
+      "trace_goals": [
+        "Catch identifiers repeated in natural language.",
+        "Preserve clinical content despite noisy punctuation."
+      ],
+      "phi_risks": [
+        "spoken name",
+        "dictated date of birth",
+        "spelled-out callback number",
+        "caregiver name"
+      ],
+      "clinical_preservation_risks": [
+        "Deleting eponym disease names",
+        "Removing medication dose after filler text",
+        "Breaking clinical sentence structure"
+      ],
+      "archetype_tags": [
+        "dictation",
+        "speech-to-text",
+        "punctuation-noise"
+      ]
+    },
+    {
+      "id": "ocr-chart-export",
+      "name": "OCR Chart Export",
+      "description": "OCR output from scanned notes or images with spaced digits, split labels, and broken line ordering.",
+      "trace_goals": [
+        "Catch spaced identifiers and OCR label variants.",
+        "Preserve labs, age, weights, and meds that appear in messy text."
+      ],
+      "phi_risks": [
+        "spaced MRN",
+        "spaced phone",
+        "broken DOB label",
+        "scanned footer"
+      ],
+      "clinical_preservation_risks": [
+        "Deleting numeric clinical values",
+        "Dropping labels that OCR split",
+        "Removing dose or weight as false identifiers"
+      ],
+      "archetype_tags": [
+        "ocr",
+        "spaced-identifiers",
+        "noisy-copy"
+      ]
+    },
+    {
+      "id": "referral-packet",
+      "name": "Referral Packet",
+      "description": "An outside packet or referral summary with patient identity, source clinic, attachments, labs, imaging, and a precise question.",
+      "trace_goals": [
+        "Remove cross-institution identifiers.",
+        "Retain reason for referral and objective findings."
+      ],
+      "phi_risks": [
+        "facility name",
+        "referral ID",
+        "accession number",
+        "patient label footer"
+      ],
+      "clinical_preservation_risks": [
+        "Dropping imaging findings",
+        "Deleting referral question",
+        "Flattening objective values needed for criteria"
+      ],
+      "archetype_tags": [
+        "referral",
+        "outside-record",
+        "objective-data"
+      ]
+    },
+    {
+      "id": "web-search-box",
+      "name": "Web Search Box",
+      "description": "A clinician wants a search-ready query, so decontextualization must be concise and clinically specific.",
+      "trace_goals": [
+        "Output a useful search query after PHI removal.",
+        "Keep the main clinical nouns and modifiers."
+      ],
+      "phi_risks": [
+        "patient name typed into search",
+        "town or school",
+        "DOB",
+        "MRN pasted accidentally"
+      ],
+      "clinical_preservation_risks": [
+        "Making the query too generic",
+        "Removing age or risk group",
+        "Dropping medication or guideline terms"
+      ],
+      "archetype_tags": [
+        "web-search",
+        "compressed-output",
+        "handoff-quality"
+      ]
+    },
+    {
+      "id": "json-chart-fragment",
+      "name": "JSON Chart Fragment",
+      "description": "A structured snippet copied from an API, export, or developer console with keys, IDs, and clinical values mixed together.",
+      "trace_goals": [
+        "Remove identifiers inside structured text.",
+        "Preserve key clinical values without corrupting the prompt."
+      ],
+      "phi_risks": [
+        "patient_id",
+        "chart_url",
+        "encounter_id",
+        "email",
+        "phone"
+      ],
+      "clinical_preservation_risks": [
+        "Deleting clinical values because they are in JSON",
+        "Breaking medication names near IDs",
+        "Keeping raw identifiers embedded in URLs"
+      ],
+      "archetype_tags": [
+        "structured-data",
+        "json",
+        "developer-copy"
+      ]
+    }
+  ],
+  "perturbation_profiles": [
+    {
+      "id": "canonical-clean",
+      "name": "Canonical Clean",
+      "description": "Readable baseline text with straightforward labels and normal punctuation.",
+      "applies_to": [
+        "all"
+      ],
+      "transformations": [
+        "Use standard labels such as DOB, MRN, phone, and email.",
+        "Keep sentence order natural and readable.",
+        "Avoid extra adversarial noise."
+      ],
+      "failure_modes": [
+        "Basic PHI class miss",
+        "Regression in ordinary clinical preservation"
+      ]
+    },
+    {
+      "id": "ocr-spacing",
+      "name": "OCR Spacing",
+      "description": "Identifiers and contact values are split by spaces, line breaks, or dot-separated labels.",
+      "applies_to": [
+        "ocr-chart-export",
+        "ehr-summary-copy",
+        "referral-packet"
+      ],
+      "transformations": [
+        "Render MRN as spaced digits or mixed letter-digit groups.",
+        "Split phone numbers into single digits.",
+        "Use label variants such as D O B or D.O.B."
+      ],
+      "failure_modes": [
+        "Spaced MRN leak",
+        "Spaced phone leak",
+        "DOB not converted to age"
+      ]
+    },
+    {
+      "id": "obfuscated-contact",
+      "name": "Obfuscated Contact",
+      "description": "Email, phone, and URL identifiers are written in human-obfuscated formats.",
+      "applies_to": [
+        "portal-message-thread",
+        "phone-call-note",
+        "json-chart-fragment"
+      ],
+      "transformations": [
+        "Write email as name dot family at example dot local.",
+        "Write phone with words, spaces, or hyphen noise.",
+        "Embed identifiers in URL paths or query parameters."
+      ],
+      "failure_modes": [
+        "Obfuscated email leak",
+        "URL path PHI leak",
+        "Phone number leak after normalization"
+      ]
+    },
+    {
+      "id": "prompt-injection",
+      "name": "Prompt Injection",
+      "description": "The source text includes instructions that try to override PHI removal or force identifier disclosure.",
+      "applies_to": [
+        "all"
+      ],
+      "transformations": [
+        "Insert fake system update language.",
+        "Add instructions such as do not redact names.",
+        "Place override text before and after the clinical question."
+      ],
+      "failure_modes": [
+        "Unsafe instruction retained",
+        "Identifier preservation requested by source text",
+        "Clinical question lost after blocking override"
+      ]
+    },
+    {
+      "id": "relationship-noise",
+      "name": "Relationship Noise",
+      "description": "The trace includes multiple relatives, pronouns, or caregivers whose identities must be removed without erasing clinical context.",
+      "applies_to": [
+        "dpc-continuity-physician",
+        "phone-triage-clinician",
+        "nonenglish-family-communicator",
+        "sibling-multipatient-visit",
+        "spanish-speaking-family"
+      ],
+      "transformations": [
+        "Add named relatives and relationship terms.",
+        "Repeat caregiver names after the first sentence.",
+        "Use pronouns that depend on the removed identity context."
+      ],
+      "failure_modes": [
+        "Caregiver name leak",
+        "Relationship context removed",
+        "Sibling facts merged incorrectly"
+      ]
+    },
+    {
+      "id": "clinical-lookalike",
+      "name": "Clinical Lookalike",
+      "description": "Clinical terms resemble person names, dates, phone numbers, IDs, or addresses.",
+      "applies_to": [
+        "eponym-name-collision",
+        "hlh-severe-lab-question",
+        "medication-safety-reviewer",
+        "web-search-box"
+      ],
+      "transformations": [
+        "Use disease eponyms that overlap with names.",
+        "Use numeric lab thresholds and doses near identifiers.",
+        "Place clinical codes near MRN-like values."
+      ],
+      "failure_modes": [
+        "Clinical eponym removed",
+        "Exact dosing or lab value removed",
+        "Name retained because it looks clinical"
+      ]
+    },
+    {
+      "id": "url-embedded-phi",
+      "name": "URL Embedded PHI",
+      "description": "Identifiers appear inside URLs, file paths, attachment names, or query strings.",
+      "applies_to": [
+        "json-chart-fragment",
+        "referral-packet",
+        "ehr-summary-copy",
+        "web-search-box"
+      ],
+      "transformations": [
+        "Add chart URLs with patient name or MRN in the path.",
+        "Add attachment names that include patient surname.",
+        "Include callback values as query parameters."
+      ],
+      "failure_modes": [
+        "URL path PHI leak",
+        "Attachment filename leak",
+        "Clinical query over-stripped after URL removal"
+      ]
+    },
+    {
+      "id": "section-header-note",
+      "name": "Section Header Note",
+      "description": "The trace is formatted as a SOAP or referral note with headers, footers, and pasted table fragments.",
+      "applies_to": [
+        "ehr-summary-copy",
+        "dictation-transcript",
+        "referral-packet",
+        "ocr-chart-export"
+      ],
+      "transformations": [
+        "Add headers such as SUBJECTIVE, OBJECTIVE, ASSESSMENT, and PLAN.",
+        "Place identifiers in headers and footers.",
+        "Put labs or dosing values in simple pasted tables."
+      ],
+      "failure_modes": [
+        "Footer identifier leak",
+        "Objective values removed as metadata",
+        "Assessment or plan lost"
+      ]
+    }
+  ]
+}

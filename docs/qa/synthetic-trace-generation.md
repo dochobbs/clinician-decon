@@ -19,6 +19,11 @@ conversations. They are not a replacement for clinician-reviewed gold validation
 
 Use clinician-reviewed archetypes, then expand them synthetically.
 
+The first shared persona library is versioned at
+`package/data/personas/v1.json` and documented in `docs/qa/persona-library.md`.
+Generators should combine clinician, patient/context, source-channel, and perturbation personas
+from that file before filling archetype slots.
+
 An archetype is a compact clinical scenario with explicit labels:
 
 ```json
@@ -44,6 +49,9 @@ An archetype is a compact clinical scenario with explicit labels:
 
 The generator expands the archetype by filling slots, applying perturbations, and writing
 trace JSON with stable expected labels.
+
+Persona IDs should be written into each generated trace so future failures can be traced back
+to the exact clinician viewpoint, patient context, source channel, and perturbation profile.
 
 ## Why Archetypes Work
 
@@ -179,10 +187,11 @@ archetype expansions should add a frozen validation split.
 
 Current repo gates:
 
+- `package/data/personas/v1.json`
 - `package/data/decon_usability_500_2026-06-15.json`
 - `package/data/decon_adversarial_500_2026-06-15.json`
 
-Together they provide:
+The two current labeled case suites provide:
 
 - `1,000` labeled source cases
 - `3,000` destination outputs across ChatGPT, Gemini, and Web Search

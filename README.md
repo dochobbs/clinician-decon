@@ -86,6 +86,7 @@ Current validation snapshot:
 - [Decon query set registry](docs/qa/query-set-registry.md)
 - [Headless validation runbook](docs/qa/headless-validation.md)
 - [Synthetic trace generation strategy](docs/qa/synthetic-trace-generation.md)
+- [Synthetic persona library](docs/qa/persona-library.md)
 - [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
 - [Local 500-case usability eval](docs/qa/2026-06-15-local-usability-500-eval.md)
 - [Local 500-case adversarial eval](docs/qa/2026-06-15-local-adversarial-500-eval.md)
