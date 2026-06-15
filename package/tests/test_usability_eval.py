@@ -4,6 +4,7 @@ from decon.usability_eval import (
   CriticalFact,
   UsabilityCase,
   evaluate_output,
+  generate_adversarial_cases,
   generate_usability_cases,
 )
 
@@ -63,6 +64,40 @@ def test_evaluate_output_flags_safe_but_clinically_unusable_signal_loss():
   assert result.handoff_usable is False
 
 
+def test_evaluate_output_uses_forbidden_terms_when_phi_collides_with_clinical_eponym():
+  case = UsabilityCase(
+    id="T003",
+    category="eponym_collision",
+    query="Hunter has hip dysplasia. Is this Hunter syndrome?",
+    phi=("Hunter",),
+    forbidden_terms=("Hunter has",),
+    critical_facts=(
+      CriticalFact("eponym", ("Hunter syndrome",)),
+      CriticalFact("clinical finding", ("hip dysplasia",)),
+    ),
+  )
+
+  preserved_eponym = evaluate_output(
+    case,
+    output="child has hip dysplasia. Is this Hunter syndrome?",
+    destination="chatgpt",
+    copy_allowed=True,
+    risk_level="low",
+  )
+  leaked_patient_name = evaluate_output(
+    case,
+    output="Hunter has hip dysplasia. Is this Hunter syndrome?",
+    destination="chatgpt",
+    copy_allowed=True,
+    risk_level="low",
+  )
+
+  assert preserved_eponym.leaked_phi == []
+  assert preserved_eponym.handoff_usable is True
+  assert leaked_patient_name.leaked_phi == ["Hunter has"]
+  assert leaked_patient_name.handoff_usable is False
+
+
 def test_generate_usability_cases_is_deterministic_and_complete():
   first = generate_usability_cases(20, seed=20260615, reference_date=date(2026, 6, 15))
   second = generate_usability_cases(20, seed=20260615, reference_date=date(2026, 6, 15))
@@ -72,3 +107,28 @@ def test_generate_usability_cases_is_deterministic_and_complete():
   assert all(case.id.startswith("U") for case in first)
   assert all(case.query for case in first)
   assert all(case.critical_facts for case in first)
+
+
+def test_generate_adversarial_cases_is_deterministic_and_covers_stress_categories():
+  first = generate_adversarial_cases(80, seed=20260615, reference_date=date(2026, 6, 15))
+  second = generate_adversarial_cases(80, seed=20260615, reference_date=date(2026, 6, 15))
+  categories = {case.category for case in first}
+
+  assert first == second
+  assert len(first) == 80
+  assert all(case.id.startswith("A") for case in first)
+  assert all(case.query for case in first)
+  assert all(case.phi or case.forbidden_terms for case in first)
+  assert all(case.critical_facts for case in first)
+  assert {
+    "prompt_injection_override",
+    "buried_patient_identity",
+    "eponym_collision",
+    "multi_patient_repeat",
+    "ocr_spaced_identifier",
+    "url_path_phi",
+    "spanish_family",
+    "small_town_unique",
+    "copy_pasted_note",
+    "date_contact_mashup",
+  }.issubset(categories)

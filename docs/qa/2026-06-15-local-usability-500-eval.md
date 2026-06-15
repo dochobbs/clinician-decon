@@ -12,8 +12,8 @@ remains useful for an outside LLM or web search.
 - Cases: `500`
 - Destinations: `chatgpt, gemini, web_search`
 - Outputs evaluated: `1500`
-- Average runtime: `0.127 ms`
-- p95 runtime: `0.18 ms`
+- Average runtime: `0.153 ms`
+- p95 runtime: `0.219 ms`
 
 ## Headline
 

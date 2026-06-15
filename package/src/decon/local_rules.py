@@ -39,6 +39,7 @@ MONTH_TERMS = (
   r"January|February|March|April|May|June|July|August|September|October|November|"
   r"December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec"
 )
+DOB_LABEL = r"DOB|D\.O\.B\.?|date of birth|born"
 RELATION_TERMS = (
   r"Mom|Mama|Mami|Mother|Dad|Papa|Father|Grandma|Grandpa|Aunt|Auntie|Uncle|"
   r"Tia|Tio|Abuela|Abuelo|Wife|Husband|Spouse|Partner|Sister|Brother|Daughter|"
@@ -61,6 +62,19 @@ NAME_CUES = (
 
 PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("prompt_injection", re.compile(
+    r"\b(?:system|developer|admin(?:istrator)?)\s+"
+    r"(?:update|message|override|instruction)\s*:\s*[^.?!]*(?:[.?!]|$)",
+    re.IGNORECASE,
+  )),
+  ("prompt_injection", re.compile(
+    r"\badministrator\s+override\s+code\s+[A-Z0-9-]+\b\.?",
+    re.IGNORECASE,
+  )),
+  ("prompt_injection", re.compile(
+    r"\b(?:include|return|preserve)\s+(?:all\s+)?patient details\b[^.?!]*(?:[.?!]|$)",
+    re.IGNORECASE,
+  )),
+  ("prompt_injection", re.compile(
     r"\b(?:ignore|disregard|override)\s+(?:your\s+|all\s+)?(?:previous|prior|above)\s+"
     r"instructions\b[^.?!]*(?:[.?!]|$)",
     re.IGNORECASE,
@@ -79,11 +93,21 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?\b")),
   ("location", re.compile(
     rf"\b(?i:(?:from|near|in|at))\s+({NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}})"
-    r"(?=\s*(?:[-,.;)]|$))",
+    r"(?=\s*(?:[-,.;:)]|$))",
   )),
   ("zip", re.compile(r"\b(?:ZIP|zip code)\s*[:#]?\s*(\d{5}(?:-\d{4})?)\b", re.IGNORECASE)),
   ("email", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
+  ("email", re.compile(
+    r"\bemail\s+([A-Za-zÀ-ÖØ-öø-ÿ0-9'-]+"
+    r"(?:\s+(?:dot\s+)?[A-Za-zÀ-ÖØ-öø-ÿ0-9'-]+){0,10}\s+at\s+"
+    r"[A-Za-z0-9]+(?:\s+dot\s+[A-Za-z]{2,})+)\b",
+    re.IGNORECASE,
+  )),
   ("phone", re.compile(r"(?:\+1[\s-]?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}\b")),
+  ("phone", re.compile(
+    r"\b(?:callback|contact|phone|call|text)\s+((?:\d\s*){10})\b",
+    re.IGNORECASE,
+  )),
   ("ssn", re.compile(
     r"\b(?:SSN|Social[\s-]?Security[\s-]?(?:Number|#)?)\s*[:#]?\s*"
     r"(\d{3}[-\s]?\d{2}[-\s]?\d{4}|\d{9})\b",
@@ -95,6 +119,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     r"([A-Z0-9][A-Z0-9-]{3,})\b",
     re.IGNORECASE,
   )),
+  ("mrn", re.compile(r"\bM\s*R\s*N\s*((?:\d\s*){6,12})\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b(?:MRN|MR#|medical record(?: number)?)\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{3,})\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b[A-Z]{1,5}-\d{3,8}(?:-\d{3,8})?\b")),
   ("url", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
@@ -136,7 +161,19 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("nickname", re.compile(r"\b(?i:(?:Lil|Little|Big|Lil'))\s+(?:[A-Z](?:\.|\b)|[A-Z][a-z]{1,3})\b")),
   ("name", re.compile(
     rf"\b(?i:(?:La\s+mam[aá]|El\s+pap[aá]|Mi\s+hij[oa]|Su\s+hij[oa]|El\s+paciente|"
-    rf"La\s+paciente)\s+(?:de\s+)?){NAME_TOKEN}\b",
+    rf"La\s+paciente)\s+(?:de\s+)?({FULL_NAME})(?=,|\b))"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:La\s+mam[aá]|El\s+pap[aá]|Mi\s+hij[oa]|Su\s+hij[oa])\s+de\s+"
+    rf"{FULL_NAME},\s*)({NAME_TOKEN})(?=,\s*dice\b)"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:La\s+mam[aá]|El\s+pap[aá]|Mi\s+hij[oa]|Su\s+hij[oa]|El\s+paciente|"
+    rf"La\s+paciente)\s+(?:de\s+)?({NAME_TOKEN})\b)",
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:the\s+)?patient\s+(?:I'?m|I\s+am)\s+asking\s+about\s+is)\s+"
+    rf"({FULL_NAME})\b",
   )),
   ("name", re.compile(rf"\b(?:Mr|Mrs|Ms|Miss|Dr)\.?\s+({NAME_TOKEN})(?='s\b|\b)")),
   ("name", re.compile(rf"\b(?:Mr|Mrs|Ms|Miss|Dr)\.?\s+({FULL_NAME})\b")),
@@ -150,6 +187,10 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("name", re.compile(
     rf"\b(?i:(?:Patient|Pt))\s+({NAME_TOKEN})"
     r"(?=\s+(?:has|presents|needs|asks|is|was|reports|states)\b)",
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:should|can|could|would))\s+({NAME_TOKEN})"
+    r"(?=\s+(?:get|receive|take|start|use)\b)",
   )),
   ("name", re.compile(
     rf"\b(?i:(?:patient number|patient no\.?|patient #|pt number))\s+"
@@ -173,7 +214,11 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("name", re.compile(
     rf"\b(?!(?:{RELATION_TERMS})\s)"
     rf"({FULL_NAME})\s+"
-    rf"(?:DOB|MRN|came|asks?|called|has|with|\d{{1,3}}\s*(?:{AGE_UNITS}))\b"
+    rf"(?:DOB|MRN|came|asks?|called|has|with|was|seen|presents|needs|"
+    rf"\d{{1,3}}\s*(?:{AGE_UNITS}))\b"
+  )),
+  ("name", re.compile(
+    rf"\b({FULL_NAME}),\s+\d{{1,2}}\s+weeks\s+pregnant\b"
   )),
 )
 
@@ -200,14 +245,19 @@ RESIDUAL_MEDIUM_RISK: tuple[tuple[str, re.Pattern[str]], ...] = (
 )
 
 QUERY_NOISE_PATTERNS: tuple[re.Pattern[str], ...] = (
-  re.compile(r"\b(?:DOB|MRN|MR#)\b", re.IGNORECASE),
-  re.compile(r"\b(?:came in|called from|asking|asks?|today|at this age)\b", re.IGNORECASE),
+  re.compile(r"\b(?:DOB|D\.O\.B\.?|MRN|MR#|OCR export|callback|email)\b", re.IGNORECASE),
+  re.compile(
+    r"\b(?:came in|called from|asking|asks?|today|at this age|before I paste into the LLM|"
+    r"routine vaccine question)\b",
+    re.IGNORECASE,
+  ),
   re.compile(r"\b(?:he|she|his|her|him|mom|mother|dad|father)\b", re.IGNORECASE),
 )
 
 RELATION_REPLACEMENTS: tuple[tuple[re.Pattern[str], str], ...] = (
   (re.compile(r"\b(?:Mom|Mother|Dad|Father)\s+\[NAME\]", re.IGNORECASE), "parent"),
   (re.compile(r"\b(?:Mom|Mother|Dad|Father)\s+\(\[NAME\]\)", re.IGNORECASE), "parent"),
+  (re.compile(r"\b(?:La\s+mam[aá]|El\s+pap[aá])\s+de\s+\[NAME\]", re.IGNORECASE), "parent"),
   (re.compile(r"\blittle\s+\[NAME\]", re.IGNORECASE), "child"),
   (re.compile(r"\b(?:Wife|Husband|Spouse|Partner)\s+\[NAME\]", re.IGNORECASE), "spouse"),
   (re.compile(r"\b(?:Sister|Brother)\s+\[NAME\]", re.IGNORECASE), "sibling"),
@@ -280,7 +330,7 @@ def _replacement_for_span(text: str, span: Span, reference_date: date) -> str:
 def _normalize_safe_context(text: str) -> str:
   safe = text
   safe = re.sub(
-    r"\bDOB\s+(?=(?:newborn|\d{1,2}-month-old|\d{1,3}-year-old|90 or older)\b)",
+    rf"\b(?:{DOB_LABEL})\s+(?=(?:newborn|\d{{1,2}}-month-old|\d{{1,3}}-year-old|90 or older)\b)",
     "",
     safe,
     flags=re.IGNORECASE,
@@ -360,7 +410,7 @@ def _age_from_dob(dob: date, reference_date: date) -> str | None:
 
 def _derive_age_for_date(text: str, span: Span, reference_date: date) -> str | None:
   context = text[max(0, span.start - 24):span.start].lower()
-  if not re.search(r"\b(?:dob|date of birth|born)\b", context):
+  if not re.search(rf"\b(?:{DOB_LABEL})\b", context, re.IGNORECASE):
     return None
   parsed = _parse_date(text[span.start:span.end])
   if parsed is None:
@@ -390,7 +440,8 @@ def _extract_safe_age(source: str, reference_date: date) -> str | None:
   if explicit_age:
     return _normalize_age(explicit_age.group(0))
   dob_match = re.search(
-    r"\b(?:DOB|date of birth|born)\s*[:#-]?\s*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}-\d{1,2}-\d{1,2})\b",
+    rf"\b(?:{DOB_LABEL})\s*[:#.-]?\s*"
+    r"(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}-\d{1,2}-\d{1,2})\b",
     source,
     flags=re.IGNORECASE,
   )
@@ -500,6 +551,11 @@ def _safe_query_from_text(source: str, safe_context: str, reference_date: date) 
   safe_age = _extract_safe_age(source, reference_date)
   age_prefix = f"{safe_age} " if safe_age else ""
   pediatric_label = "pediatric " if safe_age is None or _is_pediatric_age(safe_age) else ""
+  if re.search(
+    r"\b(?:under-immunized|under immunized|catch-up|siblings?|separate shots|adhd)\b",
+    lower_source,
+  ):
+    return _safe_query_from_context(safe_context)
   if re.search(r"\b(?:hpv|human papillomavirus)\b", lower_source):
     return f"{age_prefix}{pediatric_label}HPV vaccine schedule current guidelines".strip()
   if re.search(r"\b(?:vaccine|vaccines|vaccination|immunization|shots)\b", lower_source):
