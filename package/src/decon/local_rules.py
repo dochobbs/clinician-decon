@@ -61,6 +61,12 @@ RESIDUAL_MEDIUM_RISK: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("possible direct name remains", re.compile(r"\b(?:Mr|Mrs|Ms|Miss)\.?\s+[A-Z][a-z]{2,}\b")),
 )
 
+QUERY_NOISE_PATTERNS: tuple[re.Pattern[str], ...] = (
+  re.compile(r"\b(?:DOB|MRN|MR#)\b", re.IGNORECASE),
+  re.compile(r"\b(?:came in|called from|asking|asks?|today|at this age)\b", re.IGNORECASE),
+  re.compile(r"\b(?:he|she|his|her|him|mom|mother|dad|father)\b", re.IGNORECASE),
+)
+
 
 def _collect_spans(text: str) -> list[Span]:
   spans: list[Span] = []
@@ -97,8 +103,19 @@ def _apply_spans(text: str, spans: list[Span]) -> tuple[str, dict[str, int]]:
 
 def _safe_query_from_context(safe_context: str) -> str:
   query = re.sub(r"\[[A-Z_]+\]", " ", safe_context)
+  for pattern in QUERY_NOISE_PATTERNS:
+    query = pattern.sub(" ", query)
   query = re.sub(r"\s+", " ", query).strip(" ,.;:-")
   return query or "de-identified clinical question"
+
+
+def _safe_query_from_text(source: str, safe_context: str) -> str:
+  lower_source = source.lower()
+  if re.search(r"\b(?:hpv|human papillomavirus)\b", lower_source):
+    return "HPV vaccine schedule current guidelines"
+  if re.search(r"\b(?:vaccine|vaccines|vaccination|immunization|shots)\b", lower_source):
+    return "pediatric immunization schedule vaccines current guidelines"
+  return _safe_query_from_context(safe_context)
 
 
 def _risk(safe_context: str) -> tuple[str, list[str]]:
@@ -116,7 +133,7 @@ def decontextualize_text(text: str, *, destination: str) -> LocalDeconResult:
   source = text.strip()
   spans = _collect_spans(source)
   safe_context, removed_categories = _apply_spans(source, spans)
-  safe_query = _safe_query_from_context(safe_context)
+  safe_query = _safe_query_from_text(source, safe_context)
   risk_level, risk_reasons = _risk(safe_context)
   destination_prompt = render_prompt(destination, safe_context=safe_context, safe_query=safe_query)
   handoff = build_handoff(destination, destination_prompt)

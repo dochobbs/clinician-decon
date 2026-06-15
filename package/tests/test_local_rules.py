@@ -25,6 +25,24 @@ def test_decontextualize_text_removes_common_identifiers_without_returning_value
   assert "LP-2024-08432" not in str(result.removed_categories)
 
 
+def test_decontextualize_text_builds_useful_web_search_query_from_redacted_chart_text():
+  source = (
+    "Marcus Johnson DOB 3/15/2013 MRN LP-2024-08432 came in today. "
+    "Mom Jennifer called from 512-555-0147 asking what vaccines he needs at this age."
+  )
+
+  result = decontextualize_text(source, destination="web_search")
+
+  assert result.safe_query == "pediatric immunization schedule vaccines current guidelines"
+  assert result.destination_prompt == result.safe_query
+  assert "DOB" not in result.safe_query
+  assert "MRN" not in result.safe_query
+  assert "came in" not in result.safe_query
+  assert "called from" not in result.safe_query
+  assert "Marcus" not in result.safe_query
+  assert "Jennifer" not in result.safe_query
+
+
 def test_decontextualize_text_blocks_copy_when_residual_mrn_remains():
   source = "Please answer for patient record ABCDEFGHIJK with fatigue and bruising."
 
