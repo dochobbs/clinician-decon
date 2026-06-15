@@ -24,7 +24,7 @@ def test_build_decon_payload_copies_clean_web_search_query():
 
   payload = build_decon_payload({"text": source, "destination": "web_search"})
 
-  assert payload["destination_prompt"] == "pediatric immunization schedule vaccines current guidelines"
+  assert payload["destination_prompt"] == "13-year-old pediatric immunization schedule vaccines current guidelines"
   assert payload["handoff"]["copy_text"] == payload["destination_prompt"]
   assert payload["handoff"]["open_url"] == "https://www.google.com/"
   assert "DOB" not in payload["destination_prompt"]
