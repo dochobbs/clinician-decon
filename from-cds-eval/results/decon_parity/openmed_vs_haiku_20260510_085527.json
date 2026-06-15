@@ -1,0 +1,463 @@
+{
+  "timestamp": "20260510_085527",
+  "openmed_model": "OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1",
+  "results": [
+    {
+      "id": "Q01",
+      "query": "Sarah Johnson (DOB 2014-03-15, MRN LP-08432) needs her vaccines, what's due?",
+      "phi_terms": [
+        "Sarah",
+        "Johnson",
+        "2014-03-15",
+        "LP-08432"
+      ],
+      "demographics": {
+        "age": 12,
+        "sex": "F"
+      },
+      "openmed": {
+        "masked": "[first_name][last_name] (DOB[date_of_birth],[certificate_license_number]) needs her vaccines, what's due?",
+        "spans": [
+          {
+            "label": "first_name",
+            "text": "Sarah",
+            "start": 0,
+            "end": 5,
+            "score": 0.9997311234474182
+          },
+          {
+            "label": "last_name",
+            "text": "Johnson",
+            "start": 5,
+            "end": 13,
+            "score": 0.9989190101623535
+          },
+          {
+            "label": "date_of_birth",
+            "text": "2014-03-15",
+            "start": 18,
+            "end": 29,
+            "score": 0.9902819395065308
+          },
+          {
+            "label": "certificate_license_number",
+            "text": "MRN LP-08432",
+            "start": 30,
+            "end": 43,
+            "score": 0.946237325668335
+          }
+        ],
+        "latency_s": 2.643605249992106,
+        "leaks": []
+      },
+      "haiku": {
+        "raw": "```json\n{\n  \"chart_instructions\": \"Extract all vaccination records including vaccine names, dates administered, and any documented adverse reactions or contraindications. Include immunization status and any notes about missed or deferred vaccines.\",\n  \"cds_query\": \"What is the recommended immunization schedule for a 12-year-old female per current AAP/ACIP guidelines?\",\n  \"needs_cds\": true\n}\n```",
+        "latency_s": 1.3312817919650115,
+        "parsed": {
+          "chart_instructions": "Extract all vaccination records including vaccine names, dates administered, and any documented adverse reactions or contraindications. Include immunization status and any notes about missed or deferred vaccines.",
+          "cds_query": "What is the recommended immunization schedule for a 12-year-old female per current AAP/ACIP guidelines?",
+          "needs_cds": true
+        },
+        "leaks_in_cds": [],
+        "leaks_in_chart": []
+      }
+    },
+    {
+      "id": "Q02",
+      "query": "Pt John Doe 67M on lisinopril 20mg, BP 138/85 today, up the dose?",
+      "phi_terms": [
+        "John",
+        "Doe"
+      ],
+      "demographics": {
+        "age": 67,
+        "sex": "M"
+      },
+      "openmed": {
+        "masked": "Pt[first_name][last_name][age]M on lisinopril 20mg, BP 138/85 today, up the dose?",
+        "spans": [
+          {
+            "label": "first_name",
+            "text": "John",
+            "start": 2,
+            "end": 7,
+            "score": 0.94748854637146
+          },
+          {
+            "label": "last_name",
+            "text": "Doe",
+            "start": 7,
+            "end": 11,
+            "score": 0.9783169627189636
+          },
+          {
+            "label": "age",
+            "text": "67",
+            "start": 11,
+            "end": 14,
+            "score": 0.5776323676109314
+          }
+        ],
+        "latency_s": 0.39167466602521017,
+        "leaks": []
+      },
+      "haiku": {
+        "raw": "```json\n{\n  \"chart_instructions\": \"Extract current antihypertensive medications (lisinopril dose and frequency), recent blood pressure readings (last 3-6 months with dates), hypertension diagnosis, comorbidities (diabetes, chronic kidney disease, cardiovascular disease), recent labs (creatinine, potassium, urinalysis), and any documented adverse effects\",\n  \"cds_query\": \"What are the current blood pressure treatment targets and lisinopril dosing recommendations for a 67-year-old male with hypertension? When is dose escalation indicated?\",\n  \"needs_cds\": true\n}\n```",
+        "latency_s": 1.6961402909946628,
+        "parsed": {
+          "chart_instructions": "Extract current antihypertensive medications (lisinopril dose and frequency), recent blood pressure readings (last 3-6 months with dates), hypertension diagnosis, comorbidities (diabetes, chronic kidney disease, cardiovascular disease), recent labs (creatinine, potassium, urinalysis), and any documented adverse effects",
+          "cds_query": "What are the current blood pressure treatment targets and lisinopril dosing recommendations for a 67-year-old male with hypertension? When is dose escalation indicated?",
+          "needs_cds": true
+        },
+        "leaks_in_cds": [],
+        "leaks_in_chart": []
+      }
+    },
+    {
+      "id": "Q03",
+      "query": "Marcus Chen, DOB 1988-11-04, A1c 7.9 last month \u2014 what's next step?",
+      "phi_terms": [
+        "Marcus",
+        "Chen",
+        "1988-11-04"
+      ],
+      "demographics": {
+        "age": 37,
+        "sex": "M"
+      },
+      "openmed": {
+        "masked": "[first_name][last_name], DOB[date_of_birth], A1[street_address].9 last month \u2014 what's next step?",
+        "spans": [
+          {
+            "label": "first_name",
+            "text": "Marcus",
+            "start": 0,
+            "end": 6,
+            "score": 0.999737560749054
+          },
+          {
+            "label": "last_name",
+            "text": "Chen",
+            "start": 6,
+            "end": 11,
+            "score": 0.9988859295845032
+          },
+          {
+            "label": "date_of_birth",
+            "text": "1988-11-04",
+            "start": 16,
+            "end": 27,
+            "score": 0.9985793828964233
+          },
+          {
+            "label": "street_address",
+            "text": "c 7",
+            "start": 31,
+            "end": 34,
+            "score": 0.42405813932418823
+          }
+        ],
+        "latency_s": 0.5473940409719944,
+        "leaks": []
+      },
+      "haiku": {
+        "raw": "```json\n{\n  \"chart_instructions\": \"Extract diabetes-related records: most recent A1c result with date (7.9%), all glucose readings from past 3 months, current diabetes medications, blood pressure readings, lipid panel results, urinalysis/urine albumin results, eye exam records, foot exam records, and any diabetes-related diagnoses or complications\",\n  \"cds_query\": \"What is the recommended next management step for a 37-year-old male with type 2 diabetes and A1c of 7.9% per ADA/ENDOCRINE guidelines?\",\n  \"needs_cds\": true\n}\n```",
+        "latency_s": 2.0091605419875123,
+        "parsed": {
+          "chart_instructions": "Extract diabetes-related records: most recent A1c result with date (7.9%), all glucose readings from past 3 months, current diabetes medications, blood pressure readings, lipid panel results, urinalysis/urine albumin results, eye exam records, foot exam records, and any diabetes-related diagnoses or complications",
+          "cds_query": "What is the recommended next management step for a 37-year-old male with type 2 diabetes and A1c of 7.9% per ADA/ENDOCRINE guidelines?",
+          "needs_cds": true
+        },
+        "leaks_in_cds": [],
+        "leaks_in_chart": []
+      }
+    },
+    {
+      "id": "Q04",
+      "query": "12yo Emma Park due for HPV, when do we start the series?",
+      "phi_terms": [
+        "Emma",
+        "Park"
+      ],
+      "demographics": {
+        "age": 12,
+        "sex": "F"
+      },
+      "openmed": {
+        "masked": "[age]yo[first_name][last_name] due for HPV, when do we start the series?",
+        "spans": [
+          {
+            "label": "age",
+            "text": "12",
+            "start": 0,
+            "end": 2,
+            "score": 0.9504261016845703
+          },
+          {
+            "label": "first_name",
+            "text": "Emma",
+            "start": 4,
+            "end": 9,
+            "score": 0.9994915723800659
+          },
+          {
+            "label": "last_name",
+            "text": "Park",
+            "start": 9,
+            "end": 14,
+            "score": 0.9985699653625488
+          }
+        ],
+        "latency_s": 0.3240094580105506,
+        "leaks": []
+      },
+      "haiku": {
+        "raw": "```json\n{\n  \"chart_instructions\": \"Extract all vaccination records with dates, specifically looking for any prior HPV vaccinations. Also extract current age/date of birth confirmation and any relevant contraindications or allergies.\",\n  \"cds_query\": \"What is the recommended age and schedule for initiating HPV vaccination series in females per CDC/ACIP and AAP guidelines?\",\n  \"needs_cds\": true\n}\n```",
+        "latency_s": 1.3470869160373695,
+        "parsed": {
+          "chart_instructions": "Extract all vaccination records with dates, specifically looking for any prior HPV vaccinations. Also extract current age/date of birth confirmation and any relevant contraindications or allergies.",
+          "cds_query": "What is the recommended age and schedule for initiating HPV vaccination series in females per CDC/ACIP and AAP guidelines?",
+          "needs_cds": true
+        },
+        "leaks_in_cds": [],
+        "leaks_in_chart": []
+      }
+    },
+    {
+      "id": "Q05",
+      "query": "Newborn boy of pt Mary Brown (DOB 1990-05-22), fever 39.2C at 6 weeks, manage?",
+      "phi_terms": [
+        "Mary",
+        "Brown",
+        "1990-05-22"
+      ],
+      "demographics": {
+        "age": 0,
+        "sex": "M"
+      },
+      "openmed": {
+        "masked": "Newborn boy of pt[first_name][last_name] (DOB[date_of_birth]), fever 39.2C at 6 weeks, manage?",
+        "spans": [
+          {
+            "label": "first_name",
+            "text": "Mary",
+            "start": 17,
+            "end": 22,
+            "score": 0.9991614818572998
+          },
+          {
+            "label": "last_name",
+            "text": "Brown",
+            "start": 22,
+            "end": 28,
+            "score": 0.9993027448654175
+          },
+          {
+            "label": "date_of_birth",
+            "text": "1990-05-22",
+            "start": 33,
+            "end": 44,
+            "score": 0.9977433085441589
+          }
+        ],
+        "latency_s": 0.7697632909985259,
+        "leaks": []
+      },
+      "haiku": {
+        "raw": "```json\n{\n  \"chart_instructions\": \"Extract newborn vital signs (temperature, heart rate, respiratory rate), birth history (gestational age, delivery method, complications), current medications, feeding status (breast/formula), immunization records, any infections or antibiotics, maternal history (GBS status, infections during pregnancy), and recent visit notes\",\n  \"cds_query\": \"What is the recommended management and workup for fever (\u226539\u00b0C) in a 6-week-old male infant? Include sepsis evaluation, antibiotic guidelines, and hospitalization criteria per AAP/CDC neonatal fever guidelines.\",\n  \"needs_cds\": true\n}\n```",
+        "latency_s": 2.2797712499741465,
+        "parsed": {
+          "chart_instructions": "Extract newborn vital signs (temperature, heart rate, respiratory rate), birth history (gestational age, delivery method, complications), current medications, feeding status (breast/formula), immunization records, any infections or antibiotics, maternal history (GBS status, infections during pregnancy), and recent visit notes",
+          "cds_query": "What is the recommended management and workup for fever (\u226539\u00b0C) in a 6-week-old male infant? Include sepsis evaluation, antibiotic guidelines, and hospitalization criteria per AAP/CDC neonatal fever guidelines.",
+          "needs_cds": true
+        },
+        "leaks_in_cds": [],
+        "leaks_in_chart": []
+      }
+    },
+    {
+      "id": "Q06",
+      "query": "65F Linda Wong w/ new dx breast CA, what tamoxifen dose for ER+?",
+      "phi_terms": [
+        "Linda",
+        "Wong"
+      ],
+      "demographics": {
+        "age": 65,
+        "sex": "F"
+      },
+      "openmed": {
+        "masked": "[street_address][first_name][last_name] w/ new dx breast CA, what tamoxifen dose for ER+?",
+        "spans": [
+          {
+            "label": "street_address",
+            "text": "65F",
+            "start": 0,
+            "end": 3,
+            "score": 0.9336117506027222
+          },
+          {
+            "label": "first_name",
+            "text": "Linda",
+            "start": 3,
+            "end": 9,
+            "score": 0.9990772008895874
+          },
+          {
+            "label": "last_name",
+            "text": "Wong",
+            "start": 9,
+            "end": 14,
+            "score": 0.9983977675437927
+          }
+        ],
+        "latency_s": 1.3907609159941785,
+        "leaks": []
+      },
+      "haiku": {
+        "raw": "```json\n{\n  \"chart_instructions\": \"Extract breast cancer diagnosis details (histology, receptor status, stage), current medications (especially tamoxifen if already prescribed), allergy list, liver function tests, and any contraindications or drug interactions\",\n  \"cds_query\": \"What is the recommended tamoxifen dosing for postmenopausal women with estrogen receptor-positive breast cancer per NCCN and ASCO guidelines?\",\n  \"needs_cds\": true\n}\n```",
+        "latency_s": 1.4237827499746345,
+        "parsed": {
+          "chart_instructions": "Extract breast cancer diagnosis details (histology, receptor status, stage), current medications (especially tamoxifen if already prescribed), allergy list, liver function tests, and any contraindications or drug interactions",
+          "cds_query": "What is the recommended tamoxifen dosing for postmenopausal women with estrogen receptor-positive breast cancer per NCCN and ASCO guidelines?",
+          "needs_cds": true
+        },
+        "leaks_in_cds": [],
+        "leaks_in_chart": []
+      }
+    },
+    {
+      "id": "Q07",
+      "query": "CKD3 pt age 72, MRN 555-1234 on metformin \u2014 should I dc?",
+      "phi_terms": [
+        "555-1234"
+      ],
+      "demographics": {
+        "age": 72,
+        "sex": "M"
+      },
+      "openmed": {
+        "masked": "CKD3 pt age[age], MRN 555-1234 on metformin \u2014 should I dc?",
+        "spans": [
+          {
+            "label": "age",
+            "text": "72",
+            "start": 11,
+            "end": 14,
+            "score": 0.9930461049079895
+          }
+        ],
+        "latency_s": 0.45642845798283815,
+        "leaks": [
+          "555-1234"
+        ]
+      },
+      "haiku": {
+        "raw": "```json\n{\n  \"chart_instructions\": \"Extract current medications (especially metformin dose and frequency), renal function tests (creatinine, eGFR, cystatin C) with dates, CKD stage documentation, urinalysis, and relevant diagnoses (diabetes, hypertension, CKD). Include most recent values and trends.\",\n  \"cds_query\": \"What are the current guidelines for metformin use in a 72-year-old male with CKD stage 3 (eGFR 30-59)? When should metformin be discontinued or dose-adjusted based on renal function?\",\n  \"needs_cds\": true\n}\n```",
+        "latency_s": 2.172565042041242,
+        "parsed": {
+          "chart_instructions": "Extract current medications (especially metformin dose and frequency), renal function tests (creatinine, eGFR, cystatin C) with dates, CKD stage documentation, urinalysis, and relevant diagnoses (diabetes, hypertension, CKD). Include most recent values and trends.",
+          "cds_query": "What are the current guidelines for metformin use in a 72-year-old male with CKD stage 3 (eGFR 30-59)? When should metformin be discontinued or dose-adjusted based on renal function?",
+          "needs_cds": true
+        },
+        "leaks_in_cds": [],
+        "leaks_in_chart": []
+      }
+    },
+    {
+      "id": "Q08",
+      "query": "When do we start statins per USPSTF?",
+      "phi_terms": [],
+      "demographics": {
+        "age": 50,
+        "sex": "M"
+      },
+      "openmed": {
+        "masked": "When do we start statins per USPSTF?",
+        "spans": [],
+        "latency_s": 0.5370725840330124,
+        "leaks": []
+      },
+      "haiku": {
+        "raw": "```json\n{\n  \"chart_instructions\": \"Extract cardiovascular risk factors including: lipid panel results with dates, current medications (especially statins), blood pressure readings, smoking status, diabetes diagnosis, family history of cardiovascular disease, and any documented cardiovascular events or diagnoses\",\n  \"cds_query\": \"What are the USPSTF recommendations for statin initiation in a 50-year-old male? What are the criteria for primary prevention with statins?\",\n  \"needs_cds\": true\n}\n```",
+        "latency_s": 1.562637666997034,
+        "parsed": {
+          "chart_instructions": "Extract cardiovascular risk factors including: lipid panel results with dates, current medications (especially statins), blood pressure readings, smoking status, diabetes diagnosis, family history of cardiovascular disease, and any documented cardiovascular events or diagnoses",
+          "cds_query": "What are the USPSTF recommendations for statin initiation in a 50-year-old male? What are the criteria for primary prevention with statins?",
+          "needs_cds": true
+        },
+        "leaks_in_cds": [],
+        "leaks_in_chart": []
+      }
+    },
+    {
+      "id": "Q09",
+      "query": "Mr. Davis (60yoM) had +UA today, anything to do if asymptomatic?",
+      "phi_terms": [
+        "Davis"
+      ],
+      "demographics": {
+        "age": 60,
+        "sex": "M"
+      },
+      "openmed": {
+        "masked": "Mr.[last_name] ([age]yoM) had +UA today, anything to do if asymptomatic?",
+        "spans": [
+          {
+            "label": "last_name",
+            "text": "Davis",
+            "start": 3,
+            "end": 9,
+            "score": 0.9961228966712952
+          },
+          {
+            "label": "age",
+            "text": "60",
+            "start": 11,
+            "end": 13,
+            "score": 0.9869165420532227
+          }
+        ],
+        "latency_s": 0.4376977499923669,
+        "leaks": []
+      },
+      "haiku": {
+        "raw": "```json\n{\n  \"chart_instructions\": \"Extract today's urinalysis results with details on findings (proteinuria, hematuria, nitrites, leukocyte esterase, bacteria), current medications (especially antibiotics, diuretics), past medical history (UTI history, renal disease, diabetes), and recent vital signs\",\n  \"cds_query\": \"What is the recommended management of asymptomatic bacteriuria or abnormal urinalysis in an asymptomatic adult male per current clinical guidelines?\",\n  \"needs_cds\": true\n}\n```",
+        "latency_s": 1.6368302500341088,
+        "parsed": {
+          "chart_instructions": "Extract today's urinalysis results with details on findings (proteinuria, hematuria, nitrites, leukocyte esterase, bacteria), current medications (especially antibiotics, diuretics), past medical history (UTI history, renal disease, diabetes), and recent vital signs",
+          "cds_query": "What is the recommended management of asymptomatic bacteriuria or abnormal urinalysis in an asymptomatic adult male per current clinical guidelines?",
+          "needs_cds": true
+        },
+        "leaks_in_cds": [],
+        "leaks_in_chart": []
+      }
+    },
+    {
+      "id": "Q10",
+      "query": "When was the last visit?",
+      "phi_terms": [],
+      "demographics": {
+        "age": 45,
+        "sex": "F"
+      },
+      "openmed": {
+        "masked": "When was the last visit?",
+        "spans": [],
+        "latency_s": 0.5408749579801224,
+        "leaks": []
+      },
+      "haiku": {
+        "raw": "```json\n{\n  \"chart_instructions\": \"Extract all visit notes and encounters with dates, return the most recent visit date and type\",\n  \"cds_query\": null,\n  \"needs_cds\": false\n}\n```",
+        "latency_s": 0.9490134580410086,
+        "parsed": {
+          "chart_instructions": "Extract all visit notes and encounters with dates, return the most recent visit date and type",
+          "cds_query": null,
+          "needs_cds": false
+        },
+        "leaks_in_cds": [],
+        "leaks_in_chart": []
+      }
+    }
+  ]
+}

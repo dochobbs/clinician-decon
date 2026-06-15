@@ -1,0 +1,98 @@
+[
+  {"id": "B01", "category": "name_simple", "query": "Sarah Johnson has a fever, what's the workup?", "phi": ["Sarah", "Johnson"]},
+  {"id": "B02", "category": "name_simple", "query": "John Smith age 67 with HTN, BP target?", "phi": ["John", "Smith"]},
+  {"id": "B03", "category": "name_compound", "query": "Mary-Jane O'Brien needs vaccines, what's due at age 5?", "phi": ["Mary-Jane", "O'Brien"]},
+  {"id": "B04", "category": "name_foreign", "query": "Patient Aisha Mohammed (32F) presents with chest pain, workup?", "phi": ["Aisha", "Mohammed"]},
+  {"id": "B05", "category": "name_foreign", "query": "Jiang Wei has elevated A1c 8.2%, next step?", "phi": ["Jiang", "Wei"]},
+  {"id": "B06", "category": "name_foreign", "query": "Patient Søren Andersson, 45M, statin for primary prevention?", "phi": ["Søren", "Andersson"]},
+  {"id": "B07", "category": "name_with_title", "query": "Dr. Patel saw Mrs. Williams today; she has new-onset AFib.", "phi": ["Patel", "Williams"]},
+  {"id": "B08", "category": "name_lastname_first", "query": "Garcia, Maria — 28F, pregnant, screening for GDM?", "phi": ["Garcia", "Maria"]},
+  {"id": "B09", "category": "name_initials", "query": "Pt JD (62M) has BPH, surgical referral threshold?", "phi": ["JD"]},
+  {"id": "B10", "category": "name_only", "query": "Emma Thompson", "phi": ["Emma", "Thompson"]},
+
+  {"id": "B11", "category": "mrn_numeric", "query": "MRN 12345678 has CKD3, dose-adjust metformin?", "phi": ["12345678"]},
+  {"id": "B12", "category": "mrn_short", "query": "MRN 555-1234 on metformin, A1c 7.2, what to do?", "phi": ["555-1234"]},
+  {"id": "B13", "category": "mrn_alphanumeric", "query": "Pt with MRN LP-08432, hyperlipidemia, statin?", "phi": ["LP-08432"]},
+  {"id": "B14", "category": "mrn_no_dash", "query": "MR# AB123456 needs HepB titer, when?", "phi": ["AB123456"]},
+  {"id": "B15", "category": "mrn_long", "query": "Medical Record Number 9876543210 has new dx CHF, ICD?", "phi": ["9876543210"]},
+  {"id": "B16", "category": "mrn_with_prefix", "query": "Pt MRN: HOSP-2024-0099, abx for cellulitis?", "phi": ["HOSP-2024-0099"]},
+  {"id": "B17", "category": "mrn_lowercase", "query": "patient mrn 4477123 with new-onset DM2, A1c 9.1, start metformin?", "phi": ["4477123"]},
+  {"id": "B18", "category": "phone", "query": "Pt phone 555-867-5309, vaccine reminder protocol?", "phi": ["555-867-5309"]},
+  {"id": "B19", "category": "phone_international", "query": "Pt cell +1 (415) 555-0123, telehealth visit appropriate?", "phi": ["+1 (415) 555-0123"]},
+  {"id": "B20", "category": "phone_dotted", "query": "Family contact 312.555.0144, BP medication refill?", "phi": ["312.555.0144"]},
+
+  {"id": "B21", "category": "date_iso", "query": "DOB 2014-03-15, presents with persistent cough — workup?", "phi": ["2014-03-15"]},
+  {"id": "B22", "category": "date_us", "query": "DOB 03/15/2014, current vaccines due?", "phi": ["03/15/2014"]},
+  {"id": "B23", "category": "date_short", "query": "Pt DOB 5/22/90 on metformin, recheck A1c?", "phi": ["5/22/90"]},
+  {"id": "B24", "category": "date_dashes", "query": "Last visit 2025-11-20, BP 138/85, recheck interval?", "phi": ["2025-11-20"]},
+  {"id": "B25", "category": "date_relative", "query": "12yo F (DOB last March), HPV vaccine due?", "phi": []},
+  {"id": "B26", "category": "date_multi", "query": "DOB 1990-05-22, last A1c 5/15/2026 was 6.8%, follow-up?", "phi": ["1990-05-22", "5/15/2026"]},
+
+  {"id": "B27", "category": "email", "query": "Pt email john.doe@example.com asks about cholesterol screening", "phi": ["john.doe@example.com"]},
+  {"id": "B28", "category": "email_multiple", "query": "Email mary.smith.MD@hospital.org and patient1@gmail.com about vaccines", "phi": ["mary.smith.MD@hospital.org", "patient1@gmail.com"]},
+  {"id": "B29", "category": "ssn", "query": "Pt SSN 123-45-6789, Medicare eligibility for screening colonoscopy?", "phi": ["123-45-6789"]},
+  {"id": "B30", "category": "ssn_no_dashes", "query": "SSN 123456789 on file, prior auth for tirzepatide?", "phi": ["123456789"]},
+  {"id": "B31", "category": "zip", "query": "Pt at 90210 ZIP, lead screening required at age 1?", "phi": ["90210"]},
+  {"id": "B32", "category": "zip_plus4", "query": "Address 12345-6789, fluoride supplement guidance for child?", "phi": ["12345-6789"]},
+
+  {"id": "B33", "category": "address_full", "query": "Pt at 6677 Park Lane, Fairview, FL 76786, asks about flu shot?", "phi": ["6677 Park Lane", "Fairview", "76786"]},
+  {"id": "B34", "category": "address_partial", "query": "Lives on Elm Street, asks about lead screening", "phi": ["Elm Street"]},
+  {"id": "B35", "category": "city_state", "query": "Pt from Chicago, IL — TB screening recommendations?", "phi": ["Chicago"]},
+
+  {"id": "B36", "category": "demographics_shorthand", "query": "65F LDL 145, statin for primary prevention?", "phi": []},
+  {"id": "B37", "category": "demographics_shorthand", "query": "32yoF G2P1 28wga with GDM, treatment?", "phi": []},
+  {"id": "B38", "category": "demographics_shorthand", "query": "5yo M with otitis media, abx choice?", "phi": []},
+  {"id": "B39", "category": "demographics_shorthand", "query": "78F FRAX score >20%, bisphosphonate?", "phi": []},
+
+  {"id": "B40", "category": "clinical_lab_lookalike", "query": "A1c 7.9 — what's the next step in DM2 management?", "phi": []},
+  {"id": "B41", "category": "clinical_lab_lookalike", "query": "B12 145 in 70F with neuropathy, supplementation dose?", "phi": []},
+  {"id": "B42", "category": "clinical_lab_lookalike", "query": "TSH 12.4 with low T4, levothyroxine dosing?", "phi": []},
+  {"id": "B43", "category": "clinical_lab_lookalike", "query": "LDL 178 in 45M, statin first-line?", "phi": []},
+  {"id": "B44", "category": "clinical_lab_lookalike", "query": "ALT 220 / AST 180 — workup priorities?", "phi": []},
+  {"id": "B45", "category": "clinical_lab_lookalike", "query": "GFR 38, age 72, dose-adjust metformin?", "phi": []},
+  {"id": "B46", "category": "clinical_drug_lookalike", "query": "Metformin 1000 mg BID, when to add second-line agent?", "phi": []},
+  {"id": "B47", "category": "clinical_dose_lookalike", "query": "Lisinopril 20 mg, BP 138/85, titrate up?", "phi": []},
+  {"id": "B48", "category": "clinical_age_only", "query": "When should statins be started per USPSTF in adults?", "phi": []},
+  {"id": "B49", "category": "clinical_acronym", "query": "PCV-15 vs PCV-20 — which for adults age 65+?", "phi": []},
+
+  {"id": "B50", "category": "dense_multi_phi", "query": "Sarah Johnson (DOB 2014-03-15, MRN LP-08432, phone 555-867-5309) at 6677 Park Lane needs HPV vaccine, when to start?", "phi": ["Sarah", "Johnson", "2014-03-15", "LP-08432", "555-867-5309", "6677 Park Lane"]},
+  {"id": "B51", "category": "dense_multi_phi", "query": "Marcus Chen DOB 1988-11-04 SSN 123-45-6789 marcus@example.com — A1c 7.9 last month, next step?", "phi": ["Marcus", "Chen", "1988-11-04", "123-45-6789", "marcus@example.com"]},
+  {"id": "B52", "category": "dense_multi_phi", "query": "Family of John Doe (DOB 1955-02-10, MRN 99887766, lives in Boston, MA 02101) wants advice on dad's CHF management.", "phi": ["John", "Doe", "1955-02-10", "99887766", "Boston", "02101"]},
+
+  {"id": "B53", "category": "no_phi_pure_clinical", "query": "What's the workup for iron deficiency anemia in adult women?", "phi": []},
+  {"id": "B54", "category": "no_phi_pure_clinical", "query": "When do we start statins per USPSTF?", "phi": []},
+  {"id": "B55", "category": "no_phi_pure_clinical", "query": "Tdap booster interval in adults?", "phi": []},
+  {"id": "B56", "category": "no_phi_pure_clinical", "query": "What is the recommended dose of amoxicillin for AOM in a 5yo?", "phi": []},
+  {"id": "B57", "category": "no_phi_pure_clinical", "query": "Diagnostic threshold for hypertension per ACC/AHA 2017?", "phi": []},
+
+  {"id": "B58", "category": "name_in_chart_context", "query": "Note from Dr. Anderson states pt is responding to ABX. Continue or change?", "phi": ["Anderson"]},
+  {"id": "B59", "category": "provider_name", "query": "Dr. Lisa Martinez prescribed metformin 500 mg BID. Titrate up?", "phi": ["Lisa", "Martinez"]},
+  {"id": "B60", "category": "family_member_name", "query": "Patient's father Robert Williams has FHx CAD at 55. Screening recommendations?", "phi": ["Robert", "Williams"]},
+
+  {"id": "B61", "category": "name_with_age", "query": "12yo Emma Park, well-child checkup — what's due?", "phi": ["Emma", "Park"]},
+  {"id": "B62", "category": "name_with_dx", "query": "Linda Wong, ER+ breast CA, tamoxifen dose?", "phi": ["Linda", "Wong"]},
+  {"id": "B63", "category": "name_inline_text", "query": "Pt Mr. Robert J. Davis presents today with chest pain.", "phi": ["Robert", "Davis"]},
+  {"id": "B64", "category": "name_initial_then_full", "query": "R. Smith (Robert Smith), 60M, prostate screening?", "phi": ["R.", "Smith", "Robert"]},
+
+  {"id": "B65", "category": "edge_acronyms_only", "query": "USPSTF + ACIP recommendations for HPV in 11yo?", "phi": []},
+  {"id": "B66", "category": "edge_question_no_pt", "query": "What does AAP say about screen time?", "phi": []},
+  {"id": "B67", "category": "edge_simple_question", "query": "When was the last visit?", "phi": []},
+
+  {"id": "B68", "category": "ambiguous_lab_value", "query": "ALT 555, urgent workup?", "phi": []},
+  {"id": "B69", "category": "ambiguous_dose_format", "query": "Pt on warfarin 2.5 mg / 5 mg alternating, INR 1.8 — adjust?", "phi": []},
+  {"id": "B70", "category": "ambiguous_age_format", "query": "5yo presents with fever 102.3 for 3 days — workup?", "phi": []},
+
+  {"id": "B71", "category": "spruce_log_pattern", "query": "Patient: Sarah Johnson | DOB: 2014-03-15 | MRN: LP-08432 | Visit: 2026-05-10\nClinician note: fever 102, 3 days, no source. Workup?", "phi": ["Sarah", "Johnson", "2014-03-15", "LP-08432", "2026-05-10"]},
+  {"id": "B72", "category": "ehr_export", "query": "Smith, Jane (F, age 45)\nProblems: Type 2 DM, HTN\nMeds: metformin 1g BID, lisinopril 10mg daily\nQuestion: A1c target?", "phi": ["Smith", "Jane"]},
+
+  {"id": "B73", "category": "rare_pattern_passport", "query": "Pt with passport ID A12345678, refugee — vaccine catch-up schedule?", "phi": ["A12345678"]},
+  {"id": "B74", "category": "rare_pattern_dl", "query": "Pt DL D1234567, age 16, contraception counseling — confidentiality?", "phi": ["D1234567"]},
+  {"id": "B75", "category": "rare_pattern_insurance", "query": "Insurance member ID XAB123456789, prior auth for tirzepatide?", "phi": ["XAB123456789"]},
+
+  {"id": "B76", "category": "stress_long_query", "query": "Patient Sarah Johnson (DOB 2014-03-15, MRN LP-08432, phone 555-867-5309, email sarah@example.com, lives at 6677 Park Lane Fairview FL 76786, SSN 123-45-6789) presents to clinic today (2026-05-10) for her routine annual visit. Her father Robert Johnson (DOB 1980-04-12) accompanies. She is due for HPV vaccine. What's the recommended schedule per AAP/ACIP and which dose for an immunocompetent 12yo?", "phi": ["Sarah", "Johnson", "2014-03-15", "LP-08432", "555-867-5309", "sarah@example.com", "6677 Park Lane", "Fairview", "76786", "123-45-6789", "2026-05-10", "Robert", "1980-04-12"]},
+
+  {"id": "B77", "category": "false_pos_clinical_codes", "query": "ICD-10 E11.9 with HCC adjustment, A1c target?", "phi": []},
+  {"id": "B78", "category": "false_pos_clinical_codes", "query": "CPT 99213 visit, BP 145/92, HTN management?", "phi": []},
+  {"id": "B79", "category": "false_pos_drug_strength", "query": "Amoxicillin 875 mg BID for adult sinusitis — duration?", "phi": []},
+  {"id": "B80", "category": "false_pos_lab_panel", "query": "CMP normal except glucose 178 fasting, dx DM2?", "phi": []}
+]

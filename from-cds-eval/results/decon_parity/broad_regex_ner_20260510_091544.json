@@ -1,0 +1,2626 @@
+{
+  "timestamp": "20260510_091544",
+  "model": "OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1",
+  "mode": "regex_ner",
+  "n": 80,
+  "summary": {
+    "total_phi": 101,
+    "total_leaks": 1,
+    "leak_rate": 0.009900990099009901,
+    "fp_queries": 8,
+    "fp_spans_total": 11,
+    "avg_latency_ms": 468.5344405923388,
+    "p95_latency_ms": 1069.4645830080844,
+    "by_category": {
+      "name_simple": {
+        "n": 2,
+        "leaks": 0,
+        "phi": 4,
+        "fp_spans": 0
+      },
+      "name_compound": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "name_foreign": {
+        "n": 3,
+        "leaks": 0,
+        "phi": 6,
+        "fp_spans": 0
+      },
+      "name_with_title": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "name_lastname_first": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "name_initials": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "name_only": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "mrn_numeric": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "mrn_short": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "mrn_alphanumeric": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "mrn_no_dash": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "mrn_long": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "mrn_with_prefix": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "mrn_lowercase": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "phone": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "phone_international": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "phone_dotted": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "date_iso": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "date_us": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "date_short": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "date_dashes": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "date_relative": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 2
+      },
+      "date_multi": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "email": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "email_multiple": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "ssn": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "ssn_no_dashes": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "zip": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "zip_plus4": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "address_full": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 3,
+        "fp_spans": 0
+      },
+      "address_partial": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "city_state": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "demographics_shorthand": {
+        "n": 4,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 1
+      },
+      "clinical_lab_lookalike": {
+        "n": 6,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 2
+      },
+      "clinical_drug_lookalike": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 0
+      },
+      "clinical_dose_lookalike": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 0
+      },
+      "clinical_age_only": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 0
+      },
+      "clinical_acronym": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 0
+      },
+      "dense_multi_phi": {
+        "n": 3,
+        "leaks": 0,
+        "phi": 17,
+        "fp_spans": 0
+      },
+      "no_phi_pure_clinical": {
+        "n": 5,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 1
+      },
+      "name_in_chart_context": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "provider_name": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "family_member_name": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "name_with_age": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "name_with_dx": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "name_inline_text": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "name_initial_then_full": {
+        "n": 1,
+        "leaks": 1,
+        "phi": 3,
+        "fp_spans": 0
+      },
+      "edge_acronyms_only": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 1
+      },
+      "edge_question_no_pt": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 0
+      },
+      "edge_simple_question": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 0
+      },
+      "ambiguous_lab_value": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 1
+      },
+      "ambiguous_dose_format": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 0
+      },
+      "ambiguous_age_format": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 0
+      },
+      "spruce_log_pattern": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 5,
+        "fp_spans": 0
+      },
+      "ehr_export": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 2,
+        "fp_spans": 0
+      },
+      "rare_pattern_passport": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "rare_pattern_dl": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "rare_pattern_insurance": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 1,
+        "fp_spans": 0
+      },
+      "stress_long_query": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 13,
+        "fp_spans": 0
+      },
+      "false_pos_clinical_codes": {
+        "n": 2,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 3
+      },
+      "false_pos_drug_strength": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 0
+      },
+      "false_pos_lab_panel": {
+        "n": 1,
+        "leaks": 0,
+        "phi": 0,
+        "fp_spans": 0
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "B01",
+      "category": "name_simple",
+      "query": "Sarah Johnson has a fever, what's the workup?",
+      "expected_phi": [
+        "Sarah",
+        "Johnson"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name][last_name] has a fever, what's the workup?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "Sarah",
+          "start": 0,
+          "end": 5,
+          "score": 0.999755322933197
+        },
+        {
+          "label": "last_name",
+          "text": "Johnson",
+          "start": 5,
+          "end": 13,
+          "score": 0.9992169141769409
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.5222628340125084
+    },
+    {
+      "id": "B02",
+      "category": "name_simple",
+      "query": "John Smith age 67 with HTN, BP target?",
+      "expected_phi": [
+        "John",
+        "Smith"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name][last_name] age[age] with HTN, BP target?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "John",
+          "start": 0,
+          "end": 4,
+          "score": 0.9989619255065918
+        },
+        {
+          "label": "last_name",
+          "text": "Smith",
+          "start": 4,
+          "end": 10,
+          "score": 0.9976578950881958
+        },
+        {
+          "label": "age",
+          "text": "67",
+          "start": 14,
+          "end": 17,
+          "score": 0.995715320110321
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.22349725000094622
+    },
+    {
+      "id": "B03",
+      "category": "name_compound",
+      "query": "Mary-Jane O'Brien needs vaccines, what's due at age 5?",
+      "expected_phi": [
+        "Mary-Jane",
+        "O'Brien"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name][last_name][first_name][last_name]'[last_name] needs vaccines, what's due at age 5?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "Mary",
+          "start": 0,
+          "end": 4,
+          "score": 0.9994901418685913
+        },
+        {
+          "label": "last_name",
+          "text": "-",
+          "start": 4,
+          "end": 5,
+          "score": 0.3922765552997589
+        },
+        {
+          "label": "first_name",
+          "text": "Jane",
+          "start": 5,
+          "end": 9,
+          "score": 0.6860699653625488
+        },
+        {
+          "label": "last_name",
+          "text": "O",
+          "start": 9,
+          "end": 11,
+          "score": 0.998671293258667
+        },
+        {
+          "label": "last_name",
+          "text": "Brien",
+          "start": 12,
+          "end": 17,
+          "score": 0.9941902160644531
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 1.4530265830107965
+    },
+    {
+      "id": "B04",
+      "category": "name_foreign",
+      "query": "Patient Aisha Mohammed (32F) presents with chest pain, workup?",
+      "expected_phi": [
+        "Aisha",
+        "Mohammed"
+      ],
+      "is_no_phi": false,
+      "masked": "Patient[first_name][last_name] ([street_address]) presents with chest pain, workup?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "Aisha",
+          "start": 7,
+          "end": 13,
+          "score": 0.9995973706245422
+        },
+        {
+          "label": "last_name",
+          "text": "Mohammed",
+          "start": 13,
+          "end": 22,
+          "score": 0.998143196105957
+        },
+        {
+          "label": "street_address",
+          "text": "32F",
+          "start": 24,
+          "end": 27,
+          "score": 0.8583106994628906
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.5080078329774551
+    },
+    {
+      "id": "B05",
+      "category": "name_foreign",
+      "query": "Jiang Wei has elevated A1c 8.2%, next step?",
+      "expected_phi": [
+        "Jiang",
+        "Wei"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name][last_name] has elevated A1c 8.2%, next step?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "Jiang",
+          "start": 0,
+          "end": 5,
+          "score": 0.9990623593330383
+        },
+        {
+          "label": "last_name",
+          "text": "Wei",
+          "start": 5,
+          "end": 9,
+          "score": 0.9507563710212708
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.33275979198515415
+    },
+    {
+      "id": "B06",
+      "category": "name_foreign",
+      "query": "Patient S\u00f8ren Andersson, 45M, statin for primary prevention?",
+      "expected_phi": [
+        "S\u00f8ren",
+        "Andersson"
+      ],
+      "is_no_phi": false,
+      "masked": "Patient[first_name][last_name],[age]M, statin for primary prevention?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "S\u00f8ren",
+          "start": 7,
+          "end": 13,
+          "score": 0.9995385408401489
+        },
+        {
+          "label": "last_name",
+          "text": "Andersson",
+          "start": 13,
+          "end": 23,
+          "score": 0.999444305896759
+        },
+        {
+          "label": "age",
+          "text": "45",
+          "start": 24,
+          "end": 27,
+          "score": 0.42812231183052063
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.3270974170300178
+    },
+    {
+      "id": "B07",
+      "category": "name_with_title",
+      "query": "Dr. Patel saw Mrs. Williams today; she has new-onset AFib.",
+      "expected_phi": [
+        "Patel",
+        "Williams"
+      ],
+      "is_no_phi": false,
+      "masked": "[occupation].[last_name] saw Mrs.[last_name] today; she has new-onset AFib.",
+      "spans": [
+        {
+          "label": "occupation",
+          "text": "Dr",
+          "start": 0,
+          "end": 2,
+          "score": 0.5249508619308472
+        },
+        {
+          "label": "last_name",
+          "text": "Patel",
+          "start": 3,
+          "end": 9,
+          "score": 0.9711653590202332
+        },
+        {
+          "label": "last_name",
+          "text": "Williams",
+          "start": 18,
+          "end": 27,
+          "score": 0.9982738494873047
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.5973230410018004
+    },
+    {
+      "id": "B08",
+      "category": "name_lastname_first",
+      "query": "Garcia, Maria \u2014 28F, pregnant, screening for GDM?",
+      "expected_phi": [
+        "Garcia",
+        "Maria"
+      ],
+      "is_no_phi": false,
+      "masked": "[last_name],[first_name] \u2014[street_address], pregnant, screening for GDM?",
+      "spans": [
+        {
+          "label": "last_name",
+          "text": "Garcia",
+          "start": 0,
+          "end": 6,
+          "score": 0.9893094301223755
+        },
+        {
+          "label": "first_name",
+          "text": "Maria",
+          "start": 7,
+          "end": 13,
+          "score": 0.9989635944366455
+        },
+        {
+          "label": "street_address",
+          "text": "28F",
+          "start": 15,
+          "end": 19,
+          "score": 0.4726519286632538
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.5007714580278844
+    },
+    {
+      "id": "B09",
+      "category": "name_initials",
+      "query": "Pt JD (62M) has BPH, surgical referral threshold?",
+      "expected_phi": [
+        "JD"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt[last_name] (62M) has BPH, surgical referral threshold?",
+      "spans": [
+        {
+          "label": "last_name",
+          "text": "JD",
+          "start": 2,
+          "end": 5,
+          "score": 0.5365500450134277
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.5461817919858731
+    },
+    {
+      "id": "B10",
+      "category": "name_only",
+      "query": "Emma Thompson",
+      "expected_phi": [
+        "Emma",
+        "Thompson"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name][last_name]",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "Emma",
+          "start": 0,
+          "end": 4,
+          "score": 0.9920037388801575
+        },
+        {
+          "label": "last_name",
+          "text": "Thompson",
+          "start": 4,
+          "end": 13,
+          "score": 0.9877529144287109
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.2874868749640882
+    },
+    {
+      "id": "B11",
+      "category": "mrn_numeric",
+      "query": "MRN 12345678 has CKD3, dose-adjust metformin?",
+      "expected_phi": [
+        "12345678"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name][last_name] \u00ab[first_name][last_name]\u00bb has CKD3, dose-adjust metformin?",
+      "spans": [
+        {
+          "label": "MRN",
+          "text": "12345678",
+          "start": 4,
+          "end": 12,
+          "score": 1.0
+        },
+        {
+          "label": "first_name",
+          "text": "M",
+          "start": 0,
+          "end": 1,
+          "score": 0.8609837889671326
+        },
+        {
+          "label": "last_name",
+          "text": "RN",
+          "start": 1,
+          "end": 3,
+          "score": 0.7141198515892029
+        },
+        {
+          "label": "first_name",
+          "text": "M",
+          "start": 5,
+          "end": 6,
+          "score": 0.6417029500007629
+        },
+        {
+          "label": "last_name",
+          "text": "RN",
+          "start": 6,
+          "end": 8,
+          "score": 0.6875886917114258
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.2717859169933945
+    },
+    {
+      "id": "B12",
+      "category": "mrn_short",
+      "query": "MRN 555-1234 on metformin, A1c 7.2, what to do?",
+      "expected_phi": [
+        "555-1234"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name][last_name] \u00ab[first_name][last_name]\u00bb on metformin, A1c 7.2, what to do?",
+      "spans": [
+        {
+          "label": "MRN",
+          "text": "555-1234",
+          "start": 4,
+          "end": 12,
+          "score": 1.0
+        },
+        {
+          "label": "first_name",
+          "text": "M",
+          "start": 0,
+          "end": 1,
+          "score": 0.9471349120140076
+        },
+        {
+          "label": "last_name",
+          "text": "RN",
+          "start": 1,
+          "end": 3,
+          "score": 0.7820708751678467
+        },
+        {
+          "label": "first_name",
+          "text": "M",
+          "start": 5,
+          "end": 6,
+          "score": 0.8078204393386841
+        },
+        {
+          "label": "last_name",
+          "text": "RN",
+          "start": 6,
+          "end": 8,
+          "score": 0.7781205773353577
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.3488765839720145
+    },
+    {
+      "id": "B13",
+      "category": "mrn_alphanumeric",
+      "query": "Pt with MRN LP-08432, hyperlipidemia, statin?",
+      "expected_phi": [
+        "LP-08432"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt with[first_name][last_name] \u00ab[first_name][last_name]\u00bb, hyperlipidemia, statin?",
+      "spans": [
+        {
+          "label": "MRN",
+          "text": "LP-08432",
+          "start": 12,
+          "end": 20,
+          "score": 1.0
+        },
+        {
+          "label": "first_name",
+          "text": "M",
+          "start": 7,
+          "end": 9,
+          "score": 0.44118931889533997
+        },
+        {
+          "label": "last_name",
+          "text": "RN",
+          "start": 9,
+          "end": 11,
+          "score": 0.8365399837493896
+        },
+        {
+          "label": "first_name",
+          "text": "M",
+          "start": 13,
+          "end": 14,
+          "score": 0.6210609674453735
+        },
+        {
+          "label": "last_name",
+          "text": "RN",
+          "start": 14,
+          "end": 16,
+          "score": 0.6876246929168701
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.17781737499171868
+    },
+    {
+      "id": "B14",
+      "category": "mrn_no_dash",
+      "query": "MR# AB123456 needs HepB titer, when?",
+      "expected_phi": [
+        "AB123456"
+      ],
+      "is_no_phi": false,
+      "masked": "MR[password]\u00bb needs HepB titer, when?",
+      "spans": [
+        {
+          "label": "MRN",
+          "text": "AB123456",
+          "start": 4,
+          "end": 12,
+          "score": 1.0
+        },
+        {
+          "label": "password",
+          "text": "# \u00abMRN",
+          "start": 2,
+          "end": 8,
+          "score": 0.41427838802337646
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.17272641602903605
+    },
+    {
+      "id": "B15",
+      "category": "mrn_long",
+      "query": "Medical Record Number 9876543210 has new dx CHF, ICD?",
+      "expected_phi": [
+        "9876543210"
+      ],
+      "is_no_phi": false,
+      "masked": "Medical Record Number \u00abMRN\u00bb has new dx CHF, ICD?",
+      "spans": [
+        {
+          "label": "MRN",
+          "text": "9876543210",
+          "start": 22,
+          "end": 32,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.17115604202263057
+    },
+    {
+      "id": "B16",
+      "category": "mrn_with_prefix",
+      "query": "Pt MRN: HOSP-2024-0099, abx for cellulitis?",
+      "expected_phi": [
+        "HOSP-2024-0099"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt MRN: \u00abMRN\u00bb, abx for cellulitis?",
+      "spans": [
+        {
+          "label": "MRN",
+          "text": "HOSP-2024-0099",
+          "start": 8,
+          "end": 22,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.1822154590045102
+    },
+    {
+      "id": "B17",
+      "category": "mrn_lowercase",
+      "query": "patient mrn 4477123 with new-onset DM2, A1c 9.1, start metformin?",
+      "expected_phi": [
+        "4477123"
+      ],
+      "is_no_phi": false,
+      "masked": "patient[user_name] \u00abMRN\u00bb with new-onset DM2, A1c 9.1, start metformin?",
+      "spans": [
+        {
+          "label": "MRN",
+          "text": "4477123",
+          "start": 12,
+          "end": 19,
+          "score": 1.0
+        },
+        {
+          "label": "user_name",
+          "text": "mrn",
+          "start": 7,
+          "end": 11,
+          "score": 0.6153564453125
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.16360495798289776
+    },
+    {
+      "id": "B18",
+      "category": "phone",
+      "query": "Pt phone 555-867-5309, vaccine reminder protocol?",
+      "expected_phi": [
+        "555-867-5309"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt phone \u00abPHONE\u00bb, vaccine reminder protocol?",
+      "spans": [
+        {
+          "label": "PHONE",
+          "text": "555-867-5309",
+          "start": 9,
+          "end": 21,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.1641974580124952
+    },
+    {
+      "id": "B19",
+      "category": "phone_international",
+      "query": "Pt cell +1 (415) 555-0123, telehealth visit appropriate?",
+      "expected_phi": [
+        "+1 (415) 555-0123"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt cell \u00abPHONE\u00bb, telehealth visit appropriate?",
+      "spans": [
+        {
+          "label": "PHONE",
+          "text": "+1 (415) 555-0123",
+          "start": 8,
+          "end": 25,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.1622595420340076
+    },
+    {
+      "id": "B20",
+      "category": "phone_dotted",
+      "query": "Family contact 312.555.0144, BP medication refill?",
+      "expected_phi": [
+        "312.555.0144"
+      ],
+      "is_no_phi": false,
+      "masked": "Family contact \u00abPHONE\u00bb, BP medication refill?",
+      "spans": [
+        {
+          "label": "PHONE",
+          "text": "312.555.0144",
+          "start": 15,
+          "end": 27,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.16083424998214468
+    },
+    {
+      "id": "B21",
+      "category": "date_iso",
+      "query": "DOB 2014-03-15, presents with persistent cough \u2014 workup?",
+      "expected_phi": [
+        "2014-03-15"
+      ],
+      "is_no_phi": false,
+      "masked": "DOB \u00abDATE\u00bb, presents with persistent cough \u2014 workup?",
+      "spans": [
+        {
+          "label": "DATE",
+          "text": "2014-03-15",
+          "start": 4,
+          "end": 14,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.1665312920231372
+    },
+    {
+      "id": "B22",
+      "category": "date_us",
+      "query": "DOB 03/15/2014, current vaccines due?",
+      "expected_phi": [
+        "03/15/2014"
+      ],
+      "is_no_phi": false,
+      "masked": "DOB \u00abDATE\u00bb, current vaccines due?",
+      "spans": [
+        {
+          "label": "DATE",
+          "text": "03/15/2014",
+          "start": 4,
+          "end": 14,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.1581400409922935
+    },
+    {
+      "id": "B23",
+      "category": "date_short",
+      "query": "Pt DOB 5/22/90 on metformin, recheck A1c?",
+      "expected_phi": [
+        "5/22/90"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt DOB \u00abDATE\u00bb on metformin, recheck A1c?",
+      "spans": [
+        {
+          "label": "DATE",
+          "text": "5/22/90",
+          "start": 7,
+          "end": 14,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.1430117089767009
+    },
+    {
+      "id": "B24",
+      "category": "date_dashes",
+      "query": "Last visit 2025-11-20, BP 138/85, recheck interval?",
+      "expected_phi": [
+        "2025-11-20"
+      ],
+      "is_no_phi": false,
+      "masked": "Last visit \u00abDATE\u00bb, BP 138/85, recheck interval?",
+      "spans": [
+        {
+          "label": "DATE",
+          "text": "2025-11-20",
+          "start": 11,
+          "end": 21,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.13893804198596627
+    },
+    {
+      "id": "B25",
+      "category": "date_relative",
+      "query": "12yo F (DOB last March), HPV vaccine due?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "[age]yo F (DOB last[date_of_birth]), HPV vaccine due?",
+      "spans": [
+        {
+          "label": "age",
+          "text": "12",
+          "start": 0,
+          "end": 2,
+          "score": 0.4930373728275299
+        },
+        {
+          "label": "date_of_birth",
+          "text": "March",
+          "start": 16,
+          "end": 22,
+          "score": 0.8289304375648499
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 2,
+      "latency_s": 0.12854599999263883
+    },
+    {
+      "id": "B26",
+      "category": "date_multi",
+      "query": "DOB 1990-05-22, last A1c 5/15/2026 was 6.8%, follow-up?",
+      "expected_phi": [
+        "1990-05-22",
+        "5/15/2026"
+      ],
+      "is_no_phi": false,
+      "masked": "DOB \u00abDATE\u00bb, last A1c \u00abDATE\u00bb was 6.8%, follow-up?",
+      "spans": [
+        {
+          "label": "DATE",
+          "text": "5/15/2026",
+          "start": 25,
+          "end": 34,
+          "score": 1.0
+        },
+        {
+          "label": "DATE",
+          "text": "1990-05-22",
+          "start": 4,
+          "end": 14,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.11634033301379532
+    },
+    {
+      "id": "B27",
+      "category": "email",
+      "query": "Pt email john.doe@example.com asks about cholesterol screening",
+      "expected_phi": [
+        "john.doe@example.com"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt email \u00abEMAIL\u00bb asks about cholesterol screening",
+      "spans": [
+        {
+          "label": "EMAIL",
+          "text": "john.doe@example.com",
+          "start": 9,
+          "end": 29,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.1269321659929119
+    },
+    {
+      "id": "B28",
+      "category": "email_multiple",
+      "query": "Email mary.smith.MD@hospital.org and patient1@gmail.com about vaccines",
+      "expected_phi": [
+        "mary.smith.MD@hospital.org",
+        "patient1@gmail.com"
+      ],
+      "is_no_phi": false,
+      "masked": "Email \u00abEMAIL\u00bb and \u00abEMAIL\u00bb about vaccines",
+      "spans": [
+        {
+          "label": "EMAIL",
+          "text": "patient1@gmail.com",
+          "start": 37,
+          "end": 55,
+          "score": 1.0
+        },
+        {
+          "label": "EMAIL",
+          "text": "mary.smith.MD@hospital.org",
+          "start": 6,
+          "end": 32,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.12083270802395418
+    },
+    {
+      "id": "B29",
+      "category": "ssn",
+      "query": "Pt SSN 123-45-6789, Medicare eligibility for screening colonoscopy?",
+      "expected_phi": [
+        "123-45-6789"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt SSN \u00abSSN\u00bb, Medicare eligibility for screening colonoscopy?",
+      "spans": [
+        {
+          "label": "SSN",
+          "text": "123-45-6789",
+          "start": 7,
+          "end": 18,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.11761533300159499
+    },
+    {
+      "id": "B30",
+      "category": "ssn_no_dashes",
+      "query": "SSN 123456789 on file, prior auth for tirzepatide?",
+      "expected_phi": [
+        "123456789"
+      ],
+      "is_no_phi": false,
+      "masked": "SSN \u00abSSN\u00bb on file, prior auth for[user_name]?",
+      "spans": [
+        {
+          "label": "SSN",
+          "text": "123456789",
+          "start": 4,
+          "end": 13,
+          "score": 1.0
+        },
+        {
+          "label": "user_name",
+          "text": "tirzepatide",
+          "start": 33,
+          "end": 45,
+          "score": 0.8788423538208008
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.11509958398528397
+    },
+    {
+      "id": "B31",
+      "category": "zip",
+      "query": "Pt at 90210 ZIP, lead screening required at age 1?",
+      "expected_phi": [
+        "90210"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt at \u00abZIP\u00bb ZIP, lead screening required at age 1?",
+      "spans": [
+        {
+          "label": "ZIP",
+          "text": "90210",
+          "start": 6,
+          "end": 11,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.11257675004890189
+    },
+    {
+      "id": "B32",
+      "category": "zip_plus4",
+      "query": "Address 12345-6789, fluoride supplement guidance for child?",
+      "expected_phi": [
+        "12345-6789"
+      ],
+      "is_no_phi": false,
+      "masked": "Address \u00abZIP\u00bb, fluoride supplement guidance for child?",
+      "spans": [
+        {
+          "label": "ZIP",
+          "text": "12345-6789",
+          "start": 8,
+          "end": 18,
+          "score": 1.0
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.11146408302010968
+    },
+    {
+      "id": "B33",
+      "category": "address_full",
+      "query": "Pt at 6677 Park Lane, Fairview, FL 76786, asks about flu shot?",
+      "expected_phi": [
+        "6677 Park Lane",
+        "Fairview",
+        "76786"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt at[street_address],[city],[state] \u00abZIP\u00bb, asks about flu shot?",
+      "spans": [
+        {
+          "label": "ZIP",
+          "text": "76786",
+          "start": 35,
+          "end": 40,
+          "score": 1.0
+        },
+        {
+          "label": "street_address",
+          "text": "6677 Park Lane",
+          "start": 5,
+          "end": 20,
+          "score": 0.9961768388748169
+        },
+        {
+          "label": "city",
+          "text": "Fairview",
+          "start": 21,
+          "end": 30,
+          "score": 0.9920322895050049
+        },
+        {
+          "label": "state",
+          "text": "FL",
+          "start": 31,
+          "end": 34,
+          "score": 0.9926416277885437
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.11305325001012534
+    },
+    {
+      "id": "B34",
+      "category": "address_partial",
+      "query": "Lives on Elm Street, asks about lead screening",
+      "expected_phi": [
+        "Elm Street"
+      ],
+      "is_no_phi": false,
+      "masked": "Lives on[street_address], asks about lead screening",
+      "spans": [
+        {
+          "label": "street_address",
+          "text": "Elm Street",
+          "start": 8,
+          "end": 19,
+          "score": 0.8924012184143066
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.1222154579591006
+    },
+    {
+      "id": "B35",
+      "category": "city_state",
+      "query": "Pt from Chicago, IL \u2014 TB screening recommendations?",
+      "expected_phi": [
+        "Chicago"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name] from[city],[state] \u2014 TB screening recommendations?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "Pt",
+          "start": 0,
+          "end": 2,
+          "score": 0.8308524489402771
+        },
+        {
+          "label": "city",
+          "text": "Chicago",
+          "start": 7,
+          "end": 15,
+          "score": 0.9981095790863037
+        },
+        {
+          "label": "state",
+          "text": "IL",
+          "start": 16,
+          "end": 19,
+          "score": 0.9989019632339478
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.12903670803643763
+    },
+    {
+      "id": "B36",
+      "category": "demographics_shorthand",
+      "query": "65F LDL 145, statin for primary prevention?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "65F LDL 145, statin for primary prevention?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.13913170900195837
+    },
+    {
+      "id": "B37",
+      "category": "demographics_shorthand",
+      "query": "32yoF G2P1 28wga with GDM, treatment?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "32yoF G2P1 28wga with GDM, treatment?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.139825958001893
+    },
+    {
+      "id": "B38",
+      "category": "demographics_shorthand",
+      "query": "5yo M with otitis media, abx choice?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "5yo[first_name] with otitis media, abx choice?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "M",
+          "start": 3,
+          "end": 5,
+          "score": 0.6893418431282043
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 1,
+      "latency_s": 0.13861408299999312
+    },
+    {
+      "id": "B39",
+      "category": "demographics_shorthand",
+      "query": "78F FRAX score >20%, bisphosphonate?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "78F FRAX score >20%, bisphosphonate?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.14585345797240734
+    },
+    {
+      "id": "B40",
+      "category": "clinical_lab_lookalike",
+      "query": "A1c 7.9 \u2014 what's the next step in DM2 management?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "A1c 7.9 \u2014 what's the next step in DM2 management?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.16400237497873604
+    },
+    {
+      "id": "B41",
+      "category": "clinical_lab_lookalike",
+      "query": "B12 145 in 70F with neuropathy, supplementation dose?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "B12[cvv] in 70F with neuropathy, supplementation dose?",
+      "spans": [
+        {
+          "label": "cvv",
+          "text": "145",
+          "start": 3,
+          "end": 7,
+          "score": 0.5027973055839539
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 1,
+      "latency_s": 0.16644150001229718
+    },
+    {
+      "id": "B42",
+      "category": "clinical_lab_lookalike",
+      "query": "TSH 12.4 with low T4, levothyroxine dosing?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "TSH 12.4 with low T4, levothyroxine dosing?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.1782577090198174
+    },
+    {
+      "id": "B43",
+      "category": "clinical_lab_lookalike",
+      "query": "LDL 178 in 45M, statin first-line?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "LDL 178 in 45M, statin first-line?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.48751325003104284
+    },
+    {
+      "id": "B44",
+      "category": "clinical_lab_lookalike",
+      "query": "ALT 220 / AST 180 \u2014 workup priorities?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "ALT 220 / AST 180 \u2014 workup priorities?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 2.0534005000372417
+    },
+    {
+      "id": "B45",
+      "category": "clinical_lab_lookalike",
+      "query": "GFR 38, age 72, dose-adjust metformin?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "GFR 38, age[age], dose-adjust metformin?",
+      "spans": [
+        {
+          "label": "age",
+          "text": "72",
+          "start": 11,
+          "end": 14,
+          "score": 0.9823324084281921
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 1,
+      "latency_s": 0.943637625023257
+    },
+    {
+      "id": "B46",
+      "category": "clinical_drug_lookalike",
+      "query": "Metformin 1000 mg BID, when to add second-line agent?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "Metformin 1000 mg BID, when to add second-line agent?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.3385586249642074
+    },
+    {
+      "id": "B47",
+      "category": "clinical_dose_lookalike",
+      "query": "Lisinopril 20 mg, BP 138/85, titrate up?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "Lisinopril 20 mg, BP 138/85, titrate up?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.833269290975295
+    },
+    {
+      "id": "B48",
+      "category": "clinical_age_only",
+      "query": "When should statins be started per USPSTF in adults?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "When should statins be started per USPSTF in adults?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.6418407920282334
+    },
+    {
+      "id": "B49",
+      "category": "clinical_acronym",
+      "query": "PCV-15 vs PCV-20 \u2014 which for adults age 65+?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "PCV-15 vs PCV-20 \u2014 which for adults age 65+?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.68903141701594
+    },
+    {
+      "id": "B50",
+      "category": "dense_multi_phi",
+      "query": "Sarah Johnson (DOB 2014-03-15, MRN LP-08432, phone 555-867-5309) at 6677 Park Lane needs HPV vaccine, when to start?",
+      "expected_phi": [
+        "Sarah",
+        "Johnson",
+        "2014-03-15",
+        "LP-08432",
+        "555-867-5309",
+        "6677 Park Lane"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name][last_name] (DOB \u00abDATE\u00bb, MRN \u00abMRN\u00bb, phone \u00abPHONE\u00bb) at[street_address] needs HPV vaccine, when to start?",
+      "spans": [
+        {
+          "label": "PHONE",
+          "text": "555-867-5309",
+          "start": 51,
+          "end": 63,
+          "score": 1.0
+        },
+        {
+          "label": "MRN",
+          "text": "LP-08432",
+          "start": 35,
+          "end": 43,
+          "score": 1.0
+        },
+        {
+          "label": "DATE",
+          "text": "2014-03-15",
+          "start": 19,
+          "end": 29,
+          "score": 1.0
+        },
+        {
+          "label": "first_name",
+          "text": "Sarah",
+          "start": 0,
+          "end": 5,
+          "score": 0.9993182420730591
+        },
+        {
+          "label": "last_name",
+          "text": "Johnson",
+          "start": 5,
+          "end": 13,
+          "score": 0.9980558156967163
+        },
+        {
+          "label": "street_address",
+          "text": "6677 Park Lane",
+          "start": 55,
+          "end": 70,
+          "score": 0.9979071617126465
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 1.0072144170408137
+    },
+    {
+      "id": "B51",
+      "category": "dense_multi_phi",
+      "query": "Marcus Chen DOB 1988-11-04 SSN 123-45-6789 marcus@example.com \u2014 A1c 7.9 last month, next step?",
+      "expected_phi": [
+        "Marcus",
+        "Chen",
+        "1988-11-04",
+        "123-45-6789",
+        "marcus@example.com"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name][last_name] DOB \u00abDATE\u00bb SSN \u00abSSN\u00bb \u00abEMAIL\u00bb \u2014 A1c 7.9 last month, next step?",
+      "spans": [
+        {
+          "label": "EMAIL",
+          "text": "marcus@example.com",
+          "start": 43,
+          "end": 61,
+          "score": 1.0
+        },
+        {
+          "label": "SSN",
+          "text": "123-45-6789",
+          "start": 31,
+          "end": 42,
+          "score": 1.0
+        },
+        {
+          "label": "DATE",
+          "text": "1988-11-04",
+          "start": 16,
+          "end": 26,
+          "score": 1.0
+        },
+        {
+          "label": "first_name",
+          "text": "Marcus",
+          "start": 0,
+          "end": 6,
+          "score": 0.9989345669746399
+        },
+        {
+          "label": "last_name",
+          "text": "Chen",
+          "start": 6,
+          "end": 11,
+          "score": 0.9971405267715454
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 1.0694645830080844
+    },
+    {
+      "id": "B52",
+      "category": "dense_multi_phi",
+      "query": "Family of John Doe (DOB 1955-02-10, MRN 99887766, lives in Boston, MA 02101) wants advice on dad's CHF management.",
+      "expected_phi": [
+        "John",
+        "Doe",
+        "1955-02-10",
+        "99887766",
+        "Boston",
+        "02101"
+      ],
+      "is_no_phi": false,
+      "masked": "Family of[first_name][last_name] (DOB \u00abDATE\u00bb, MRN \u00abMRN\u00bb, lives in[city],[state] \u00abZIP\u00bb) wants advice on dad's CHF management.",
+      "spans": [
+        {
+          "label": "ZIP",
+          "text": "02101",
+          "start": 70,
+          "end": 75,
+          "score": 1.0
+        },
+        {
+          "label": "MRN",
+          "text": "99887766",
+          "start": 40,
+          "end": 48,
+          "score": 1.0
+        },
+        {
+          "label": "DATE",
+          "text": "1955-02-10",
+          "start": 24,
+          "end": 34,
+          "score": 1.0
+        },
+        {
+          "label": "first_name",
+          "text": "John",
+          "start": 9,
+          "end": 14,
+          "score": 0.997346043586731
+        },
+        {
+          "label": "last_name",
+          "text": "Doe",
+          "start": 14,
+          "end": 18,
+          "score": 0.9953879714012146
+        },
+        {
+          "label": "city",
+          "text": "Boston",
+          "start": 51,
+          "end": 58,
+          "score": 0.9971544742584229
+        },
+        {
+          "label": "state",
+          "text": "MA",
+          "start": 59,
+          "end": 62,
+          "score": 0.9942411184310913
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.8348224579822272
+    },
+    {
+      "id": "B53",
+      "category": "no_phi_pure_clinical",
+      "query": "What's the workup for iron deficiency anemia in adult women?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "What's the workup for iron deficiency anemia in adult women?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.4351144169922918
+    },
+    {
+      "id": "B54",
+      "category": "no_phi_pure_clinical",
+      "query": "When do we start statins per USPSTF?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "When do we start statins per USPSTF?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.806097666034475
+    },
+    {
+      "id": "B55",
+      "category": "no_phi_pure_clinical",
+      "query": "Tdap booster interval in adults?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "Tdap booster interval in adults?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.518498792022001
+    },
+    {
+      "id": "B56",
+      "category": "no_phi_pure_clinical",
+      "query": "What is the recommended dose of amoxicillin for AOM in a 5yo?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "What is the recommended dose of amoxicillin for AOM in a[age]yo?",
+      "spans": [
+        {
+          "label": "age",
+          "text": "5",
+          "start": 56,
+          "end": 58,
+          "score": 0.5781508088111877
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 1,
+      "latency_s": 0.8562202909961343
+    },
+    {
+      "id": "B57",
+      "category": "no_phi_pure_clinical",
+      "query": "Diagnostic threshold for hypertension per ACC/AHA 2017?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "Diagnostic threshold for hypertension per ACC/AHA 2017?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.7152023329981603
+    },
+    {
+      "id": "B58",
+      "category": "name_in_chart_context",
+      "query": "Note from Dr. Anderson states pt is responding to ABX. Continue or change?",
+      "expected_phi": [
+        "Anderson"
+      ],
+      "is_no_phi": false,
+      "masked": "Note from[occupation][last_name] states pt is responding to ABX. Continue or change?",
+      "spans": [
+        {
+          "label": "occupation",
+          "text": "Dr.",
+          "start": 9,
+          "end": 13,
+          "score": 0.5294071435928345
+        },
+        {
+          "label": "last_name",
+          "text": "Anderson",
+          "start": 13,
+          "end": 22,
+          "score": 0.9930838346481323
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.6954975420376286
+    },
+    {
+      "id": "B59",
+      "category": "provider_name",
+      "query": "Dr. Lisa Martinez prescribed metformin 500 mg BID. Titrate up?",
+      "expected_phi": [
+        "Lisa",
+        "Martinez"
+      ],
+      "is_no_phi": false,
+      "masked": "Dr.[first_name][last_name] prescribed metformin 500 mg BID. Titrate up?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "Lisa",
+          "start": 3,
+          "end": 8,
+          "score": 0.9994218349456787
+        },
+        {
+          "label": "last_name",
+          "text": "Martinez",
+          "start": 8,
+          "end": 17,
+          "score": 0.9991102814674377
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.4272800000035204
+    },
+    {
+      "id": "B60",
+      "category": "family_member_name",
+      "query": "Patient's father Robert Williams has FHx CAD at 55. Screening recommendations?",
+      "expected_phi": [
+        "Robert",
+        "Williams"
+      ],
+      "is_no_phi": false,
+      "masked": "Patient's father[first_name][last_name] has FHx CAD at[age]. Screening recommendations?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "Robert",
+          "start": 16,
+          "end": 23,
+          "score": 0.996991753578186
+        },
+        {
+          "label": "last_name",
+          "text": "Williams",
+          "start": 23,
+          "end": 32,
+          "score": 0.9989297986030579
+        },
+        {
+          "label": "age",
+          "text": "55",
+          "start": 47,
+          "end": 50,
+          "score": 0.728661298751831
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.6072926660417579
+    },
+    {
+      "id": "B61",
+      "category": "name_with_age",
+      "query": "12yo Emma Park, well-child checkup \u2014 what's due?",
+      "expected_phi": [
+        "Emma",
+        "Park"
+      ],
+      "is_no_phi": false,
+      "masked": "[age]yo[first_name][last_name], well-child checkup \u2014 what's due?",
+      "spans": [
+        {
+          "label": "age",
+          "text": "12",
+          "start": 0,
+          "end": 2,
+          "score": 0.9711634516716003
+        },
+        {
+          "label": "first_name",
+          "text": "Emma",
+          "start": 4,
+          "end": 9,
+          "score": 0.9995409250259399
+        },
+        {
+          "label": "last_name",
+          "text": "Park",
+          "start": 9,
+          "end": 14,
+          "score": 0.998875081539154
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.5321461249841377
+    },
+    {
+      "id": "B62",
+      "category": "name_with_dx",
+      "query": "Linda Wong, ER+ breast CA, tamoxifen dose?",
+      "expected_phi": [
+        "Linda",
+        "Wong"
+      ],
+      "is_no_phi": false,
+      "masked": "[first_name][last_name], ER[blood_type] breast[state], tamoxifen dose?",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "Linda",
+          "start": 0,
+          "end": 5,
+          "score": 0.9994916915893555
+        },
+        {
+          "label": "last_name",
+          "text": "Wong",
+          "start": 5,
+          "end": 10,
+          "score": 0.9985975623130798
+        },
+        {
+          "label": "blood_type",
+          "text": "+",
+          "start": 14,
+          "end": 15,
+          "score": 0.7715592384338379
+        },
+        {
+          "label": "state",
+          "text": "CA",
+          "start": 22,
+          "end": 25,
+          "score": 0.8532705903053284
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.8376501250313595
+    },
+    {
+      "id": "B63",
+      "category": "name_inline_text",
+      "query": "Pt Mr. Robert J. Davis presents today with chest pain.",
+      "expected_phi": [
+        "Robert",
+        "Davis"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt Mr.[first_name] J.[last_name] presents today with chest pain.",
+      "spans": [
+        {
+          "label": "first_name",
+          "text": "Robert",
+          "start": 6,
+          "end": 13,
+          "score": 0.9986063838005066
+        },
+        {
+          "label": "last_name",
+          "text": "Davis",
+          "start": 16,
+          "end": 22,
+          "score": 0.9986340403556824
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.5358589999959804
+    },
+    {
+      "id": "B64",
+      "category": "name_initial_then_full",
+      "query": "R. Smith (Robert Smith), 60M, prostate screening?",
+      "expected_phi": [
+        "R.",
+        "Smith",
+        "Robert"
+      ],
+      "is_no_phi": false,
+      "masked": "R.[last_name] ([first_name][last_name]), 60M, prostate screening?",
+      "spans": [
+        {
+          "label": "last_name",
+          "text": "Smith",
+          "start": 2,
+          "end": 8,
+          "score": 0.983994722366333
+        },
+        {
+          "label": "first_name",
+          "text": "Robert",
+          "start": 10,
+          "end": 16,
+          "score": 0.97141033411026
+        },
+        {
+          "label": "last_name",
+          "text": "Smith",
+          "start": 16,
+          "end": 22,
+          "score": 0.9961040019989014
+        }
+      ],
+      "leaks": [
+        "R."
+      ],
+      "fp_spans": 0,
+      "latency_s": 0.6027758329873905
+    },
+    {
+      "id": "B65",
+      "category": "edge_acronyms_only",
+      "query": "USPSTF + ACIP recommendations for HPV in 11yo?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "USPSTF + ACIP recommendations for HPV in[age]yo?",
+      "spans": [
+        {
+          "label": "age",
+          "text": "11",
+          "start": 40,
+          "end": 43,
+          "score": 0.6196377277374268
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 1,
+      "latency_s": 0.5869972500368021
+    },
+    {
+      "id": "B66",
+      "category": "edge_question_no_pt",
+      "query": "What does AAP say about screen time?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "What does AAP say about screen time?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.4567436670185998
+    },
+    {
+      "id": "B67",
+      "category": "edge_simple_question",
+      "query": "When was the last visit?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "When was the last visit?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.43651670799590647
+    },
+    {
+      "id": "B68",
+      "category": "ambiguous_lab_value",
+      "query": "ALT 555, urgent workup?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "[employee_id] 555, urgent workup?",
+      "spans": [
+        {
+          "label": "employee_id",
+          "text": "ALT",
+          "start": 0,
+          "end": 3,
+          "score": 0.6019783020019531
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 1,
+      "latency_s": 0.5260060419677757
+    },
+    {
+      "id": "B69",
+      "category": "ambiguous_dose_format",
+      "query": "Pt on warfarin 2.5 mg / 5 mg alternating, INR 1.8 \u2014 adjust?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "Pt on warfarin 2.5 mg / 5 mg alternating, INR 1.8 \u2014 adjust?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.7665380419930443
+    },
+    {
+      "id": "B70",
+      "category": "ambiguous_age_format",
+      "query": "5yo presents with fever 102.3 for 3 days \u2014 workup?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "5yo presents with fever 102.3 for 3 days \u2014 workup?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.7003139160224237
+    },
+    {
+      "id": "B71",
+      "category": "spruce_log_pattern",
+      "query": "Patient: Sarah Johnson | DOB: 2014-03-15 | MRN: LP-08432 | Visit: 2026-05-10\nClinician note: fever 102, 3 days, no source. Workup?",
+      "expected_phi": [
+        "Sarah",
+        "Johnson",
+        "2014-03-15",
+        "LP-08432",
+        "2026-05-10"
+      ],
+      "is_no_phi": false,
+      "masked": "Patient:[first_name][last_name] | DOB: \u00abDATE\u00bb | MRN: \u00abMRN\u00bb | Visit: \u00abDATE\u00bb\nClinician note: fever 102, 3 days, no source. Workup?",
+      "spans": [
+        {
+          "label": "DATE",
+          "text": "2026-05-10",
+          "start": 66,
+          "end": 76,
+          "score": 1.0
+        },
+        {
+          "label": "MRN",
+          "text": "LP-08432",
+          "start": 48,
+          "end": 56,
+          "score": 1.0
+        },
+        {
+          "label": "DATE",
+          "text": "2014-03-15",
+          "start": 30,
+          "end": 40,
+          "score": 1.0
+        },
+        {
+          "label": "first_name",
+          "text": "Sarah",
+          "start": 8,
+          "end": 14,
+          "score": 0.9997724890708923
+        },
+        {
+          "label": "last_name",
+          "text": "Johnson",
+          "start": 14,
+          "end": 22,
+          "score": 0.9993990659713745
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 1.0419450839981437
+    },
+    {
+      "id": "B72",
+      "category": "ehr_export",
+      "query": "Smith, Jane (F, age 45)\nProblems: Type 2 DM, HTN\nMeds: metformin 1g BID, lisinopril 10mg daily\nQuestion: A1c target?",
+      "expected_phi": [
+        "Smith",
+        "Jane"
+      ],
+      "is_no_phi": false,
+      "masked": "[last_name],[first_name] (F, age[age])\nProblems: Type 2 DM, HTN\nMeds: metformin 1g BID, lisinopril 10mg daily\nQuestion: A1c target?",
+      "spans": [
+        {
+          "label": "last_name",
+          "text": "Smith",
+          "start": 0,
+          "end": 5,
+          "score": 0.9796661734580994
+        },
+        {
+          "label": "first_name",
+          "text": "Jane",
+          "start": 6,
+          "end": 11,
+          "score": 0.999554455280304
+        },
+        {
+          "label": "age",
+          "text": "45",
+          "start": 19,
+          "end": 22,
+          "score": 0.9949433207511902
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.7669806670164689
+    },
+    {
+      "id": "B73",
+      "category": "rare_pattern_passport",
+      "query": "Pt with passport ID A12345678, refugee \u2014 vaccine catch-up schedule?",
+      "expected_phi": [
+        "A12345678"
+      ],
+      "is_no_phi": false,
+      "masked": "Pt with passport ID[certificate_license_number], refugee \u2014 vaccine catch-up schedule?",
+      "spans": [
+        {
+          "label": "certificate_license_number",
+          "text": "A12345678",
+          "start": 19,
+          "end": 29,
+          "score": 0.9814457297325134
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.6383064580149949
+    },
+    {
+      "id": "B74",
+      "category": "rare_pattern_dl",
+      "query": "Pt DL D1234567, age 16, contraception counseling \u2014 confidentiality?",
+      "expected_phi": [
+        "D1234567"
+      ],
+      "is_no_phi": false,
+      "masked": "[health_plan_beneficiary_number] DL[health_plan_beneficiary_number]7, age[age], contraception counseling \u2014 confidentiality?",
+      "spans": [
+        {
+          "label": "health_plan_beneficiary_number",
+          "text": "Pt",
+          "start": 0,
+          "end": 2,
+          "score": 0.521049439907074
+        },
+        {
+          "label": "health_plan_beneficiary_number",
+          "text": "D123456",
+          "start": 5,
+          "end": 13,
+          "score": 0.4974101483821869
+        },
+        {
+          "label": "age",
+          "text": "16",
+          "start": 19,
+          "end": 22,
+          "score": 0.9777467846870422
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.5650615409831516
+    },
+    {
+      "id": "B75",
+      "category": "rare_pattern_insurance",
+      "query": "Insurance member ID XAB123456789, prior auth for tirzepatide?",
+      "expected_phi": [
+        "XAB123456789"
+      ],
+      "is_no_phi": false,
+      "masked": "Insurance member ID[health_plan_beneficiary_number], prior auth for[user_name][last_name][last_name][last_name]?",
+      "spans": [
+        {
+          "label": "health_plan_beneficiary_number",
+          "text": "XAB123456789",
+          "start": 19,
+          "end": 32,
+          "score": 0.9094459414482117
+        },
+        {
+          "label": "user_name",
+          "text": "tir",
+          "start": 48,
+          "end": 52,
+          "score": 0.8373141288757324
+        },
+        {
+          "label": "last_name",
+          "text": "ze",
+          "start": 52,
+          "end": 54,
+          "score": 0.6770133972167969
+        },
+        {
+          "label": "last_name",
+          "text": "pati",
+          "start": 54,
+          "end": 58,
+          "score": 0.554574191570282
+        },
+        {
+          "label": "last_name",
+          "text": "de",
+          "start": 58,
+          "end": 60,
+          "score": 0.3864668309688568
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.9298498749849387
+    },
+    {
+      "id": "B76",
+      "category": "stress_long_query",
+      "query": "Patient Sarah Johnson (DOB 2014-03-15, MRN LP-08432, phone 555-867-5309, email sarah@example.com, lives at 6677 Park Lane Fairview FL 76786, SSN 123-45-6789) presents to clinic today (2026-05-10) for her routine annual visit. Her father Robert Johnson (DOB 1980-04-12) accompanies. She is due for HPV vaccine. What's the recommended schedule per AAP/ACIP and which dose for an immunocompetent 12yo?",
+      "expected_phi": [
+        "Sarah",
+        "Johnson",
+        "2014-03-15",
+        "LP-08432",
+        "555-867-5309",
+        "sarah@example.com",
+        "6677 Park Lane",
+        "Fairview",
+        "76786",
+        "123-45-6789",
+        "2026-05-10",
+        "Robert",
+        "1980-04-12"
+      ],
+      "is_no_phi": false,
+      "masked": "Patient[first_name][last_name] (DOB \u00abDATE\u00bb, MRN \u00abMRN\u00bb, phone \u00abPHONE\u00bb, email \u00abEMAIL\u00bb, lives at[street_address][state] \u00abZIP\u00bb, SSN \u00abSSN\u00bb) presents to clinic today (\u00abDATE\u00bb) for her routine annual visit. Her father[first_name][last_name] (DOB \u00abDATE\u00bb) accompanies. She is due for HPV vaccine. What's the recommended schedule per AAP/ACIP and which dose for an immunocompetent 12yo?",
+      "spans": [
+        {
+          "label": "DATE",
+          "text": "1980-04-12",
+          "start": 257,
+          "end": 267,
+          "score": 1.0
+        },
+        {
+          "label": "DATE",
+          "text": "2026-05-10",
+          "start": 184,
+          "end": 194,
+          "score": 1.0
+        },
+        {
+          "label": "SSN",
+          "text": "123-45-6789",
+          "start": 145,
+          "end": 156,
+          "score": 1.0
+        },
+        {
+          "label": "ZIP",
+          "text": "76786",
+          "start": 134,
+          "end": 139,
+          "score": 1.0
+        },
+        {
+          "label": "EMAIL",
+          "text": "sarah@example.com",
+          "start": 79,
+          "end": 96,
+          "score": 1.0
+        },
+        {
+          "label": "PHONE",
+          "text": "555-867-5309",
+          "start": 59,
+          "end": 71,
+          "score": 1.0
+        },
+        {
+          "label": "MRN",
+          "text": "LP-08432",
+          "start": 43,
+          "end": 51,
+          "score": 1.0
+        },
+        {
+          "label": "DATE",
+          "text": "2014-03-15",
+          "start": 27,
+          "end": 37,
+          "score": 1.0
+        },
+        {
+          "label": "first_name",
+          "text": "Sarah",
+          "start": 7,
+          "end": 13,
+          "score": 0.9992684721946716
+        },
+        {
+          "label": "last_name",
+          "text": "Johnson",
+          "start": 13,
+          "end": 21,
+          "score": 0.9989405274391174
+        },
+        {
+          "label": "street_address",
+          "text": "6677 Park Lane Fairview",
+          "start": 84,
+          "end": 108,
+          "score": 0.9959718585014343
+        },
+        {
+          "label": "state",
+          "text": "FL",
+          "start": 108,
+          "end": 111,
+          "score": 0.900872528553009
+        },
+        {
+          "label": "first_name",
+          "text": "Robert",
+          "start": 204,
+          "end": 211,
+          "score": 0.9968468546867371
+        },
+        {
+          "label": "last_name",
+          "text": "Johnson",
+          "start": 211,
+          "end": 219,
+          "score": 0.9990363121032715
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 1.2510814160341397
+    },
+    {
+      "id": "B77",
+      "category": "false_pos_clinical_codes",
+      "query": "ICD-10 E11.9 with HCC adjustment, A1c target?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "ICD-10 E11.9 with HCC adjustment, A1c target?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.5161974169895984
+    },
+    {
+      "id": "B78",
+      "category": "false_pos_clinical_codes",
+      "query": "CPT 99213 visit, BP 145/92, HTN management?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "CPT \u00ab[street_address]\u00bb visit, BP[street_address], HTN management?",
+      "spans": [
+        {
+          "label": "ZIP",
+          "text": "99213",
+          "start": 4,
+          "end": 9,
+          "score": 1.0
+        },
+        {
+          "label": "street_address",
+          "text": "ZIP",
+          "start": 5,
+          "end": 8,
+          "score": 0.4684801399707794
+        },
+        {
+          "label": "street_address",
+          "text": "145/92",
+          "start": 19,
+          "end": 26,
+          "score": 0.6403974890708923
+        }
+      ],
+      "leaks": [],
+      "fp_spans": 3,
+      "latency_s": 0.5934553330298513
+    },
+    {
+      "id": "B79",
+      "category": "false_pos_drug_strength",
+      "query": "Amoxicillin 875 mg BID for adult sinusitis \u2014 duration?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "Amoxicillin 875 mg BID for adult sinusitis \u2014 duration?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.43280645803315565
+    },
+    {
+      "id": "B80",
+      "category": "false_pos_lab_panel",
+      "query": "CMP normal except glucose 178 fasting, dx DM2?",
+      "expected_phi": [],
+      "is_no_phi": true,
+      "masked": "CMP normal except glucose 178 fasting, dx DM2?",
+      "spans": [],
+      "leaks": [],
+      "fp_spans": 0,
+      "latency_s": 0.5392184999655001
+    }
+  ]
+}

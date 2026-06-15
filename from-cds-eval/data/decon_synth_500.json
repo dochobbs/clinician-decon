@@ -1,0 +1,4113 @@
+[
+  {
+    "id": "S0001",
+    "category": "address",
+    "query": "Pt at 2625 Birch Rd, Austin, CO 10851, asks about flu shot?",
+    "phi": [
+      "Birch Rd",
+      "Austin",
+      "10851"
+    ]
+  },
+  {
+    "id": "S0002",
+    "category": "mrn",
+    "query": "MRN 6884882440 on metformin, dose-adjust for CKD3?",
+    "phi": [
+      "6884882440"
+    ]
+  },
+  {
+    "id": "S0003",
+    "category": "no_phi",
+    "query": "What is the diagnostic criteria for sepsis in pediatrics?",
+    "phi": []
+  },
+  {
+    "id": "S0004",
+    "category": "mrn",
+    "query": "MRN 3119634399 on metformin, dose-adjust for CKD3?",
+    "phi": [
+      "3119634399"
+    ]
+  },
+  {
+    "id": "S0005",
+    "category": "dense_multi_phi",
+    "query": "Family of Lisa Park (DOB 1950-08-01, MRN AB728038, lives at 5957 Cedar Ln, Minneapolis) wants advice on dad's CHF management.",
+    "phi": [
+      "Lisa",
+      "Park",
+      "1950-08-01",
+      "AB728038",
+      "Cedar Ln",
+      "Minneapolis"
+    ]
+  },
+  {
+    "id": "S0006",
+    "category": "clinical_lookalike",
+    "query": "TSH 5.8 with low T4, levothyroxine dosing?",
+    "phi": []
+  },
+  {
+    "id": "S0007",
+    "category": "email",
+    "query": "Email aisha.anderson@example.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "aisha.anderson@example.com"
+    ]
+  },
+  {
+    "id": "S0008",
+    "category": "no_phi",
+    "query": "When do we start statins per USPSTF?",
+    "phi": []
+  },
+  {
+    "id": "S0009",
+    "category": "name",
+    "query": "Liam Martinez has fever 102 for 3 days, workup?",
+    "phi": [
+      "Liam",
+      "Martinez"
+    ]
+  },
+  {
+    "id": "S0010",
+    "category": "mrn",
+    "query": "MR# LP238890 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "LP238890"
+    ]
+  },
+  {
+    "id": "S0011",
+    "category": "name",
+    "query": "Pt Mary-Ann Jones, 35M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Mary-Ann",
+      "Jones"
+    ]
+  },
+  {
+    "id": "S0012",
+    "category": "dob",
+    "query": "DOB 1961-11-04, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "1961-11-04"
+    ]
+  },
+  {
+    "id": "S0013",
+    "category": "clinical_lookalike",
+    "query": "ALT 221 / AST 392 \u2014 workup priorities?",
+    "phi": []
+  },
+  {
+    "id": "S0014",
+    "category": "dob",
+    "query": "Pediatric pt DOB 04/14/1946, vaccines due?",
+    "phi": [
+      "04/14/1946"
+    ]
+  },
+  {
+    "id": "S0015",
+    "category": "name",
+    "query": "Yael Lopez, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Yael",
+      "Lopez"
+    ]
+  },
+  {
+    "id": "S0016",
+    "category": "dense_multi_phi",
+    "query": "Family of Wei-Ming O'Brien (DOB 1960-05-15, MRN 6938382, lives at 1030 Cedar Ln, Tampa) wants advice on dad's CHF management.",
+    "phi": [
+      "Wei-Ming",
+      "O'Brien",
+      "1960-05-15",
+      "6938382",
+      "Cedar Ln",
+      "Tampa"
+    ]
+  },
+  {
+    "id": "S0017",
+    "category": "phone",
+    "query": "Pt phone +1 895 614 3704 for vaccine reminders, what protocol?",
+    "phi": [
+      "+1 895 614 3704"
+    ]
+  },
+  {
+    "id": "S0018",
+    "category": "name",
+    "query": "Pt Maria Wilson, 4M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Maria",
+      "Wilson"
+    ]
+  },
+  {
+    "id": "S0019",
+    "category": "no_phi",
+    "query": "First-line antibiotic for uncomplicated UTI in adult women?",
+    "phi": []
+  },
+  {
+    "id": "S0020",
+    "category": "no_phi",
+    "query": "First-line agent for primary HTN per JNC 8?",
+    "phi": []
+  },
+  {
+    "id": "S0021",
+    "category": "phone",
+    "query": "Family contact (643) 570-8532, BP medication refill workflow?",
+    "phi": [
+      "(643) 570-8532"
+    ]
+  },
+  {
+    "id": "S0022",
+    "category": "name",
+    "query": "Olivia Schwarz on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Olivia",
+      "Schwarz"
+    ]
+  },
+  {
+    "id": "S0023",
+    "category": "dense_multi_phi",
+    "query": "Mohammed Taylor DOB 1965-12-19 SSN 114-78-3073 isabella.garcia@hospital.org \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Mohammed",
+      "Taylor",
+      "1965-12-19",
+      "isabella.garcia@hospital.org",
+      "114-78-3073"
+    ]
+  },
+  {
+    "id": "S0024",
+    "category": "email",
+    "query": "Pt email sophia.patel@hospital.org asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "sophia.patel@hospital.org"
+    ]
+  },
+  {
+    "id": "S0025",
+    "category": "no_phi",
+    "query": "Tdap booster interval in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0026",
+    "category": "dense_multi_phi",
+    "query": "Family of Rashida Anderson (DOB 1984-02-18, MRN 6101803, lives at 8100 Pine St, Denver) wants advice on dad's CHF management.",
+    "phi": [
+      "Rashida",
+      "Anderson",
+      "1984-02-18",
+      "6101803",
+      "Pine St",
+      "Denver"
+    ]
+  },
+  {
+    "id": "S0027",
+    "category": "address",
+    "query": "Lives on 611 Elm St, lead screening recommendation?",
+    "phi": [
+      "Elm St"
+    ]
+  },
+  {
+    "id": "S0028",
+    "category": "dense_multi_phi",
+    "query": "Patient Aisha Miller (phone (324) 229-4920, email priya.schwarz@example.com, SSN 665-62-2527) presents to clinic at 6817 Elm St, Tampa, NY 45838 for annual visit. What's due?",
+    "phi": [
+      "Aisha",
+      "Miller",
+      "(324) 229-4920",
+      "priya.schwarz@example.com",
+      "665-62-2527",
+      "Elm St",
+      "Tampa",
+      "45838"
+    ]
+  },
+  {
+    "id": "S0029",
+    "category": "no_phi",
+    "query": "What is the diagnostic criteria for sepsis in pediatrics?",
+    "phi": []
+  },
+  {
+    "id": "S0030",
+    "category": "clinical_lookalike",
+    "query": "ICD-10 E11.9 with HCC adjustment, A1c target?",
+    "phi": []
+  },
+  {
+    "id": "S0031",
+    "category": "mrn",
+    "query": "MR# AB747453 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "AB747453"
+    ]
+  },
+  {
+    "id": "S0032",
+    "category": "dob",
+    "query": "Pt DOB 2002-11-26 on warfarin, INR 1.8 \u2014 adjust?",
+    "phi": [
+      "2002-11-26"
+    ]
+  },
+  {
+    "id": "S0033",
+    "category": "dob",
+    "query": "Pediatric pt DOB 11/25/2002, vaccines due?",
+    "phi": [
+      "11/25/2002"
+    ]
+  },
+  {
+    "id": "S0034",
+    "category": "clinical_lookalike",
+    "query": "Hgb 9.7, MCV 78 \u2014 iron deficiency or thalassemia?",
+    "phi": []
+  },
+  {
+    "id": "S0035",
+    "category": "name",
+    "query": "Maria Park has fever 102 for 3 days, workup?",
+    "phi": [
+      "Maria",
+      "Park"
+    ]
+  },
+  {
+    "id": "S0036",
+    "category": "address",
+    "query": "Pt from San Diego, OH \u2014 TB screening required?",
+    "phi": [
+      "San Diego"
+    ]
+  },
+  {
+    "id": "S0037",
+    "category": "dob",
+    "query": "DOB 2008-01-24, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "2008-01-24"
+    ]
+  },
+  {
+    "id": "S0038",
+    "category": "email",
+    "query": "Pt email daniel.anderson@hospital.org asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "daniel.anderson@hospital.org"
+    ]
+  },
+  {
+    "id": "S0039",
+    "category": "name",
+    "query": "Pt Mohammed Jones (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Mohammed",
+      "Jones"
+    ]
+  },
+  {
+    "id": "S0040",
+    "category": "dob",
+    "query": "Pediatric pt DOB 01/22/2009, vaccines due?",
+    "phi": [
+      "01/22/2009"
+    ]
+  },
+  {
+    "id": "S0041",
+    "category": "name",
+    "query": "James Jones (3yo) has otitis media, abx?",
+    "phi": [
+      "James",
+      "Jones"
+    ]
+  },
+  {
+    "id": "S0042",
+    "category": "no_phi",
+    "query": "What is the diagnostic criteria for sepsis in pediatrics?",
+    "phi": []
+  },
+  {
+    "id": "S0043",
+    "category": "name",
+    "query": "Jiang MacDonald (82F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Jiang",
+      "MacDonald"
+    ]
+  },
+  {
+    "id": "S0044",
+    "category": "name",
+    "query": "Pt Jiang Park (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Jiang",
+      "Park"
+    ]
+  },
+  {
+    "id": "S0045",
+    "category": "clinical_lookalike",
+    "query": "Metformin 500 mg BID, when to add second-line?",
+    "phi": []
+  },
+  {
+    "id": "S0046",
+    "category": "clinical_lookalike",
+    "query": "Lisinopril 50 mg, BP 170/72, titrate up?",
+    "phi": []
+  },
+  {
+    "id": "S0047",
+    "category": "mrn",
+    "query": "Patient MRN: HOSP-2024-9410 needs prior auth for tirzepatide.",
+    "phi": [
+      "HOSP-2024-9410"
+    ]
+  },
+  {
+    "id": "S0048",
+    "category": "no_phi",
+    "query": "What is the diagnostic criteria for sepsis in pediatrics?",
+    "phi": []
+  },
+  {
+    "id": "S0049",
+    "category": "no_phi",
+    "query": "Diagnostic threshold for hypertension per ACC/AHA?",
+    "phi": []
+  },
+  {
+    "id": "S0050",
+    "category": "name",
+    "query": "Linda Wilson, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Linda",
+      "Wilson"
+    ]
+  },
+  {
+    "id": "S0051",
+    "category": "phone",
+    "query": "Family contact 681.244.7338, BP medication refill workflow?",
+    "phi": [
+      "681.244.7338"
+    ]
+  },
+  {
+    "id": "S0052",
+    "category": "name",
+    "query": "Charlotte Singh has new dx HTN \u2014 first-line agent for African-American adult?",
+    "phi": [
+      "Charlotte",
+      "Singh"
+    ]
+  },
+  {
+    "id": "S0053",
+    "category": "dense_multi_phi",
+    "query": "Sophia Chen DOB 1935-12-28 SSN 867-96-3621 noah.chen@yahoo.com \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Sophia",
+      "Chen",
+      "1935-12-28",
+      "noah.chen@yahoo.com",
+      "867-96-3621"
+    ]
+  },
+  {
+    "id": "S0054",
+    "category": "name",
+    "query": "Pt John Taylor, 24M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "John",
+      "Taylor"
+    ]
+  },
+  {
+    "id": "S0055",
+    "category": "name",
+    "query": "Pt Bo Chen (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Bo",
+      "Chen"
+    ]
+  },
+  {
+    "id": "S0056",
+    "category": "no_phi",
+    "query": "Tdap booster interval in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0057",
+    "category": "name",
+    "query": "Pt Olivia Jones (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Olivia",
+      "Jones"
+    ]
+  },
+  {
+    "id": "S0058",
+    "category": "mrn",
+    "query": "MRN 1605064858, BP 145/92, recheck interval?",
+    "phi": [
+      "1605064858"
+    ]
+  },
+  {
+    "id": "S0059",
+    "category": "clinical_lookalike",
+    "query": "ICD-10 E11.9 with HCC adjustment, A1c target?",
+    "phi": []
+  },
+  {
+    "id": "S0060",
+    "category": "email",
+    "query": "Email wei-ming.patel@gmail.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "wei-ming.patel@gmail.com"
+    ]
+  },
+  {
+    "id": "S0061",
+    "category": "no_phi",
+    "query": "First-line antibiotic for uncomplicated UTI in adult women?",
+    "phi": []
+  },
+  {
+    "id": "S0062",
+    "category": "email",
+    "query": "Pt email patricia.smith@clinic.io asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "patricia.smith@clinic.io"
+    ]
+  },
+  {
+    "id": "S0063",
+    "category": "no_phi",
+    "query": "AAP recommendations for screen time in toddlers?",
+    "phi": []
+  },
+  {
+    "id": "S0064",
+    "category": "ssn",
+    "query": "Pt SSN 838-45-5715, Medicare eligibility for screening colonoscopy?",
+    "phi": [
+      "838-45-5715"
+    ]
+  },
+  {
+    "id": "S0065",
+    "category": "dense_multi_phi",
+    "query": "Carlos Johnson DOB 1997-04-21 SSN 261-62-8793 linda.smith@yahoo.com \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Carlos",
+      "Johnson",
+      "1997-04-21",
+      "linda.smith@yahoo.com",
+      "261-62-8793"
+    ]
+  },
+  {
+    "id": "S0066",
+    "category": "clinical_lookalike",
+    "query": "Platelet 101, no bleeding \u2014 workup?",
+    "phi": []
+  },
+  {
+    "id": "S0067",
+    "category": "mrn",
+    "query": "MRN: HOSP-2024-9233 has new dx HTN \u2014 first-line?",
+    "phi": [
+      "HOSP-2024-9233"
+    ]
+  },
+  {
+    "id": "S0068",
+    "category": "address",
+    "query": "Pt at 1499 Maple Dr, Fairview, TX 74071, asks about flu shot?",
+    "phi": [
+      "Maple Dr",
+      "Fairview",
+      "74071"
+    ]
+  },
+  {
+    "id": "S0069",
+    "category": "mrn",
+    "query": "MRN: HOSP-2024-7154 on metformin, dose-adjust for CKD3?",
+    "phi": [
+      "HOSP-2024-7154"
+    ]
+  },
+  {
+    "id": "S0070",
+    "category": "email",
+    "query": "Email carlos.miller@example.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "carlos.miller@example.com"
+    ]
+  },
+  {
+    "id": "S0071",
+    "category": "name",
+    "query": "Olivia Johnson has new dx HTN \u2014 first-line agent for African-American adult?",
+    "phi": [
+      "Olivia",
+      "Johnson"
+    ]
+  },
+  {
+    "id": "S0072",
+    "category": "name",
+    "query": "Isabella Williams, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Isabella",
+      "Williams"
+    ]
+  },
+  {
+    "id": "S0073",
+    "category": "dob",
+    "query": "93yo (DOB 1990-06-07) statin recommendation?",
+    "phi": [
+      "1990-06-07"
+    ]
+  },
+  {
+    "id": "S0074",
+    "category": "no_phi",
+    "query": "When do we start statins per USPSTF?",
+    "phi": []
+  },
+  {
+    "id": "S0075",
+    "category": "phone",
+    "query": "Pt phone (924) 354-1149 for vaccine reminders, what protocol?",
+    "phi": [
+      "(924) 354-1149"
+    ]
+  },
+  {
+    "id": "S0076",
+    "category": "dob",
+    "query": "52yo (DOB 1988-10-08) statin recommendation?",
+    "phi": [
+      "1988-10-08"
+    ]
+  },
+  {
+    "id": "S0077",
+    "category": "name",
+    "query": "Pt John Miller, 76yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "John",
+      "Miller"
+    ]
+  },
+  {
+    "id": "S0078",
+    "category": "name",
+    "query": "Amir Thomas on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Amir",
+      "Thomas"
+    ]
+  },
+  {
+    "id": "S0079",
+    "category": "clinical_lookalike",
+    "query": "Platelet 194, no bleeding \u2014 workup?",
+    "phi": []
+  },
+  {
+    "id": "S0080",
+    "category": "ssn",
+    "query": "Pt SSN 473-24-4273, Medicare eligibility for screening colonoscopy?",
+    "phi": [
+      "473-24-4273"
+    ]
+  },
+  {
+    "id": "S0081",
+    "category": "mrn",
+    "query": "MR# RM889245 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "RM889245"
+    ]
+  },
+  {
+    "id": "S0082",
+    "category": "mrn",
+    "query": "Patient MRN 2030810 needs prior auth for tirzepatide.",
+    "phi": [
+      "478915"
+    ]
+  },
+  {
+    "id": "S0083",
+    "category": "mrn",
+    "query": "MRN LP-97910 on metformin, dose-adjust for CKD3?",
+    "phi": [
+      "LP-97910"
+    ]
+  },
+  {
+    "id": "S0084",
+    "category": "name",
+    "query": "Pt James Chen, 89M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "James",
+      "Chen"
+    ]
+  },
+  {
+    "id": "S0085",
+    "category": "name",
+    "query": "John Thomas on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "John",
+      "Thomas"
+    ]
+  },
+  {
+    "id": "S0086",
+    "category": "dense_multi_phi",
+    "query": "Family of Yael van der Berg (DOB 1951-10-05, MRN 2597613, lives at 981 Oak Ave, Lakeville) wants advice on dad's CHF management.",
+    "phi": [
+      "Yael",
+      "van der Berg",
+      "1951-10-05",
+      "2597613",
+      "Oak Ave",
+      "Lakeville"
+    ]
+  },
+  {
+    "id": "S0087",
+    "category": "address",
+    "query": "Lives on 4656 Maple Dr, lead screening recommendation?",
+    "phi": [
+      "Maple Dr"
+    ]
+  },
+  {
+    "id": "S0088",
+    "category": "name",
+    "query": "Patricia Thompson (3yo) has otitis media, abx?",
+    "phi": [
+      "Patricia",
+      "Thompson"
+    ]
+  },
+  {
+    "id": "S0089",
+    "category": "dense_multi_phi",
+    "query": "Robert Wong (DOB 1968-03-13, MRN RM327797, phone 346-270-9691) needs HPV vaccine, when to start?",
+    "phi": [
+      "Robert",
+      "Wong",
+      "1968-03-13",
+      "346-270-9691",
+      "RM327797"
+    ]
+  },
+  {
+    "id": "S0090",
+    "category": "dense_multi_phi",
+    "query": "Priya Miller (DOB 2007-09-07, MRN LP-27299, phone +1 861 255 4921) needs HPV vaccine, when to start?",
+    "phi": [
+      "Priya",
+      "Miller",
+      "2007-09-07",
+      "+1 861 255 4921",
+      "LP-27299"
+    ]
+  },
+  {
+    "id": "S0091",
+    "category": "mrn",
+    "query": "Patient MR# AB425236 needs prior auth for tirzepatide.",
+    "phi": [
+      "AB425236"
+    ]
+  },
+  {
+    "id": "S0092",
+    "category": "phone",
+    "query": "Family contact 639-478-9582, BP medication refill workflow?",
+    "phi": [
+      "639-478-9582"
+    ]
+  },
+  {
+    "id": "S0093",
+    "category": "name",
+    "query": "Mary-Ann Thomas has fever 102 for 3 days, workup?",
+    "phi": [
+      "Mary-Ann",
+      "Thomas"
+    ]
+  },
+  {
+    "id": "S0094",
+    "category": "dense_multi_phi",
+    "query": "Marcus Smith DOB 1933-04-18 SSN 206-36-9680 liam.lopez@hospital.org \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Marcus",
+      "Smith",
+      "1933-04-18",
+      "liam.lopez@hospital.org",
+      "206-36-9680"
+    ]
+  },
+  {
+    "id": "S0095",
+    "category": "name",
+    "query": "Daniel Thomas has new dx HTN \u2014 first-line agent for African-American adult?",
+    "phi": [
+      "Daniel",
+      "Thomas"
+    ]
+  },
+  {
+    "id": "S0096",
+    "category": "phone",
+    "query": "Family contact +1 763 455 2551, BP medication refill workflow?",
+    "phi": [
+      "+1 763 455 2551"
+    ]
+  },
+  {
+    "id": "S0097",
+    "category": "name",
+    "query": "Aisha Garcia, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Aisha",
+      "Garcia"
+    ]
+  },
+  {
+    "id": "S0098",
+    "category": "mrn",
+    "query": "Medical Record Number 5045872, BP 145/92, recheck interval?",
+    "phi": [
+      "5045872"
+    ]
+  },
+  {
+    "id": "S0099",
+    "category": "email",
+    "query": "Pt email sarah.wong@yahoo.com asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "sarah.wong@yahoo.com"
+    ]
+  },
+  {
+    "id": "S0100",
+    "category": "clinical_lookalike",
+    "query": "Amoxicillin 20 mg BID for adult sinusitis \u2014 duration?",
+    "phi": []
+  },
+  {
+    "id": "S0101",
+    "category": "name",
+    "query": "Jiang Chen due for HPV vaccine, when do we start?",
+    "phi": [
+      "Jiang",
+      "Chen"
+    ]
+  },
+  {
+    "id": "S0102",
+    "category": "clinical_lookalike",
+    "query": "TSH 0.7 with low T4, levothyroxine dosing?",
+    "phi": []
+  },
+  {
+    "id": "S0103",
+    "category": "name",
+    "query": "Pt Liam Garcia (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Liam",
+      "Garcia"
+    ]
+  },
+  {
+    "id": "S0104",
+    "category": "email",
+    "query": "Pt email marcus.hernandez@yahoo.com asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "marcus.hernandez@yahoo.com"
+    ]
+  },
+  {
+    "id": "S0105",
+    "category": "phone",
+    "query": "Family contact (376) 482-7602, BP medication refill workflow?",
+    "phi": [
+      "(376) 482-7602"
+    ]
+  },
+  {
+    "id": "S0106",
+    "category": "name",
+    "query": "Mohammed Hernandez, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Mohammed",
+      "Hernandez"
+    ]
+  },
+  {
+    "id": "S0107",
+    "category": "email",
+    "query": "Email wei.anderson@gmail.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "wei.anderson@gmail.com"
+    ]
+  },
+  {
+    "id": "S0108",
+    "category": "no_phi",
+    "query": "When to perform DEXA scan for osteoporosis screening?",
+    "phi": []
+  },
+  {
+    "id": "S0109",
+    "category": "ssn",
+    "query": "Pt SSN 383-43-5895, Medicare eligibility for screening colonoscopy?",
+    "phi": [
+      "383-43-5895"
+    ]
+  },
+  {
+    "id": "S0110",
+    "category": "name",
+    "query": "Pt Aria Anderson (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Aria",
+      "Anderson"
+    ]
+  },
+  {
+    "id": "S0111",
+    "category": "phone",
+    "query": "Family contact 346-523-3954, BP medication refill workflow?",
+    "phi": [
+      "346-523-3954"
+    ]
+  },
+  {
+    "id": "S0112",
+    "category": "no_phi",
+    "query": "ACIP HPV vaccine schedule for 11-year-olds?",
+    "phi": []
+  },
+  {
+    "id": "S0113",
+    "category": "name",
+    "query": "Carlos Davis has fever 102 for 3 days, workup?",
+    "phi": [
+      "Carlos",
+      "Davis"
+    ]
+  },
+  {
+    "id": "S0114",
+    "category": "no_phi",
+    "query": "AAP recommendations for screen time in toddlers?",
+    "phi": []
+  },
+  {
+    "id": "S0115",
+    "category": "dense_multi_phi",
+    "query": "Tom\u00e1s Johnson (DOB 1943-11-27, MRN LP-65164, phone +1 318 626 8279) needs HPV vaccine, when to start?",
+    "phi": [
+      "Tom\u00e1s",
+      "Johnson",
+      "1943-11-27",
+      "+1 318 626 8279",
+      "LP-65164"
+    ]
+  },
+  {
+    "id": "S0116",
+    "category": "phone",
+    "query": "Pt phone (904) 692-6416 for vaccine reminders, what protocol?",
+    "phi": [
+      "(904) 692-6416"
+    ]
+  },
+  {
+    "id": "S0117",
+    "category": "name",
+    "query": "Pt Sophia Mohammed, 35yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Sophia",
+      "Mohammed"
+    ]
+  },
+  {
+    "id": "S0118",
+    "category": "name",
+    "query": "Pt Bo Taylor (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Bo",
+      "Taylor"
+    ]
+  },
+  {
+    "id": "S0119",
+    "category": "mrn",
+    "query": "Medical Record Number 8653898, BP 145/92, recheck interval?",
+    "phi": [
+      "8653898"
+    ]
+  },
+  {
+    "id": "S0120",
+    "category": "address",
+    "query": "Lives on 9657 Main St, lead screening recommendation?",
+    "phi": [
+      "Main St"
+    ]
+  },
+  {
+    "id": "S0121",
+    "category": "mrn",
+    "query": "MRN 8991678061 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "8991678061"
+    ]
+  },
+  {
+    "id": "S0122",
+    "category": "email",
+    "query": "Email olivia.wilson@gmail.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "olivia.wilson@gmail.com"
+    ]
+  },
+  {
+    "id": "S0123",
+    "category": "name",
+    "query": "Sophia Hernandez on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Sophia",
+      "Hernandez"
+    ]
+  },
+  {
+    "id": "S0124",
+    "category": "no_phi",
+    "query": "When to refer for sleep study in suspected OSA?",
+    "phi": []
+  },
+  {
+    "id": "S0125",
+    "category": "dob",
+    "query": "Pediatric pt DOB 03/14/1994, vaccines due?",
+    "phi": [
+      "03/14/1994"
+    ]
+  },
+  {
+    "id": "S0126",
+    "category": "phone",
+    "query": "Family contact 528-726-2349, BP medication refill workflow?",
+    "phi": [
+      "528-726-2349"
+    ]
+  },
+  {
+    "id": "S0127",
+    "category": "clinical_lookalike",
+    "query": "Metformin 50 mg BID, when to add second-line?",
+    "phi": []
+  },
+  {
+    "id": "S0128",
+    "category": "name",
+    "query": "Noah Schwarz on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Noah",
+      "Schwarz"
+    ]
+  },
+  {
+    "id": "S0129",
+    "category": "mrn",
+    "query": "Patient Medical Record Number 6562703 needs prior auth for tirzepatide.",
+    "phi": [
+      "6562703"
+    ]
+  },
+  {
+    "id": "S0130",
+    "category": "no_phi",
+    "query": "What's the workup for iron deficiency anemia in adult women?",
+    "phi": []
+  },
+  {
+    "id": "S0131",
+    "category": "no_phi",
+    "query": "First-line antibiotic for uncomplicated UTI in adult women?",
+    "phi": []
+  },
+  {
+    "id": "S0132",
+    "category": "mrn",
+    "query": "MRN LP-75820 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "LP-75820"
+    ]
+  },
+  {
+    "id": "S0133",
+    "category": "name",
+    "query": "Maria Anderson due for HPV vaccine, when do we start?",
+    "phi": [
+      "Maria",
+      "Anderson"
+    ]
+  },
+  {
+    "id": "S0134",
+    "category": "address",
+    "query": "Pt at 2416 Willow Way, Chicago, MI 85008, asks about flu shot?",
+    "phi": [
+      "Willow Way",
+      "Chicago",
+      "85008"
+    ]
+  },
+  {
+    "id": "S0135",
+    "category": "mrn",
+    "query": "MRN 8234304760 has new dx HTN \u2014 first-line?",
+    "phi": [
+      "8234304760"
+    ]
+  },
+  {
+    "id": "S0136",
+    "category": "address",
+    "query": "Lives on 126 Pine St, lead screening recommendation?",
+    "phi": [
+      "Pine St"
+    ]
+  },
+  {
+    "id": "S0137",
+    "category": "phone",
+    "query": "Family contact 383.579.8925, BP medication refill workflow?",
+    "phi": [
+      "383.579.8925"
+    ]
+  },
+  {
+    "id": "S0138",
+    "category": "name",
+    "query": "Isabella Williams due for HPV vaccine, when do we start?",
+    "phi": [
+      "Isabella",
+      "Williams"
+    ]
+  },
+  {
+    "id": "S0139",
+    "category": "email",
+    "query": "Email charlotte.brown@yahoo.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "charlotte.brown@yahoo.com"
+    ]
+  },
+  {
+    "id": "S0140",
+    "category": "dense_multi_phi",
+    "query": "Family of Mia Chen (DOB 1998-01-23, MRN 4190481, lives at 3975 Birch Rd, Fairview) wants advice on dad's CHF management.",
+    "phi": [
+      "Mia",
+      "Chen",
+      "1998-01-23",
+      "4190481",
+      "Birch Rd",
+      "Fairview"
+    ]
+  },
+  {
+    "id": "S0141",
+    "category": "email",
+    "query": "Pt email wei.wilson@yahoo.com asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "wei.wilson@yahoo.com"
+    ]
+  },
+  {
+    "id": "S0142",
+    "category": "name",
+    "query": "Aria Mohammed has new dx HTN \u2014 first-line agent for African-American adult?",
+    "phi": [
+      "Aria",
+      "Mohammed"
+    ]
+  },
+  {
+    "id": "S0143",
+    "category": "no_phi",
+    "query": "When do we start statins per USPSTF?",
+    "phi": []
+  },
+  {
+    "id": "S0144",
+    "category": "mrn",
+    "query": "MRN 6517352486 has new dx HTN \u2014 first-line?",
+    "phi": [
+      "6517352486"
+    ]
+  },
+  {
+    "id": "S0145",
+    "category": "address",
+    "query": "Pt from Boston, MA \u2014 TB screening required?",
+    "phi": [
+      "Boston"
+    ]
+  },
+  {
+    "id": "S0146",
+    "category": "name",
+    "query": "Pt Emma Smith (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Emma",
+      "Smith"
+    ]
+  },
+  {
+    "id": "S0147",
+    "category": "clinical_lookalike",
+    "query": "Lisinopril 850 mg, BP 172/72, titrate up?",
+    "phi": []
+  },
+  {
+    "id": "S0148",
+    "category": "name",
+    "query": "Pt Amir Martinez, 17M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Amir",
+      "Martinez"
+    ]
+  },
+  {
+    "id": "S0149",
+    "category": "mrn",
+    "query": "MRN 8013290620 on metformin, dose-adjust for CKD3?",
+    "phi": [
+      "8013290620"
+    ]
+  },
+  {
+    "id": "S0150",
+    "category": "clinical_lookalike",
+    "query": "WBC 10.1, fever 102 \u2014 workup?",
+    "phi": []
+  },
+  {
+    "id": "S0151",
+    "category": "dob",
+    "query": "DOB 1953-01-20, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "1953-01-20"
+    ]
+  },
+  {
+    "id": "S0152",
+    "category": "phone",
+    "query": "Family contact 703-281-8668, BP medication refill workflow?",
+    "phi": [
+      "703-281-8668"
+    ]
+  },
+  {
+    "id": "S0153",
+    "category": "mrn",
+    "query": "MR# XY493282, BP 145/92, recheck interval?",
+    "phi": [
+      "XY493282"
+    ]
+  },
+  {
+    "id": "S0154",
+    "category": "dob",
+    "query": "Pediatric pt DOB 01/15/1942, vaccines due?",
+    "phi": [
+      "01/15/1942"
+    ]
+  },
+  {
+    "id": "S0155",
+    "category": "no_phi",
+    "query": "Empiric abx for adult outpatient CAP per ATS/IDSA?",
+    "phi": []
+  },
+  {
+    "id": "S0156",
+    "category": "clinical_lookalike",
+    "query": "B12 444 in 70F with neuropathy, supplementation dose?",
+    "phi": []
+  },
+  {
+    "id": "S0157",
+    "category": "name",
+    "query": "Pt Patricia O'Brien (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Patricia",
+      "O'Brien"
+    ]
+  },
+  {
+    "id": "S0158",
+    "category": "name",
+    "query": "Carlos Mohammed has fever 102 for 3 days, workup?",
+    "phi": [
+      "Carlos",
+      "Mohammed"
+    ]
+  },
+  {
+    "id": "S0159",
+    "category": "address",
+    "query": "Pt at 311 Birch Rd, Portland, NY 30578, asks about flu shot?",
+    "phi": [
+      "Birch Rd",
+      "Portland",
+      "30578"
+    ]
+  },
+  {
+    "id": "S0160",
+    "category": "clinical_lookalike",
+    "query": "ICD-10 E11.9 with HCC adjustment, A1c target?",
+    "phi": []
+  },
+  {
+    "id": "S0161",
+    "category": "no_phi",
+    "query": "Diagnostic threshold for hypertension per ACC/AHA?",
+    "phi": []
+  },
+  {
+    "id": "S0162",
+    "category": "dense_multi_phi",
+    "query": "Family of Mia Kim (DOB 1986-12-27, MRN XY342129, lives at 2206 Park Lane, Phoenix) wants advice on dad's CHF management.",
+    "phi": [
+      "Mia",
+      "Kim",
+      "1986-12-27",
+      "XY342129",
+      "Park Lane",
+      "Phoenix"
+    ]
+  },
+  {
+    "id": "S0163",
+    "category": "clinical_lookalike",
+    "query": "Platelet 55, no bleeding \u2014 workup?",
+    "phi": []
+  },
+  {
+    "id": "S0164",
+    "category": "name",
+    "query": "Noah Gonzalez, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Noah",
+      "Gonzalez"
+    ]
+  },
+  {
+    "id": "S0165",
+    "category": "phone",
+    "query": "Family contact (779) 875-3459, BP medication refill workflow?",
+    "phi": [
+      "(779) 875-3459"
+    ]
+  },
+  {
+    "id": "S0166",
+    "category": "mrn",
+    "query": "MRN LP-21495 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "LP-21495"
+    ]
+  },
+  {
+    "id": "S0167",
+    "category": "dob",
+    "query": "DOB 1938-05-16, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "1938-05-16"
+    ]
+  },
+  {
+    "id": "S0168",
+    "category": "clinical_lookalike",
+    "query": "A1c 9.8 \u2014 next step in DM2 management?",
+    "phi": []
+  },
+  {
+    "id": "S0169",
+    "category": "name",
+    "query": "Ethan Gonzalez (69F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Ethan",
+      "Gonzalez"
+    ]
+  },
+  {
+    "id": "S0170",
+    "category": "phone",
+    "query": "Pt phone (694) 712-3524 for vaccine reminders, what protocol?",
+    "phi": [
+      "(694) 712-3524"
+    ]
+  },
+  {
+    "id": "S0171",
+    "category": "email",
+    "query": "Email marcus.garcia@hospital.org regarding annual physical scheduling, what to send?",
+    "phi": [
+      "marcus.garcia@hospital.org"
+    ]
+  },
+  {
+    "id": "S0172",
+    "category": "mrn",
+    "query": "Medical Record Number 8808058 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "8808058"
+    ]
+  },
+  {
+    "id": "S0173",
+    "category": "name",
+    "query": "Pt Tom\u00e1s Andersson, 17yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Tom\u00e1s",
+      "Andersson"
+    ]
+  },
+  {
+    "id": "S0174",
+    "category": "mrn",
+    "query": "MRN 3838463998 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "3838463998"
+    ]
+  },
+  {
+    "id": "S0175",
+    "category": "no_phi",
+    "query": "How is anaphylaxis treated?",
+    "phi": []
+  },
+  {
+    "id": "S0176",
+    "category": "name",
+    "query": "Pt Aisha Smith (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Aisha",
+      "Smith"
+    ]
+  },
+  {
+    "id": "S0177",
+    "category": "ssn",
+    "query": "SSN 520797012 on file, prior auth for tirzepatide?",
+    "phi": [
+      "520797012"
+    ]
+  },
+  {
+    "id": "S0178",
+    "category": "address",
+    "query": "Pt from Fairview, CO \u2014 TB screening required?",
+    "phi": [
+      "Fairview"
+    ]
+  },
+  {
+    "id": "S0179",
+    "category": "name",
+    "query": "Olivia Martinez on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Olivia",
+      "Martinez"
+    ]
+  },
+  {
+    "id": "S0180",
+    "category": "dense_multi_phi",
+    "query": "Liam Anderson DOB 1979-08-09 SSN 642-97-1672 liam.anderson@hospital.org \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Liam",
+      "Anderson",
+      "1979-08-09",
+      "liam.anderson@hospital.org",
+      "642-97-1672"
+    ]
+  },
+  {
+    "id": "S0181",
+    "category": "name",
+    "query": "Pt Wei-Ming Brown, 88M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Wei-Ming",
+      "Brown"
+    ]
+  },
+  {
+    "id": "S0182",
+    "category": "mrn",
+    "query": "Patient MRN 1323386 needs prior auth for tirzepatide.",
+    "phi": [
+      "1281322"
+    ]
+  },
+  {
+    "id": "S0183",
+    "category": "mrn",
+    "query": "MRN 7811468, BP 145/92, recheck interval?",
+    "phi": [
+      "4964699"
+    ]
+  },
+  {
+    "id": "S0184",
+    "category": "clinical_lookalike",
+    "query": "LDL 64 in 45M, statin first-line?",
+    "phi": []
+  },
+  {
+    "id": "S0185",
+    "category": "no_phi",
+    "query": "What's the GFR threshold to discontinue metformin?",
+    "phi": []
+  },
+  {
+    "id": "S0186",
+    "category": "ssn",
+    "query": "Pt SSN 658-27-6268, Medicare eligibility for screening colonoscopy?",
+    "phi": [
+      "658-27-6268"
+    ]
+  },
+  {
+    "id": "S0187",
+    "category": "name",
+    "query": "Pt Rashida Gonzalez, 37M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Rashida",
+      "Gonzalez"
+    ]
+  },
+  {
+    "id": "S0188",
+    "category": "name",
+    "query": "Aria O'Brien (23F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Aria",
+      "O'Brien"
+    ]
+  },
+  {
+    "id": "S0189",
+    "category": "no_phi",
+    "query": "Tdap booster interval in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0190",
+    "category": "mrn",
+    "query": "MRN LP-27891, BP 145/92, recheck interval?",
+    "phi": [
+      "LP-27891"
+    ]
+  },
+  {
+    "id": "S0191",
+    "category": "ssn",
+    "query": "SSN 581741550 on file, prior auth for tirzepatide?",
+    "phi": [
+      "581741550"
+    ]
+  },
+  {
+    "id": "S0192",
+    "category": "dob",
+    "query": "75yo (DOB 1933-08-15) statin recommendation?",
+    "phi": [
+      "1933-08-15"
+    ]
+  },
+  {
+    "id": "S0193",
+    "category": "email",
+    "query": "Pt email daniel.chen@hospital.org asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "daniel.chen@hospital.org"
+    ]
+  },
+  {
+    "id": "S0194",
+    "category": "dob",
+    "query": "DOB 1944-12-05, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "1944-12-05"
+    ]
+  },
+  {
+    "id": "S0195",
+    "category": "no_phi",
+    "query": "USPSTF colorectal cancer screening recommendation?",
+    "phi": []
+  },
+  {
+    "id": "S0196",
+    "category": "no_phi",
+    "query": "First-line agent for newly diagnosed Type 2 DM?",
+    "phi": []
+  },
+  {
+    "id": "S0197",
+    "category": "mrn",
+    "query": "Patient MRN LP-58453 needs prior auth for tirzepatide.",
+    "phi": [
+      "LP-58453"
+    ]
+  },
+  {
+    "id": "S0198",
+    "category": "name",
+    "query": "Pt Charlotte Wong (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Charlotte",
+      "Wong"
+    ]
+  },
+  {
+    "id": "S0199",
+    "category": "dob",
+    "query": "DOB 2021-07-12, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "2021-07-12"
+    ]
+  },
+  {
+    "id": "S0200",
+    "category": "name",
+    "query": "Mary-Ann Patel (91F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Mary-Ann",
+      "Patel"
+    ]
+  },
+  {
+    "id": "S0201",
+    "category": "email",
+    "query": "Email daniel.patel@gmail.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "daniel.patel@gmail.com"
+    ]
+  },
+  {
+    "id": "S0202",
+    "category": "name",
+    "query": "Henry Hernandez on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Henry",
+      "Hernandez"
+    ]
+  },
+  {
+    "id": "S0203",
+    "category": "no_phi",
+    "query": "First-line agent for newly diagnosed Type 2 DM?",
+    "phi": []
+  },
+  {
+    "id": "S0204",
+    "category": "name",
+    "query": "Wei Park (17F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Wei",
+      "Park"
+    ]
+  },
+  {
+    "id": "S0205",
+    "category": "no_phi",
+    "query": "Vaccine schedule for healthy adult ages 50+?",
+    "phi": []
+  },
+  {
+    "id": "S0206",
+    "category": "name",
+    "query": "Jiang Brown on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Jiang",
+      "Brown"
+    ]
+  },
+  {
+    "id": "S0207",
+    "category": "name",
+    "query": "Lisa Singh, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Lisa",
+      "Singh"
+    ]
+  },
+  {
+    "id": "S0208",
+    "category": "name",
+    "query": "Mateo Martinez (3yo) has otitis media, abx?",
+    "phi": [
+      "Mateo",
+      "Martinez"
+    ]
+  },
+  {
+    "id": "S0209",
+    "category": "no_phi",
+    "query": "ACIP HPV vaccine schedule for 11-year-olds?",
+    "phi": []
+  },
+  {
+    "id": "S0210",
+    "category": "dob",
+    "query": "34yo (DOB 1999-06-26) statin recommendation?",
+    "phi": [
+      "1999-06-26"
+    ]
+  },
+  {
+    "id": "S0211",
+    "category": "name",
+    "query": "Liam Mohammed on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Liam",
+      "Mohammed"
+    ]
+  },
+  {
+    "id": "S0212",
+    "category": "clinical_lookalike",
+    "query": "ALT 68 / AST 324 \u2014 workup priorities?",
+    "phi": []
+  },
+  {
+    "id": "S0213",
+    "category": "dob",
+    "query": "DOB 1990-07-07, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "1990-07-07"
+    ]
+  },
+  {
+    "id": "S0214",
+    "category": "name",
+    "query": "Priya Lopez (56F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Priya",
+      "Lopez"
+    ]
+  },
+  {
+    "id": "S0215",
+    "category": "mrn",
+    "query": "MRN LP-75070 on metformin, dose-adjust for CKD3?",
+    "phi": [
+      "LP-75070"
+    ]
+  },
+  {
+    "id": "S0216",
+    "category": "no_phi",
+    "query": "When do we start statins per USPSTF?",
+    "phi": []
+  },
+  {
+    "id": "S0217",
+    "category": "mrn",
+    "query": "Patient MRN LP-82447 needs prior auth for tirzepatide.",
+    "phi": [
+      "LP-82447"
+    ]
+  },
+  {
+    "id": "S0218",
+    "category": "clinical_lookalike",
+    "query": "Amoxicillin 500 mg BID for adult sinusitis \u2014 duration?",
+    "phi": []
+  },
+  {
+    "id": "S0219",
+    "category": "no_phi",
+    "query": "Diagnostic threshold for hypertension per ACC/AHA?",
+    "phi": []
+  },
+  {
+    "id": "S0220",
+    "category": "no_phi",
+    "query": "Empiric abx for adult outpatient CAP per ATS/IDSA?",
+    "phi": []
+  },
+  {
+    "id": "S0221",
+    "category": "no_phi",
+    "query": "What is the diagnostic criteria for sepsis in pediatrics?",
+    "phi": []
+  },
+  {
+    "id": "S0222",
+    "category": "mrn",
+    "query": "MRN 7858202 has new dx HTN \u2014 first-line?",
+    "phi": [
+      "3426354"
+    ]
+  },
+  {
+    "id": "S0223",
+    "category": "no_phi",
+    "query": "When do we start lipid-lowering therapy in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0224",
+    "category": "name",
+    "query": "Patricia Lopez due for HPV vaccine, when do we start?",
+    "phi": [
+      "Patricia",
+      "Lopez"
+    ]
+  },
+  {
+    "id": "S0225",
+    "category": "name",
+    "query": "Aria Chen due for HPV vaccine, when do we start?",
+    "phi": [
+      "Aria",
+      "Chen"
+    ]
+  },
+  {
+    "id": "S0226",
+    "category": "name",
+    "query": "Wei-Ming Wong has new dx HTN \u2014 first-line agent for African-American adult?",
+    "phi": [
+      "Wei-Ming",
+      "Wong"
+    ]
+  },
+  {
+    "id": "S0227",
+    "category": "no_phi",
+    "query": "First-line antibiotic for uncomplicated UTI in adult women?",
+    "phi": []
+  },
+  {
+    "id": "S0228",
+    "category": "no_phi",
+    "query": "First-line antibiotic for uncomplicated UTI in adult women?",
+    "phi": []
+  },
+  {
+    "id": "S0229",
+    "category": "name",
+    "query": "Wei-Ming Wilson has fever 102 for 3 days, workup?",
+    "phi": [
+      "Wei-Ming",
+      "Wilson"
+    ]
+  },
+  {
+    "id": "S0230",
+    "category": "email",
+    "query": "Email amir.vanderberg@gmail.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "amir.vanderberg@gmail.com"
+    ]
+  },
+  {
+    "id": "S0231",
+    "category": "phone",
+    "query": "Family contact +1 737 285 5762, BP medication refill workflow?",
+    "phi": [
+      "+1 737 285 5762"
+    ]
+  },
+  {
+    "id": "S0232",
+    "category": "name",
+    "query": "Noah Johnson (11F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Noah",
+      "Johnson"
+    ]
+  },
+  {
+    "id": "S0233",
+    "category": "name",
+    "query": "Pt John Thompson, 25M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "John",
+      "Thompson"
+    ]
+  },
+  {
+    "id": "S0234",
+    "category": "clinical_lookalike",
+    "query": "A1c 7.0 \u2014 next step in DM2 management?",
+    "phi": []
+  },
+  {
+    "id": "S0235",
+    "category": "dense_multi_phi",
+    "query": "Patient Isabella Thomas (phone (288) 883-8911, email james.miller@gmail.com, SSN 720-72-2653) presents to clinic at 2872 Elm St, Phoenix, CA 30788 for annual visit. What's due?",
+    "phi": [
+      "Isabella",
+      "Thomas",
+      "(288) 883-8911",
+      "james.miller@gmail.com",
+      "720-72-2653",
+      "Elm St",
+      "Phoenix",
+      "30788"
+    ]
+  },
+  {
+    "id": "S0236",
+    "category": "no_phi",
+    "query": "When do we start statins per USPSTF?",
+    "phi": []
+  },
+  {
+    "id": "S0237",
+    "category": "dense_multi_phi",
+    "query": "Family of Marcus Lopez (DOB 1995-10-22, MRN 9207621403, lives at 8298 Oak Ave, Fairview) wants advice on dad's CHF management.",
+    "phi": [
+      "Marcus",
+      "Lopez",
+      "1995-10-22",
+      "9207621403",
+      "Oak Ave",
+      "Fairview"
+    ]
+  },
+  {
+    "id": "S0238",
+    "category": "no_phi",
+    "query": "What is the diagnostic criteria for sepsis in pediatrics?",
+    "phi": []
+  },
+  {
+    "id": "S0239",
+    "category": "dob",
+    "query": "Pt DOB 2021-07-12 on warfarin, INR 1.8 \u2014 adjust?",
+    "phi": [
+      "2021-07-12"
+    ]
+  },
+  {
+    "id": "S0240",
+    "category": "clinical_lookalike",
+    "query": "WBC 3.7, fever 102 \u2014 workup?",
+    "phi": []
+  },
+  {
+    "id": "S0241",
+    "category": "dob",
+    "query": "Pt DOB 2005-05-08 on warfarin, INR 1.8 \u2014 adjust?",
+    "phi": [
+      "2005-05-08"
+    ]
+  },
+  {
+    "id": "S0242",
+    "category": "dense_multi_phi",
+    "query": "Daniel MacDonald (DOB 1954-06-15, MRN HOSP-2024-9502, phone 635-621-2342) needs HPV vaccine, when to start?",
+    "phi": [
+      "Daniel",
+      "MacDonald",
+      "1954-06-15",
+      "635-621-2342",
+      "HOSP-2024-9502"
+    ]
+  },
+  {
+    "id": "S0243",
+    "category": "phone",
+    "query": "Pt phone 618.312.2980 for vaccine reminders, what protocol?",
+    "phi": [
+      "618.312.2980"
+    ]
+  },
+  {
+    "id": "S0244",
+    "category": "mrn",
+    "query": "MRN: HOSP-2024-4814 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "HOSP-2024-4814"
+    ]
+  },
+  {
+    "id": "S0245",
+    "category": "email",
+    "query": "Pt email carlos.hernandez@yahoo.com asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "carlos.hernandez@yahoo.com"
+    ]
+  },
+  {
+    "id": "S0246",
+    "category": "dob",
+    "query": "79yo (DOB 1971-03-01) statin recommendation?",
+    "phi": [
+      "1971-03-01"
+    ]
+  },
+  {
+    "id": "S0247",
+    "category": "name",
+    "query": "Pt Linda Park (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Linda",
+      "Park"
+    ]
+  },
+  {
+    "id": "S0248",
+    "category": "dense_multi_phi",
+    "query": "Mary-Ann Martinez DOB 1956-10-17 SSN 449-36-8533 carlos.anderson@hospital.org \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Mary-Ann",
+      "Martinez",
+      "1956-10-17",
+      "carlos.anderson@hospital.org",
+      "449-36-8533"
+    ]
+  },
+  {
+    "id": "S0249",
+    "category": "address",
+    "query": "Lives on 4609 Maple Dr, lead screening recommendation?",
+    "phi": [
+      "Maple Dr"
+    ]
+  },
+  {
+    "id": "S0250",
+    "category": "address",
+    "query": "Pt from Portland, OH \u2014 TB screening required?",
+    "phi": [
+      "Portland"
+    ]
+  },
+  {
+    "id": "S0251",
+    "category": "dob",
+    "query": "DOB 1939-04-07, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "1939-04-07"
+    ]
+  },
+  {
+    "id": "S0252",
+    "category": "no_phi",
+    "query": "Tdap booster interval in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0253",
+    "category": "no_phi",
+    "query": "When do we start statins per USPSTF?",
+    "phi": []
+  },
+  {
+    "id": "S0254",
+    "category": "clinical_lookalike",
+    "query": "Lisinopril 20 mg, BP 123/66, titrate up?",
+    "phi": []
+  },
+  {
+    "id": "S0255",
+    "category": "no_phi",
+    "query": "First-line antibiotic for uncomplicated UTI in adult women?",
+    "phi": []
+  },
+  {
+    "id": "S0256",
+    "category": "name",
+    "query": "Pt Yuki Chen (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Yuki",
+      "Chen"
+    ]
+  },
+  {
+    "id": "S0257",
+    "category": "name",
+    "query": "Pt Eve Miller, 86M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Eve",
+      "Miller"
+    ]
+  },
+  {
+    "id": "S0258",
+    "category": "name",
+    "query": "Patricia van der Berg, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Patricia",
+      "van der Berg"
+    ]
+  },
+  {
+    "id": "S0259",
+    "category": "no_phi",
+    "query": "ACIP HPV vaccine schedule for 11-year-olds?",
+    "phi": []
+  },
+  {
+    "id": "S0260",
+    "category": "phone",
+    "query": "Family contact 748.501.3434, BP medication refill workflow?",
+    "phi": [
+      "748.501.3434"
+    ]
+  },
+  {
+    "id": "S0261",
+    "category": "ssn",
+    "query": "Pt SSN 237-20-5834, Medicare eligibility for screening colonoscopy?",
+    "phi": [
+      "237-20-5834"
+    ]
+  },
+  {
+    "id": "S0262",
+    "category": "name",
+    "query": "Pt Charlotte Schwarz (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Charlotte",
+      "Schwarz"
+    ]
+  },
+  {
+    "id": "S0263",
+    "category": "name",
+    "query": "Mary-Ann Wilson on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Mary-Ann",
+      "Wilson"
+    ]
+  },
+  {
+    "id": "S0264",
+    "category": "email",
+    "query": "Email s\u00f8ren.garcia@example.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "s\u00f8ren.garcia@example.com"
+    ]
+  },
+  {
+    "id": "S0265",
+    "category": "phone",
+    "query": "Family contact (686) 362-6084, BP medication refill workflow?",
+    "phi": [
+      "(686) 362-6084"
+    ]
+  },
+  {
+    "id": "S0266",
+    "category": "name",
+    "query": "Lucas Patel on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Lucas",
+      "Patel"
+    ]
+  },
+  {
+    "id": "S0267",
+    "category": "mrn",
+    "query": "MRN: HOSP-2024-5573, BP 145/92, recheck interval?",
+    "phi": [
+      "HOSP-2024-5573"
+    ]
+  },
+  {
+    "id": "S0268",
+    "category": "dense_multi_phi",
+    "query": "Sophia Thompson DOB 2011-09-21 SSN 149-58-4305 aisha.mohammed@example.com \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Sophia",
+      "Thompson",
+      "2011-09-21",
+      "aisha.mohammed@example.com",
+      "149-58-4305"
+    ]
+  },
+  {
+    "id": "S0269",
+    "category": "name",
+    "query": "Pt Noah Kim (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Noah",
+      "Kim"
+    ]
+  },
+  {
+    "id": "S0270",
+    "category": "name",
+    "query": "Daniel Lopez (86F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Daniel",
+      "Lopez"
+    ]
+  },
+  {
+    "id": "S0271",
+    "category": "clinical_lookalike",
+    "query": "Amoxicillin 250 mg BID for adult sinusitis \u2014 duration?",
+    "phi": []
+  },
+  {
+    "id": "S0272",
+    "category": "ssn",
+    "query": "SSN 593127249 on file, prior auth for tirzepatide?",
+    "phi": [
+      "593127249"
+    ]
+  },
+  {
+    "id": "S0273",
+    "category": "clinical_lookalike",
+    "query": "A1c 10.0 \u2014 next step in DM2 management?",
+    "phi": []
+  },
+  {
+    "id": "S0274",
+    "category": "dense_multi_phi",
+    "query": "Marcus Martinez (DOB 1988-11-05, MRN XY543489, phone 792-878-3644) needs HPV vaccine, when to start?",
+    "phi": [
+      "Marcus",
+      "Martinez",
+      "1988-11-05",
+      "792-878-3644",
+      "XY543489"
+    ]
+  },
+  {
+    "id": "S0275",
+    "category": "dense_multi_phi",
+    "query": "Emma Hernandez (DOB 1930-02-03, MRN 9614227, phone +1 626 870 5724) needs HPV vaccine, when to start?",
+    "phi": [
+      "Emma",
+      "Hernandez",
+      "1930-02-03",
+      "+1 626 870 5724",
+      "9614227"
+    ]
+  },
+  {
+    "id": "S0276",
+    "category": "ssn",
+    "query": "SSN 584538036 on file, prior auth for tirzepatide?",
+    "phi": [
+      "584538036"
+    ]
+  },
+  {
+    "id": "S0277",
+    "category": "name",
+    "query": "Isabella Patel due for HPV vaccine, when do we start?",
+    "phi": [
+      "Isabella",
+      "Patel"
+    ]
+  },
+  {
+    "id": "S0278",
+    "category": "address",
+    "query": "Pt from Springfield, CA \u2014 TB screening required?",
+    "phi": [
+      "Springfield"
+    ]
+  },
+  {
+    "id": "S0279",
+    "category": "dense_multi_phi",
+    "query": "Patient Wei Davis (phone 958-806-4082, email bo.chen@gmail.com, SSN 420-58-1027) presents to clinic at 2079 Pine St, Phoenix, PA 57844 for annual visit. What's due?",
+    "phi": [
+      "Wei",
+      "Davis",
+      "958-806-4082",
+      "bo.chen@gmail.com",
+      "420-58-1027",
+      "Pine St",
+      "Phoenix",
+      "57844"
+    ]
+  },
+  {
+    "id": "S0280",
+    "category": "mrn",
+    "query": "MRN 5689238, BP 145/92, recheck interval?",
+    "phi": [
+      "2661918"
+    ]
+  },
+  {
+    "id": "S0281",
+    "category": "dense_multi_phi",
+    "query": "Patient Jiang MacDonald (phone (761) 603-2594, email daniel.wilson@yahoo.com, SSN 155-48-8496) presents to clinic at 3583 Elm St, Springfield, WA 37494 for annual visit. What's due?",
+    "phi": [
+      "Jiang",
+      "MacDonald",
+      "(761) 603-2594",
+      "daniel.wilson@yahoo.com",
+      "155-48-8496",
+      "Elm St",
+      "Springfield",
+      "37494"
+    ]
+  },
+  {
+    "id": "S0282",
+    "category": "name",
+    "query": "Lisa MacDonald has fever 102 for 3 days, workup?",
+    "phi": [
+      "Lisa",
+      "MacDonald"
+    ]
+  },
+  {
+    "id": "S0283",
+    "category": "clinical_lookalike",
+    "query": "CMP normal except glucose 121 fasting, dx DM2?",
+    "phi": []
+  },
+  {
+    "id": "S0284",
+    "category": "name",
+    "query": "Pt Charlotte Park, 47M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Charlotte",
+      "Park"
+    ]
+  },
+  {
+    "id": "S0285",
+    "category": "name",
+    "query": "Emma Singh (3yo) has otitis media, abx?",
+    "phi": [
+      "Emma",
+      "Singh"
+    ]
+  },
+  {
+    "id": "S0286",
+    "category": "name",
+    "query": "Robert Singh has fever 102 for 3 days, workup?",
+    "phi": [
+      "Robert",
+      "Singh"
+    ]
+  },
+  {
+    "id": "S0287",
+    "category": "name",
+    "query": "Pt Carlos Anderson, 78yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Carlos",
+      "Anderson"
+    ]
+  },
+  {
+    "id": "S0288",
+    "category": "phone",
+    "query": "Pt phone (747) 967-6653 for vaccine reminders, what protocol?",
+    "phi": [
+      "(747) 967-6653"
+    ]
+  },
+  {
+    "id": "S0289",
+    "category": "name",
+    "query": "Noah Miller on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Noah",
+      "Miller"
+    ]
+  },
+  {
+    "id": "S0290",
+    "category": "no_phi",
+    "query": "When to refer for sleep study in suspected OSA?",
+    "phi": []
+  },
+  {
+    "id": "S0291",
+    "category": "no_phi",
+    "query": "Recommended dose of amoxicillin for AOM in a 5yo?",
+    "phi": []
+  },
+  {
+    "id": "S0292",
+    "category": "clinical_lookalike",
+    "query": "Amoxicillin 10 mg BID for adult sinusitis \u2014 duration?",
+    "phi": []
+  },
+  {
+    "id": "S0293",
+    "category": "dense_multi_phi",
+    "query": "Aisha Anderson DOB 1984-10-24 SSN 256-75-4061 lucas.davis@yahoo.com \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Aisha",
+      "Anderson",
+      "1984-10-24",
+      "lucas.davis@yahoo.com",
+      "256-75-4061"
+    ]
+  },
+  {
+    "id": "S0294",
+    "category": "name",
+    "query": "S\u00f8ren Lopez due for HPV vaccine, when do we start?",
+    "phi": [
+      "S\u00f8ren",
+      "Lopez"
+    ]
+  },
+  {
+    "id": "S0295",
+    "category": "dob",
+    "query": "Pediatric pt DOB 06/12/1946, vaccines due?",
+    "phi": [
+      "06/12/1946"
+    ]
+  },
+  {
+    "id": "S0296",
+    "category": "name",
+    "query": "Pt Yuki Gonzalez (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Yuki",
+      "Gonzalez"
+    ]
+  },
+  {
+    "id": "S0297",
+    "category": "email",
+    "query": "Pt email emma.davis@example.com asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "emma.davis@example.com"
+    ]
+  },
+  {
+    "id": "S0298",
+    "category": "clinical_lookalike",
+    "query": "Amoxicillin 20 mg BID for adult sinusitis \u2014 duration?",
+    "phi": []
+  },
+  {
+    "id": "S0299",
+    "category": "no_phi",
+    "query": "When to perform DEXA scan for osteoporosis screening?",
+    "phi": []
+  },
+  {
+    "id": "S0300",
+    "category": "dense_multi_phi",
+    "query": "Jiang Jones DOB 1984-04-15 SSN 493-12-2802 tom\u00e1s.brown@clinic.io \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Jiang",
+      "Jones",
+      "1984-04-15",
+      "tom\u00e1s.brown@clinic.io",
+      "493-12-2802"
+    ]
+  },
+  {
+    "id": "S0301",
+    "category": "email",
+    "query": "Email john.davis@clinic.io regarding annual physical scheduling, what to send?",
+    "phi": [
+      "john.davis@clinic.io"
+    ]
+  },
+  {
+    "id": "S0302",
+    "category": "name",
+    "query": "Marcus Gonzalez (3yo) has otitis media, abx?",
+    "phi": [
+      "Marcus",
+      "Gonzalez"
+    ]
+  },
+  {
+    "id": "S0303",
+    "category": "no_phi",
+    "query": "First-line agent for newly diagnosed Type 2 DM?",
+    "phi": []
+  },
+  {
+    "id": "S0304",
+    "category": "mrn",
+    "query": "MRN 4955252994 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "4955252994"
+    ]
+  },
+  {
+    "id": "S0305",
+    "category": "dob",
+    "query": "DOB 2019-02-22, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "2019-02-22"
+    ]
+  },
+  {
+    "id": "S0306",
+    "category": "mrn",
+    "query": "Patient Medical Record Number 8859053 needs prior auth for tirzepatide.",
+    "phi": [
+      "8859053"
+    ]
+  },
+  {
+    "id": "S0307",
+    "category": "name",
+    "query": "Jean-Pierre Brown (9F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Jean-Pierre",
+      "Brown"
+    ]
+  },
+  {
+    "id": "S0308",
+    "category": "no_phi",
+    "query": "When do we start lipid-lowering therapy in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0309",
+    "category": "ssn",
+    "query": "Pt SSN 767-76-6593, Medicare eligibility for screening colonoscopy?",
+    "phi": [
+      "767-76-6593"
+    ]
+  },
+  {
+    "id": "S0310",
+    "category": "no_phi",
+    "query": "When do we start lipid-lowering therapy in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0311",
+    "category": "name",
+    "query": "Pt Emma Park, 21yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Emma",
+      "Park"
+    ]
+  },
+  {
+    "id": "S0312",
+    "category": "no_phi",
+    "query": "When to refer for sleep study in suspected OSA?",
+    "phi": []
+  },
+  {
+    "id": "S0313",
+    "category": "name",
+    "query": "Pt Amir Singh, 21M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Amir",
+      "Singh"
+    ]
+  },
+  {
+    "id": "S0314",
+    "category": "dob",
+    "query": "DOB 1937-06-26, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "1937-06-26"
+    ]
+  },
+  {
+    "id": "S0315",
+    "category": "clinical_lookalike",
+    "query": "Metformin 1000 mg BID, when to add second-line?",
+    "phi": []
+  },
+  {
+    "id": "S0316",
+    "category": "clinical_lookalike",
+    "query": "CPT 99213 visit, BP 123/65, HTN management?",
+    "phi": []
+  },
+  {
+    "id": "S0317",
+    "category": "mrn",
+    "query": "Medical Record Number 7640565 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "7640565"
+    ]
+  },
+  {
+    "id": "S0318",
+    "category": "no_phi",
+    "query": "Vaccine schedule for healthy adult ages 50+?",
+    "phi": []
+  },
+  {
+    "id": "S0319",
+    "category": "dob",
+    "query": "Pt DOB 2001-07-07 on warfarin, INR 1.8 \u2014 adjust?",
+    "phi": [
+      "2001-07-07"
+    ]
+  },
+  {
+    "id": "S0320",
+    "category": "clinical_lookalike",
+    "query": "B12 213 in 70F with neuropathy, supplementation dose?",
+    "phi": []
+  },
+  {
+    "id": "S0321",
+    "category": "no_phi",
+    "query": "When to perform DEXA scan for osteoporosis screening?",
+    "phi": []
+  },
+  {
+    "id": "S0322",
+    "category": "name",
+    "query": "Mia Williams has fever 102 for 3 days, workup?",
+    "phi": [
+      "Mia",
+      "Williams"
+    ]
+  },
+  {
+    "id": "S0323",
+    "category": "dense_multi_phi",
+    "query": "Olivia Martinez DOB 1955-02-12 SSN 356-32-4242 charlotte.singh@gmail.com \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Olivia",
+      "Martinez",
+      "1955-02-12",
+      "charlotte.singh@gmail.com",
+      "356-32-4242"
+    ]
+  },
+  {
+    "id": "S0324",
+    "category": "mrn",
+    "query": "MRN LP-29010 on metformin, dose-adjust for CKD3?",
+    "phi": [
+      "LP-29010"
+    ]
+  },
+  {
+    "id": "S0325",
+    "category": "dense_multi_phi",
+    "query": "Bo Gonzalez (DOB 1983-11-25, MRN LP719887, phone 527-402-4229) needs HPV vaccine, when to start?",
+    "phi": [
+      "Bo",
+      "Gonzalez",
+      "1983-11-25",
+      "527-402-4229",
+      "LP719887"
+    ]
+  },
+  {
+    "id": "S0326",
+    "category": "name",
+    "query": "Priya Martinez (3yo) has otitis media, abx?",
+    "phi": [
+      "Priya",
+      "Martinez"
+    ]
+  },
+  {
+    "id": "S0327",
+    "category": "dense_multi_phi",
+    "query": "Patient Olivia Thompson (phone +1 351 971 7771, email lisa.macdonald@yahoo.com, SSN 346-83-8830) presents to clinic at 1366 Maple Dr, Boston, CO 48828 for annual visit. What's due?",
+    "phi": [
+      "Olivia",
+      "Thompson",
+      "+1 351 971 7771",
+      "lisa.macdonald@yahoo.com",
+      "346-83-8830",
+      "Maple Dr",
+      "Boston",
+      "48828"
+    ]
+  },
+  {
+    "id": "S0328",
+    "category": "name",
+    "query": "Pt Eve Miller, 76M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Eve",
+      "Miller"
+    ]
+  },
+  {
+    "id": "S0329",
+    "category": "clinical_lookalike",
+    "query": "B12 151 in 70F with neuropathy, supplementation dose?",
+    "phi": []
+  },
+  {
+    "id": "S0330",
+    "category": "address",
+    "query": "Pt from Seattle, AZ \u2014 TB screening required?",
+    "phi": [
+      "Seattle"
+    ]
+  },
+  {
+    "id": "S0331",
+    "category": "no_phi",
+    "query": "Vaccine schedule for healthy adult ages 50+?",
+    "phi": []
+  },
+  {
+    "id": "S0332",
+    "category": "dob",
+    "query": "63yo (DOB 1961-08-04) statin recommendation?",
+    "phi": [
+      "1961-08-04"
+    ]
+  },
+  {
+    "id": "S0333",
+    "category": "name",
+    "query": "Henry O'Brien (4F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Henry",
+      "O'Brien"
+    ]
+  },
+  {
+    "id": "S0334",
+    "category": "clinical_lookalike",
+    "query": "TSH 8.8 with low T4, levothyroxine dosing?",
+    "phi": []
+  },
+  {
+    "id": "S0335",
+    "category": "name",
+    "query": "Henry Davis, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Henry",
+      "Davis"
+    ]
+  },
+  {
+    "id": "S0336",
+    "category": "clinical_lookalike",
+    "query": "Lisinopril 1000 mg, BP 147/96, titrate up?",
+    "phi": []
+  },
+  {
+    "id": "S0337",
+    "category": "dense_multi_phi",
+    "query": "Mohammed MacDonald (DOB 2001-12-16, MRN 1416026153, phone 855.358.5929) needs HPV vaccine, when to start?",
+    "phi": [
+      "Mohammed",
+      "MacDonald",
+      "2001-12-16",
+      "855.358.5929",
+      "1416026153"
+    ]
+  },
+  {
+    "id": "S0338",
+    "category": "address",
+    "query": "Pt at 7611 Pine St, Portland, NY 24068, asks about flu shot?",
+    "phi": [
+      "Pine St",
+      "Portland",
+      "24068"
+    ]
+  },
+  {
+    "id": "S0339",
+    "category": "ssn",
+    "query": "Pt SSN 164-32-3480, Medicare eligibility for screening colonoscopy?",
+    "phi": [
+      "164-32-3480"
+    ]
+  },
+  {
+    "id": "S0340",
+    "category": "dense_multi_phi",
+    "query": "Family of Rashida Mohammed (DOB 1938-01-01, MRN 4302421, lives at 7244 Main St, Chicago) wants advice on dad's CHF management.",
+    "phi": [
+      "Rashida",
+      "Mohammed",
+      "1938-01-01",
+      "4302421",
+      "Main St",
+      "Chicago"
+    ]
+  },
+  {
+    "id": "S0341",
+    "category": "name",
+    "query": "Sophia Anderson, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Sophia",
+      "Anderson"
+    ]
+  },
+  {
+    "id": "S0342",
+    "category": "no_phi",
+    "query": "How is anaphylaxis treated?",
+    "phi": []
+  },
+  {
+    "id": "S0343",
+    "category": "name",
+    "query": "Wei Johnson, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Wei",
+      "Johnson"
+    ]
+  },
+  {
+    "id": "S0344",
+    "category": "dob",
+    "query": "DOB 2002-10-23, fever 39 at 6 weeks \u2014 manage?",
+    "phi": [
+      "2002-10-23"
+    ]
+  },
+  {
+    "id": "S0345",
+    "category": "dense_multi_phi",
+    "query": "Lisa Patel DOB 2008-06-12 SSN 522-78-1750 rashida.smith@gmail.com \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Lisa",
+      "Patel",
+      "2008-06-12",
+      "rashida.smith@gmail.com",
+      "522-78-1750"
+    ]
+  },
+  {
+    "id": "S0346",
+    "category": "mrn",
+    "query": "Patient MRN LP-20282 needs prior auth for tirzepatide.",
+    "phi": [
+      "LP-20282"
+    ]
+  },
+  {
+    "id": "S0347",
+    "category": "name",
+    "query": "Rashida Singh has new dx HTN \u2014 first-line agent for African-American adult?",
+    "phi": [
+      "Rashida",
+      "Singh"
+    ]
+  },
+  {
+    "id": "S0348",
+    "category": "dob",
+    "query": "93yo (DOB 2002-09-09) statin recommendation?",
+    "phi": [
+      "2002-09-09"
+    ]
+  },
+  {
+    "id": "S0349",
+    "category": "address",
+    "query": "Pt from Riverside, MN \u2014 TB screening required?",
+    "phi": [
+      "Riverside"
+    ]
+  },
+  {
+    "id": "S0350",
+    "category": "phone",
+    "query": "Pt phone 273.857.7987 for vaccine reminders, what protocol?",
+    "phi": [
+      "273.857.7987"
+    ]
+  },
+  {
+    "id": "S0351",
+    "category": "no_phi",
+    "query": "When do we start statins per USPSTF?",
+    "phi": []
+  },
+  {
+    "id": "S0352",
+    "category": "address",
+    "query": "Pt at 5395 1st Avenue, Denver, MI 41985, asks about flu shot?",
+    "phi": [
+      "1st Avenue",
+      "Denver",
+      "41985"
+    ]
+  },
+  {
+    "id": "S0353",
+    "category": "dob",
+    "query": "58yo (DOB 1983-04-19) statin recommendation?",
+    "phi": [
+      "1983-04-19"
+    ]
+  },
+  {
+    "id": "S0354",
+    "category": "phone",
+    "query": "Family contact 321-544-6515, BP medication refill workflow?",
+    "phi": [
+      "321-544-6515"
+    ]
+  },
+  {
+    "id": "S0355",
+    "category": "dob",
+    "query": "Pediatric pt DOB 05/11/1984, vaccines due?",
+    "phi": [
+      "05/11/1984"
+    ]
+  },
+  {
+    "id": "S0356",
+    "category": "ssn",
+    "query": "Pt SSN 402-24-2965, Medicare eligibility for screening colonoscopy?",
+    "phi": [
+      "402-24-2965"
+    ]
+  },
+  {
+    "id": "S0357",
+    "category": "name",
+    "query": "Pt Maria Kim, 13yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Maria",
+      "Kim"
+    ]
+  },
+  {
+    "id": "S0358",
+    "category": "ssn",
+    "query": "SSN 873467874 on file, prior auth for tirzepatide?",
+    "phi": [
+      "873467874"
+    ]
+  },
+  {
+    "id": "S0359",
+    "category": "phone",
+    "query": "Family contact 652.635.7531, BP medication refill workflow?",
+    "phi": [
+      "652.635.7531"
+    ]
+  },
+  {
+    "id": "S0360",
+    "category": "dense_multi_phi",
+    "query": "Aisha MacDonald (DOB 1976-09-07, MRN AB625860, phone (935) 434-5754) needs HPV vaccine, when to start?",
+    "phi": [
+      "Aisha",
+      "MacDonald",
+      "1976-09-07",
+      "(935) 434-5754",
+      "AB625860"
+    ]
+  },
+  {
+    "id": "S0361",
+    "category": "no_phi",
+    "query": "Tdap booster interval in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0362",
+    "category": "name",
+    "query": "Pt Mia Smith (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Mia",
+      "Smith"
+    ]
+  },
+  {
+    "id": "S0363",
+    "category": "email",
+    "query": "Pt email eve.jones@example.com asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "eve.jones@example.com"
+    ]
+  },
+  {
+    "id": "S0364",
+    "category": "name",
+    "query": "Mary-Ann Thomas due for HPV vaccine, when do we start?",
+    "phi": [
+      "Mary-Ann",
+      "Thomas"
+    ]
+  },
+  {
+    "id": "S0365",
+    "category": "phone",
+    "query": "Family contact 828.931.7082, BP medication refill workflow?",
+    "phi": [
+      "828.931.7082"
+    ]
+  },
+  {
+    "id": "S0366",
+    "category": "email",
+    "query": "Pt email mary-ann.schwarz@gmail.com asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "mary-ann.schwarz@gmail.com"
+    ]
+  },
+  {
+    "id": "S0367",
+    "category": "name",
+    "query": "Daniel Williams has fever 102 for 3 days, workup?",
+    "phi": [
+      "Daniel",
+      "Williams"
+    ]
+  },
+  {
+    "id": "S0368",
+    "category": "name",
+    "query": "Pt Ethan Wilson, 86yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Ethan",
+      "Wilson"
+    ]
+  },
+  {
+    "id": "S0369",
+    "category": "no_phi",
+    "query": "When do we start lipid-lowering therapy in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0370",
+    "category": "clinical_lookalike",
+    "query": "Amoxicillin 850 mg BID for adult sinusitis \u2014 duration?",
+    "phi": []
+  },
+  {
+    "id": "S0371",
+    "category": "mrn",
+    "query": "MR# AB693692 on metformin, dose-adjust for CKD3?",
+    "phi": [
+      "AB693692"
+    ]
+  },
+  {
+    "id": "S0372",
+    "category": "no_phi",
+    "query": "ACIP HPV vaccine schedule for 11-year-olds?",
+    "phi": []
+  },
+  {
+    "id": "S0373",
+    "category": "dense_multi_phi",
+    "query": "Priya Johnson DOB 2020-05-06 SSN 281-47-5249 olivia.gonzalez@gmail.com \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Priya",
+      "Johnson",
+      "2020-05-06",
+      "olivia.gonzalez@gmail.com",
+      "281-47-5249"
+    ]
+  },
+  {
+    "id": "S0374",
+    "category": "dob",
+    "query": "Pediatric pt DOB 05/07/1956, vaccines due?",
+    "phi": [
+      "05/07/1956"
+    ]
+  },
+  {
+    "id": "S0375",
+    "category": "mrn",
+    "query": "MRN: HOSP-2024-7977 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "HOSP-2024-7977"
+    ]
+  },
+  {
+    "id": "S0376",
+    "category": "dob",
+    "query": "Pt DOB 1951-08-01 on warfarin, INR 1.8 \u2014 adjust?",
+    "phi": [
+      "1951-08-01"
+    ]
+  },
+  {
+    "id": "S0377",
+    "category": "no_phi",
+    "query": "Empiric abx for adult outpatient CAP per ATS/IDSA?",
+    "phi": []
+  },
+  {
+    "id": "S0378",
+    "category": "ssn",
+    "query": "Pt SSN 725-86-7523, Medicare eligibility for screening colonoscopy?",
+    "phi": [
+      "725-86-7523"
+    ]
+  },
+  {
+    "id": "S0379",
+    "category": "mrn",
+    "query": "MRN: HOSP-2024-1893 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "HOSP-2024-1893"
+    ]
+  },
+  {
+    "id": "S0380",
+    "category": "name",
+    "query": "Pt Rashida Martinez, 26yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Rashida",
+      "Martinez"
+    ]
+  },
+  {
+    "id": "S0381",
+    "category": "name",
+    "query": "Mateo Kim (36F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Mateo",
+      "Kim"
+    ]
+  },
+  {
+    "id": "S0382",
+    "category": "no_phi",
+    "query": "First-line agent for newly diagnosed Type 2 DM?",
+    "phi": []
+  },
+  {
+    "id": "S0383",
+    "category": "dense_multi_phi",
+    "query": "Isabella Andersson (DOB 1957-07-09, MRN 2277128, phone 390-483-9217) needs HPV vaccine, when to start?",
+    "phi": [
+      "Isabella",
+      "Andersson",
+      "1957-07-09",
+      "390-483-9217",
+      "2277128"
+    ]
+  },
+  {
+    "id": "S0384",
+    "category": "mrn",
+    "query": "MRN 3582131 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "8985075"
+    ]
+  },
+  {
+    "id": "S0385",
+    "category": "mrn",
+    "query": "MR# LP434918 has new dx HTN \u2014 first-line?",
+    "phi": [
+      "LP434918"
+    ]
+  },
+  {
+    "id": "S0386",
+    "category": "dob",
+    "query": "13yo (DOB 1979-10-21) statin recommendation?",
+    "phi": [
+      "1979-10-21"
+    ]
+  },
+  {
+    "id": "S0387",
+    "category": "name",
+    "query": "Ethan Patel on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Ethan",
+      "Patel"
+    ]
+  },
+  {
+    "id": "S0388",
+    "category": "dob",
+    "query": "16yo (DOB 1943-03-28) statin recommendation?",
+    "phi": [
+      "1943-03-28"
+    ]
+  },
+  {
+    "id": "S0389",
+    "category": "name",
+    "query": "Pt Bo Chen, 92yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Bo",
+      "Chen"
+    ]
+  },
+  {
+    "id": "S0390",
+    "category": "clinical_lookalike",
+    "query": "Amoxicillin 500 mg BID for adult sinusitis \u2014 duration?",
+    "phi": []
+  },
+  {
+    "id": "S0391",
+    "category": "no_phi",
+    "query": "When do we start statins per USPSTF?",
+    "phi": []
+  },
+  {
+    "id": "S0392",
+    "category": "mrn",
+    "query": "MRN 7539335524 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "7539335524"
+    ]
+  },
+  {
+    "id": "S0393",
+    "category": "ssn",
+    "query": "SSN 746326384 on file, prior auth for tirzepatide?",
+    "phi": [
+      "746326384"
+    ]
+  },
+  {
+    "id": "S0394",
+    "category": "mrn",
+    "query": "MRN: HOSP-2024-2686 has new dx HTN \u2014 first-line?",
+    "phi": [
+      "HOSP-2024-2686"
+    ]
+  },
+  {
+    "id": "S0395",
+    "category": "name",
+    "query": "Aria Lopez has new dx HTN \u2014 first-line agent for African-American adult?",
+    "phi": [
+      "Aria",
+      "Lopez"
+    ]
+  },
+  {
+    "id": "S0396",
+    "category": "no_phi",
+    "query": "Vaccine schedule for healthy adult ages 50+?",
+    "phi": []
+  },
+  {
+    "id": "S0397",
+    "category": "phone",
+    "query": "Family contact +1 681 247 7390, BP medication refill workflow?",
+    "phi": [
+      "+1 681 247 7390"
+    ]
+  },
+  {
+    "id": "S0398",
+    "category": "email",
+    "query": "Email mohammed.garcia@hospital.org regarding annual physical scheduling, what to send?",
+    "phi": [
+      "mohammed.garcia@hospital.org"
+    ]
+  },
+  {
+    "id": "S0399",
+    "category": "no_phi",
+    "query": "What is the diagnostic criteria for sepsis in pediatrics?",
+    "phi": []
+  },
+  {
+    "id": "S0400",
+    "category": "no_phi",
+    "query": "When do we start lipid-lowering therapy in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0401",
+    "category": "dob",
+    "query": "Pediatric pt DOB 09/06/1944, vaccines due?",
+    "phi": [
+      "09/06/1944"
+    ]
+  },
+  {
+    "id": "S0402",
+    "category": "dob",
+    "query": "74yo (DOB 1975-12-28) statin recommendation?",
+    "phi": [
+      "1975-12-28"
+    ]
+  },
+  {
+    "id": "S0403",
+    "category": "no_phi",
+    "query": "ACIP HPV vaccine schedule for 11-year-olds?",
+    "phi": []
+  },
+  {
+    "id": "S0404",
+    "category": "mrn",
+    "query": "MRN 7472129960, BP 145/92, recheck interval?",
+    "phi": [
+      "7472129960"
+    ]
+  },
+  {
+    "id": "S0405",
+    "category": "address",
+    "query": "Lives on 6878 Cedar Ln, lead screening recommendation?",
+    "phi": [
+      "Cedar Ln"
+    ]
+  },
+  {
+    "id": "S0406",
+    "category": "clinical_lookalike",
+    "query": "ALT 338 / AST 507 \u2014 workup priorities?",
+    "phi": []
+  },
+  {
+    "id": "S0407",
+    "category": "dense_multi_phi",
+    "query": "Patient Mateo Taylor (phone 346-430-2346, email noah.park@yahoo.com, SSN 207-41-4706) presents to clinic at 4380 1st Avenue, Tampa, FL 85650 for annual visit. What's due?",
+    "phi": [
+      "Mateo",
+      "Taylor",
+      "346-430-2346",
+      "noah.park@yahoo.com",
+      "207-41-4706",
+      "1st Avenue",
+      "Tampa",
+      "85650"
+    ]
+  },
+  {
+    "id": "S0408",
+    "category": "name",
+    "query": "Emma Singh due for HPV vaccine, when do we start?",
+    "phi": [
+      "Emma",
+      "Singh"
+    ]
+  },
+  {
+    "id": "S0409",
+    "category": "name",
+    "query": "Lisa Brown, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Lisa",
+      "Brown"
+    ]
+  },
+  {
+    "id": "S0410",
+    "category": "address",
+    "query": "Pt from Atlanta, MI \u2014 TB screening required?",
+    "phi": [
+      "Atlanta"
+    ]
+  },
+  {
+    "id": "S0411",
+    "category": "name",
+    "query": "Pt Jiang Davis, 36yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Jiang",
+      "Davis"
+    ]
+  },
+  {
+    "id": "S0412",
+    "category": "address",
+    "query": "Lives on 4126 Willow Way, lead screening recommendation?",
+    "phi": [
+      "Willow Way"
+    ]
+  },
+  {
+    "id": "S0413",
+    "category": "no_phi",
+    "query": "When do we start lipid-lowering therapy in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0414",
+    "category": "email",
+    "query": "Email carlos.chen@yahoo.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "carlos.chen@yahoo.com"
+    ]
+  },
+  {
+    "id": "S0415",
+    "category": "name",
+    "query": "Yuki Chen, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Yuki",
+      "Chen"
+    ]
+  },
+  {
+    "id": "S0416",
+    "category": "dense_multi_phi",
+    "query": "Family of Eve Thomas (DOB 1976-03-06, MRN 7788683, lives at 8739 Elm St, Seattle) wants advice on dad's CHF management.",
+    "phi": [
+      "Eve",
+      "Thomas",
+      "1976-03-06",
+      "7788683",
+      "Elm St",
+      "Seattle"
+    ]
+  },
+  {
+    "id": "S0417",
+    "category": "name",
+    "query": "Wei Davis due for HPV vaccine, when do we start?",
+    "phi": [
+      "Wei",
+      "Davis"
+    ]
+  },
+  {
+    "id": "S0418",
+    "category": "no_phi",
+    "query": "First-line agent for newly diagnosed Type 2 DM?",
+    "phi": []
+  },
+  {
+    "id": "S0419",
+    "category": "no_phi",
+    "query": "First-line antibiotic for uncomplicated UTI in adult women?",
+    "phi": []
+  },
+  {
+    "id": "S0420",
+    "category": "name",
+    "query": "Pt Aria Schwarz (newborn) has hyperbilirubinemia, phototherapy thresholds?",
+    "phi": [
+      "Aria",
+      "Schwarz"
+    ]
+  },
+  {
+    "id": "S0421",
+    "category": "ssn",
+    "query": "SSN 106881867 on file, prior auth for tirzepatide?",
+    "phi": [
+      "106881867"
+    ]
+  },
+  {
+    "id": "S0422",
+    "category": "email",
+    "query": "Email yuki.obrien@example.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "yuki.obrien@example.com"
+    ]
+  },
+  {
+    "id": "S0423",
+    "category": "no_phi",
+    "query": "First-line antibiotic for uncomplicated UTI in adult women?",
+    "phi": []
+  },
+  {
+    "id": "S0424",
+    "category": "email",
+    "query": "Pt email bo.garcia@clinic.io asks about cholesterol screening, what to recommend?",
+    "phi": [
+      "bo.garcia@clinic.io"
+    ]
+  },
+  {
+    "id": "S0425",
+    "category": "no_phi",
+    "query": "What's the GFR threshold to discontinue metformin?",
+    "phi": []
+  },
+  {
+    "id": "S0426",
+    "category": "clinical_lookalike",
+    "query": "Amoxicillin 250 mg BID for adult sinusitis \u2014 duration?",
+    "phi": []
+  },
+  {
+    "id": "S0427",
+    "category": "ssn",
+    "query": "SSN 410594084 on file, prior auth for tirzepatide?",
+    "phi": [
+      "410594084"
+    ]
+  },
+  {
+    "id": "S0428",
+    "category": "mrn",
+    "query": "MR# LP543380 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "LP543380"
+    ]
+  },
+  {
+    "id": "S0429",
+    "category": "mrn",
+    "query": "Medical Record Number 7680763 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "7680763"
+    ]
+  },
+  {
+    "id": "S0430",
+    "category": "name",
+    "query": "James Williams (3yo) has otitis media, abx?",
+    "phi": [
+      "James",
+      "Williams"
+    ]
+  },
+  {
+    "id": "S0431",
+    "category": "name",
+    "query": "Tom\u00e1s MacDonald due for HPV vaccine, when do we start?",
+    "phi": [
+      "Tom\u00e1s",
+      "MacDonald"
+    ]
+  },
+  {
+    "id": "S0432",
+    "category": "dense_multi_phi",
+    "query": "Patient Sophia Taylor (phone +1 665 690 3509, email jean-pierre.gonzalez@hospital.org, SSN 329-28-5699) presents to clinic at 4922 Cedar Ln, Fairview, IL 66588 for annual visit. What's due?",
+    "phi": [
+      "Sophia",
+      "Taylor",
+      "+1 665 690 3509",
+      "jean-pierre.gonzalez@hospital.org",
+      "329-28-5699",
+      "Cedar Ln",
+      "Fairview",
+      "66588"
+    ]
+  },
+  {
+    "id": "S0433",
+    "category": "mrn",
+    "query": "Medical Record Number 6148910, BP 145/92, recheck interval?",
+    "phi": [
+      "6148910"
+    ]
+  },
+  {
+    "id": "S0434",
+    "category": "name",
+    "query": "John Thompson, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "John",
+      "Thompson"
+    ]
+  },
+  {
+    "id": "S0435",
+    "category": "dense_multi_phi",
+    "query": "Priya Hernandez DOB 1976-10-11 SSN 263-29-3674 priya.brown@yahoo.com \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Priya",
+      "Hernandez",
+      "1976-10-11",
+      "priya.brown@yahoo.com",
+      "263-29-3674"
+    ]
+  },
+  {
+    "id": "S0436",
+    "category": "name",
+    "query": "Pt Sophia Andersson, 74yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Sophia",
+      "Andersson"
+    ]
+  },
+  {
+    "id": "S0437",
+    "category": "name",
+    "query": "Pt Emma Johnson, 84yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Emma",
+      "Johnson"
+    ]
+  },
+  {
+    "id": "S0438",
+    "category": "email",
+    "query": "Email robert.davis@example.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "robert.davis@example.com"
+    ]
+  },
+  {
+    "id": "S0439",
+    "category": "name",
+    "query": "Mohammed Johnson due for HPV vaccine, when do we start?",
+    "phi": [
+      "Mohammed",
+      "Johnson"
+    ]
+  },
+  {
+    "id": "S0440",
+    "category": "mrn",
+    "query": "Patient Medical Record Number 8481497 needs prior auth for tirzepatide.",
+    "phi": [
+      "8481497"
+    ]
+  },
+  {
+    "id": "S0441",
+    "category": "dob",
+    "query": "Pt DOB 1935-12-12 on warfarin, INR 1.8 \u2014 adjust?",
+    "phi": [
+      "1935-12-12"
+    ]
+  },
+  {
+    "id": "S0442",
+    "category": "clinical_lookalike",
+    "query": "ICD-10 E11.9 with HCC adjustment, A1c target?",
+    "phi": []
+  },
+  {
+    "id": "S0443",
+    "category": "email",
+    "query": "Email mary-ann.wong@yahoo.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "mary-ann.wong@yahoo.com"
+    ]
+  },
+  {
+    "id": "S0444",
+    "category": "no_phi",
+    "query": "AAP recommendations for screen time in toddlers?",
+    "phi": []
+  },
+  {
+    "id": "S0445",
+    "category": "dense_multi_phi",
+    "query": "Family of Aisha O'Brien (DOB 1958-11-01, MRN LP-17938, lives at 4637 Maple Dr, Tampa) wants advice on dad's CHF management.",
+    "phi": [
+      "Aisha",
+      "O'Brien",
+      "1958-11-01",
+      "LP-17938",
+      "Maple Dr",
+      "Tampa"
+    ]
+  },
+  {
+    "id": "S0446",
+    "category": "dob",
+    "query": "Pt DOB 2001-03-20 on warfarin, INR 1.8 \u2014 adjust?",
+    "phi": [
+      "2001-03-20"
+    ]
+  },
+  {
+    "id": "S0447",
+    "category": "no_phi",
+    "query": "When do we start statins per USPSTF?",
+    "phi": []
+  },
+  {
+    "id": "S0448",
+    "category": "dense_multi_phi",
+    "query": "Mateo Williams DOB 1947-03-04 SSN 451-18-9068 eve.williams@clinic.io \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Mateo",
+      "Williams",
+      "1947-03-04",
+      "eve.williams@clinic.io",
+      "451-18-9068"
+    ]
+  },
+  {
+    "id": "S0449",
+    "category": "name",
+    "query": "Marcus Lopez due for HPV vaccine, when do we start?",
+    "phi": [
+      "Marcus",
+      "Lopez"
+    ]
+  },
+  {
+    "id": "S0450",
+    "category": "name",
+    "query": "Daniel Gonzalez due for HPV vaccine, when do we start?",
+    "phi": [
+      "Daniel",
+      "Gonzalez"
+    ]
+  },
+  {
+    "id": "S0451",
+    "category": "mrn",
+    "query": "MRN LP-68334, BP 145/92, recheck interval?",
+    "phi": [
+      "LP-68334"
+    ]
+  },
+  {
+    "id": "S0452",
+    "category": "mrn",
+    "query": "Medical Record Number 7332141 has new dx HTN \u2014 first-line?",
+    "phi": [
+      "7332141"
+    ]
+  },
+  {
+    "id": "S0453",
+    "category": "name",
+    "query": "Sarah van der Berg, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Sarah",
+      "van der Berg"
+    ]
+  },
+  {
+    "id": "S0454",
+    "category": "ssn",
+    "query": "Pt SSN 747-30-3285, Medicare eligibility for screening colonoscopy?",
+    "phi": [
+      "747-30-3285"
+    ]
+  },
+  {
+    "id": "S0455",
+    "category": "no_phi",
+    "query": "First-line agent for newly diagnosed Type 2 DM?",
+    "phi": []
+  },
+  {
+    "id": "S0456",
+    "category": "email",
+    "query": "Email marcus.williams@hospital.org regarding annual physical scheduling, what to send?",
+    "phi": [
+      "marcus.williams@hospital.org"
+    ]
+  },
+  {
+    "id": "S0457",
+    "category": "dob",
+    "query": "6yo (DOB 2016-08-02) statin recommendation?",
+    "phi": [
+      "2016-08-02"
+    ]
+  },
+  {
+    "id": "S0458",
+    "category": "email",
+    "query": "Email jiang.macdonald@gmail.com regarding annual physical scheduling, what to send?",
+    "phi": [
+      "jiang.macdonald@gmail.com"
+    ]
+  },
+  {
+    "id": "S0459",
+    "category": "dense_multi_phi",
+    "query": "Liam Johnson DOB 1953-04-11 SSN 235-87-1387 robert.garcia@gmail.com \u2014 A1c 7.9 last month, next step?",
+    "phi": [
+      "Liam",
+      "Johnson",
+      "1953-04-11",
+      "robert.garcia@gmail.com",
+      "235-87-1387"
+    ]
+  },
+  {
+    "id": "S0460",
+    "category": "name",
+    "query": "Lisa Smith (21F) presents with chest pain, ECG normal \u2014 next?",
+    "phi": [
+      "Lisa",
+      "Smith"
+    ]
+  },
+  {
+    "id": "S0461",
+    "category": "no_phi",
+    "query": "ACIP HPV vaccine schedule for 11-year-olds?",
+    "phi": []
+  },
+  {
+    "id": "S0462",
+    "category": "address",
+    "query": "Lives on 987 Maple Dr, lead screening recommendation?",
+    "phi": [
+      "Maple Dr"
+    ]
+  },
+  {
+    "id": "S0463",
+    "category": "clinical_lookalike",
+    "query": "ICD-10 E11.9 with HCC adjustment, A1c target?",
+    "phi": []
+  },
+  {
+    "id": "S0464",
+    "category": "phone",
+    "query": "Pt phone 531.445.4133 for vaccine reminders, what protocol?",
+    "phi": [
+      "531.445.4133"
+    ]
+  },
+  {
+    "id": "S0465",
+    "category": "name",
+    "query": "Eve Garcia on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Eve",
+      "Garcia"
+    ]
+  },
+  {
+    "id": "S0466",
+    "category": "name",
+    "query": "Pt Isabella Wilson, 7M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Isabella",
+      "Wilson"
+    ]
+  },
+  {
+    "id": "S0467",
+    "category": "name",
+    "query": "John Garcia on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "John",
+      "Garcia"
+    ]
+  },
+  {
+    "id": "S0468",
+    "category": "no_phi",
+    "query": "When do we start lipid-lowering therapy in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0469",
+    "category": "mrn",
+    "query": "MRN: HOSP-2024-5491 due for screening colonoscopy \u2014 when?",
+    "phi": [
+      "HOSP-2024-5491"
+    ]
+  },
+  {
+    "id": "S0470",
+    "category": "mrn",
+    "query": "MRN 3934939, BP 145/92, recheck interval?",
+    "phi": [
+      "1609488"
+    ]
+  },
+  {
+    "id": "S0471",
+    "category": "name",
+    "query": "Pt Yael Johnson, 74M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Yael",
+      "Johnson"
+    ]
+  },
+  {
+    "id": "S0472",
+    "category": "name",
+    "query": "Isabella Andersson on metformin, A1c 7.9 \u2014 second-line?",
+    "phi": [
+      "Isabella",
+      "Andersson"
+    ]
+  },
+  {
+    "id": "S0473",
+    "category": "no_phi",
+    "query": "Recommended dose of amoxicillin for AOM in a 5yo?",
+    "phi": []
+  },
+  {
+    "id": "S0474",
+    "category": "ssn",
+    "query": "SSN 505413331 on file, prior auth for tirzepatide?",
+    "phi": [
+      "505413331"
+    ]
+  },
+  {
+    "id": "S0475",
+    "category": "no_phi",
+    "query": "Empiric abx for adult outpatient CAP per ATS/IDSA?",
+    "phi": []
+  },
+  {
+    "id": "S0476",
+    "category": "name",
+    "query": "Henry Hernandez has new dx HTN \u2014 first-line agent for African-American adult?",
+    "phi": [
+      "Henry",
+      "Hernandez"
+    ]
+  },
+  {
+    "id": "S0477",
+    "category": "dense_multi_phi",
+    "query": "Marcus Hernandez (DOB 1972-11-23, MRN LP-11587, phone (850) 473-3358) needs HPV vaccine, when to start?",
+    "phi": [
+      "Marcus",
+      "Hernandez",
+      "1972-11-23",
+      "(850) 473-3358",
+      "LP-11587"
+    ]
+  },
+  {
+    "id": "S0478",
+    "category": "mrn",
+    "query": "MRN 4500105668 has new dx HTN \u2014 first-line?",
+    "phi": [
+      "4500105668"
+    ]
+  },
+  {
+    "id": "S0479",
+    "category": "mrn",
+    "query": "MRN: HOSP-2024-7650 has new dx HTN \u2014 first-line?",
+    "phi": [
+      "HOSP-2024-7650"
+    ]
+  },
+  {
+    "id": "S0480",
+    "category": "no_phi",
+    "query": "What is the diagnostic criteria for sepsis in pediatrics?",
+    "phi": []
+  },
+  {
+    "id": "S0481",
+    "category": "name",
+    "query": "Pt Rashida Singh, 11yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Rashida",
+      "Singh"
+    ]
+  },
+  {
+    "id": "S0482",
+    "category": "no_phi",
+    "query": "Tdap booster interval in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0483",
+    "category": "no_phi",
+    "query": "How is anaphylaxis treated?",
+    "phi": []
+  },
+  {
+    "id": "S0484",
+    "category": "name",
+    "query": "Tom\u00e1s Lopez, peri-menopausal, hot flashes \u2014 HRT?",
+    "phi": [
+      "Tom\u00e1s",
+      "Lopez"
+    ]
+  },
+  {
+    "id": "S0485",
+    "category": "name",
+    "query": "Pt Daniel Andersson, 31yo, breast lump 1.5cm, mammogram next?",
+    "phi": [
+      "Daniel",
+      "Andersson"
+    ]
+  },
+  {
+    "id": "S0486",
+    "category": "dense_multi_phi",
+    "query": "Emma Martinez (DOB 1941-08-11, MRN LP453558, phone 445.725.9115) needs HPV vaccine, when to start?",
+    "phi": [
+      "Emma",
+      "Martinez",
+      "1941-08-11",
+      "445.725.9115",
+      "LP453558"
+    ]
+  },
+  {
+    "id": "S0487",
+    "category": "clinical_lookalike",
+    "query": "WBC 19.1, fever 102 \u2014 workup?",
+    "phi": []
+  },
+  {
+    "id": "S0488",
+    "category": "name",
+    "query": "Jiang Thomas has fever 102 for 3 days, workup?",
+    "phi": [
+      "Jiang",
+      "Thomas"
+    ]
+  },
+  {
+    "id": "S0489",
+    "category": "clinical_lookalike",
+    "query": "LDL 150 in 45M, statin first-line?",
+    "phi": []
+  },
+  {
+    "id": "S0490",
+    "category": "dense_multi_phi",
+    "query": "Emma Jones (DOB 1950-09-27, MRN 8032962713, phone 690-975-6757) needs HPV vaccine, when to start?",
+    "phi": [
+      "Emma",
+      "Jones",
+      "1950-09-27",
+      "690-975-6757",
+      "8032962713"
+    ]
+  },
+  {
+    "id": "S0491",
+    "category": "clinical_lookalike",
+    "query": "Platelet 216, no bleeding \u2014 workup?",
+    "phi": []
+  },
+  {
+    "id": "S0492",
+    "category": "name",
+    "query": "Priya Kim has new dx HTN \u2014 first-line agent for African-American adult?",
+    "phi": [
+      "Priya",
+      "Kim"
+    ]
+  },
+  {
+    "id": "S0493",
+    "category": "no_phi",
+    "query": "Tdap booster interval in adults?",
+    "phi": []
+  },
+  {
+    "id": "S0494",
+    "category": "address",
+    "query": "Lives on 2784 Park Lane, lead screening recommendation?",
+    "phi": [
+      "Park Lane"
+    ]
+  },
+  {
+    "id": "S0495",
+    "category": "address",
+    "query": "Pt at 9516 Oak Ave, Austin, WA 93993, asks about flu shot?",
+    "phi": [
+      "Oak Ave",
+      "Austin",
+      "93993"
+    ]
+  },
+  {
+    "id": "S0496",
+    "category": "name",
+    "query": "Pt Bo Smith, 84M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Bo",
+      "Smith"
+    ]
+  },
+  {
+    "id": "S0497",
+    "category": "no_phi",
+    "query": "When do we start statins per USPSTF?",
+    "phi": []
+  },
+  {
+    "id": "S0498",
+    "category": "dense_multi_phi",
+    "query": "Family of Mohammed Kim (DOB 1966-03-10, MRN HOSP-2024-7399, lives at 7188 Elm St, Seattle) wants advice on dad's CHF management.",
+    "phi": [
+      "Mohammed",
+      "Kim",
+      "1966-03-10",
+      "HOSP-2024-7399",
+      "Elm St",
+      "Seattle"
+    ]
+  },
+  {
+    "id": "S0499",
+    "category": "name",
+    "query": "Pt Olivia Lopez, 85M on lisinopril 20mg, BP 138/85, titrate?",
+    "phi": [
+      "Olivia",
+      "Lopez"
+    ]
+  },
+  {
+    "id": "S0500",
+    "category": "email",
+    "query": "Email jean-pierre.wong@clinic.io regarding annual physical scheduling, what to send?",
+    "phi": [
+      "jean-pierre.wong@clinic.io"
+    ]
+  }
+]
