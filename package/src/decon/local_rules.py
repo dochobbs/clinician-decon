@@ -90,8 +90,13 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     re.IGNORECASE,
   )),
   ("ssn", re.compile(r"\b\d{3}-\d{2}-\d{4}\b")),
+  ("mrn", re.compile(
+    r"\b(?:patient number|patient no\.?|patient #|pt number)\s*"
+    r"([A-Z0-9][A-Z0-9-]{3,})\b",
+    re.IGNORECASE,
+  )),
   ("mrn", re.compile(r"\b(?:MRN|MR#|medical record(?: number)?)\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{3,})\b", re.IGNORECASE)),
-  ("mrn", re.compile(r"\b[A-Z]{1,5}-\d{3,5}-\d{3,6}\b")),
+  ("mrn", re.compile(r"\b[A-Z]{1,5}-\d{3,8}(?:-\d{3,8})?\b")),
   ("url", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
   ("practice", re.compile(
     r"\b(?:Lakes\s+Pediatrics|Children['’]s(?:\s+Hospital)?|Mayo\s+Clinic|Cleveland\s+Clinic|"
@@ -121,6 +126,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   )),
   ("age", re.compile(r"\b\d{1,3}\s*(?:M|F)\b", re.IGNORECASE)),
   ("age", re.compile(rf"\b(?:he'?s|she'?s|patient is|pt is)\s+(\d{{1,3}}\s+months?)\b", re.IGNORECASE)),
+  ("age", re.compile(r"\b\d{1,3}-year-olds?\b", re.IGNORECASE)),
   ("age", re.compile(rf"\b\d{{1,3}}\s*(?:{EXPLICIT_AGE_UNITS})\b", re.IGNORECASE)),
   ("relation", re.compile(
     r"\b(?:the\s+)?(?:twins'?|siblings'?)\s+(?:older|younger|baby|little)?\s*"
@@ -144,6 +150,10 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("name", re.compile(
     rf"\b(?i:(?:Patient|Pt))\s+({NAME_TOKEN})"
     r"(?=\s+(?:has|presents|needs|asks|is|was|reports|states)\b)",
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:patient number|patient no\.?|patient #|pt number))\s+"
+    rf"[A-Z0-9-]+,\s*({FULL_NAME})(?=,\s*(?i:(?:date of birth|DOB))\b)",
   )),
   ("name", re.compile(
     rf"^({NAME_TOKEN})(?=\s+(?:has|presents|needs|asks|is|was|reports|states)\b)"
@@ -256,7 +266,7 @@ def _replacement_for_span(text: str, span: Span, reference_date: date) -> str:
   if span.category == "age":
     return _normalize_age(raw)
   if span.category == "body_measurement":
-    return _generalize_body_measurement(raw)
+    return _generalize_body_measurement(raw, text, span)
   if span.category == "clinical_value":
     return _generalize_clinical_value(raw)
   if span.category == "date":
@@ -284,6 +294,16 @@ def _normalize_safe_context(text: str) -> str:
 
 
 def _normalize_age(raw: str) -> str:
+  hyphen_year_match = re.search(
+    r"\b(?P<amount>\d{1,3})-year-olds?\b",
+    raw,
+    flags=re.IGNORECASE,
+  )
+  if hyphen_year_match:
+    amount = int(hyphen_year_match.group("amount"))
+    if amount >= 90:
+      return "90 or older"
+    return f"{amount}-year-old"
   compact_match = re.search(
     r"\b(?P<amount>\d{1,3})\s*(?P<sex>M|F)\b",
     raw,
@@ -352,6 +372,9 @@ def _extract_safe_age(source: str, reference_date: date) -> str | None:
   compact_age = re.search(r"\b\d{1,3}\s*(?:M|F)\b", source, flags=re.IGNORECASE)
   if compact_age:
     return _normalize_age(compact_age.group(0))
+  hyphen_year_age = re.search(r"\b\d{1,3}-year-olds?\b", source, flags=re.IGNORECASE)
+  if hyphen_year_age:
+    return _normalize_age(hyphen_year_age.group(0))
   contextual_month_age = re.search(
     r"\b(?:he'?s|she'?s|patient is|pt is)\s+(\d{1,3}\s+months?)\b",
     source,
@@ -426,10 +449,29 @@ def _generalize_clinical_value(raw: str) -> str:
     if value < 0.4:
       return "low TSH"
     return "TSH value"
+  if normalized_label in ("FERRITIN", "WBC", "PLATELETS", "LDH"):
+    label_display = {
+      "FERRITIN": "Ferritin",
+      "WBC": "WBC",
+      "PLATELETS": "platelets",
+      "LDH": "LDH",
+    }[normalized_label]
+    return f"{label_display} {match.group('value')}"
   return f"{normalized_label} value"
 
 
-def _generalize_body_measurement(raw: str) -> str:
+def _generalize_body_measurement(raw: str, text: str, span: Span) -> str:
+  context = text[max(0, span.start - 80):min(len(text), span.end + 120)]
+  if (
+    re.search(r"\b\d{2,3}\s*(?:lbs?|kg|pounds?)\b", raw, re.IGNORECASE)
+    and re.search(
+      r"\b(?:weighs?|dose|dosing|mg/kg|epinephrine|autoinjector|amoxicillin|"
+      r"weight-based)\b",
+      context,
+      re.IGNORECASE,
+    )
+  ):
+    return raw.strip()
   bmi_match = re.search(r"\bBMI\s*(?P<value>\d{1,2}(?:\.\d+)?)\b", raw, re.IGNORECASE)
   if bmi_match:
     value = float(bmi_match.group("value"))

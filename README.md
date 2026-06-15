@@ -62,7 +62,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-34 passed
+65 passed
 ```
 
 ## Important Docs
@@ -72,6 +72,7 @@ Current local snapshot:
 - [PHI field handling review](docs/superpowers/specs/2026-06-15-phi-field-handling-review.md)
 - [Skeptical physician red-team](docs/qa/2026-06-15-skeptical-physician-red-team.md)
 - [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
+- [Local 500-case usability eval](docs/qa/2026-06-15-local-usability-500-eval.md)
 - [Prototype implementation plan](docs/superpowers/plans/2026-06-15-local-decon-prototype.md)
 - [Clinician tool brief](package/docs/clinician-decon-tool-brief.md)
 - [Tabflows partner research](package/docs/tabflows-partner-research.md)

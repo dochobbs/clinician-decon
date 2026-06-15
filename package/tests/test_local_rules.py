@@ -384,8 +384,10 @@ def test_decontextualize_text_uses_learned_rules_for_comma_and_k_lab_values():
 
   result = decontextualize_text(source, destination="chatgpt")
 
-  assert "48,000" not in result.destination_prompt
-  assert "45k" not in result.destination_prompt
+  assert "Ferritin 48,000" in result.destination_prompt
+  assert "WBC 1.2" in result.destination_prompt
+  assert "platelets 45k" in result.destination_prompt
+  assert "LDH 2800" in result.destination_prompt
   assert "HLH" in result.destination_prompt
   assert result.removed_categories["clinical_value"] >= 4
 
@@ -464,3 +466,90 @@ def test_decontextualize_text_removes_single_first_name_at_sentence_start():
   assert "Hunter syndrome" in result.destination_prompt
   assert "developmental dysplasia" in result.destination_prompt
   assert result.removed_categories["name"] >= 2
+
+
+def test_decontextualize_text_preserves_weight_when_needed_for_dosing():
+  source = (
+    "Emma Chen DOB 2023-10-06 MRN AB943709 weighs 14 kg and needs amoxicillin "
+    "for AOM. What dose?"
+  )
+
+  result = decontextualize_text(
+    source,
+    destination="chatgpt",
+    reference_date=date(2026, 6, 15),
+  )
+
+  assert "Emma" not in result.destination_prompt
+  assert "Chen" not in result.destination_prompt
+  assert "AB943709" not in result.destination_prompt
+  assert "14 kg" in result.destination_prompt
+  assert "amoxicillin" in result.destination_prompt
+  assert "AOM" in result.destination_prompt
+
+
+def test_decontextualize_text_preserves_weight_when_needed_for_epinephrine_dose():
+  source = (
+    "Born 2022-06-01, Noah Patel has peanut anaphylaxis and weighs 28 lbs. "
+    "Which epinephrine autoinjector dose?"
+  )
+
+  result = decontextualize_text(
+    source,
+    destination="chatgpt",
+    reference_date=date(2026, 6, 15),
+  )
+
+  assert "Noah" not in result.destination_prompt
+  assert "Patel" not in result.destination_prompt
+  assert "28 lbs" in result.destination_prompt
+  assert "peanut anaphylaxis" in result.destination_prompt
+  assert "epinephrine autoinjector" in result.destination_prompt
+
+
+def test_decontextualize_text_preserves_severe_lab_values_for_criteria_checks():
+  source = (
+    "Emma Jackson has ferritin 48,000, WBC 1.2, platelets 28k, LDH 4100. "
+    "Does this meet HLH criteria?"
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  assert "Emma" not in result.destination_prompt
+  assert "Jackson" not in result.destination_prompt
+  assert "Ferritin 48,000" in result.destination_prompt
+  assert "WBC 1.2" in result.destination_prompt
+  assert "platelets 28k" in result.destination_prompt
+  assert "LDH 4100" in result.destination_prompt
+  assert "HLH" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_dictation_patient_number_and_following_name():
+  source = (
+    "This is Dr. Hobbs dictating on patient number LP-91830, Hunter Rivera, "
+    "date of birth 2020-04-01. Chief complaint is cafe-au-lait spots. "
+    "Assessment is rule out NF1."
+  )
+
+  result = decontextualize_text(
+    source,
+    destination="chatgpt",
+    reference_date=date(2026, 6, 15),
+  )
+
+  assert "LP-91830" not in result.destination_prompt
+  assert "Hunter" not in result.destination_prompt
+  assert "Rivera" not in result.destination_prompt
+  assert "Dr. Hobbs" not in result.destination_prompt
+  assert "6-year-old" in result.destination_prompt
+  assert "cafe-au-lait spots" in result.destination_prompt
+  assert "NF1" in result.destination_prompt
+
+
+def test_decontextualize_text_preserves_hyphenated_age_for_web_search():
+  result = decontextualize_text(
+    "ACIP HPV vaccine schedule for 11-year-olds?",
+    destination="web_search",
+  )
+
+  assert result.safe_query == "11-year-old pediatric HPV vaccine schedule current guidelines"

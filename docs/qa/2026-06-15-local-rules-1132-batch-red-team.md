@@ -65,8 +65,8 @@ Post-patch run, same fixtures and reference date:
 | `decon_synth_500.json` | `web_search` | 500 | 737 | 0 | 0 | 0 | 0.081 ms | 0.169 ms |
 | `decon_synth_500_b.json` | `chatgpt` | 500 | 860 | 0 | 0 | 0 | 0.086 ms | 0.176 ms |
 | `decon_synth_500_b.json` | `web_search` | 500 | 860 | 0 | 0 | 0 | 0.083 ms | 0.174 ms |
-| `decon_combined_1132.json` | `chatgpt` | 1132 | 2526 | 268 | 101 | 89 | 0.113 ms | 0.368 ms |
-| `decon_combined_1132.json` | `web_search` | 1132 | 2526 | 238 | 87 | 75 | 0.112 ms | 0.351 ms |
+| `decon_combined_1132.json` | `chatgpt` | 1132 | 2526 | 271 | 101 | 89 | 0.114 ms | 0.367 ms |
+| `decon_combined_1132.json` | `web_search` | 1132 | 2526 | 241 | 87 | 75 | 0.114 ms | 0.364 ms |
 
 This is a material recovery from the bad app-local baseline:
 
@@ -76,13 +76,18 @@ This is a material recovery from the bad app-local baseline:
 | `decon_synth_500.json` | `web_search` | 264 | 0 | 135 | 0 |
 | `decon_synth_500_b.json` | `chatgpt` | 379 | 0 | 194 | 0 |
 | `decon_synth_500_b.json` | `web_search` | 317 | 0 | 163 | 0 |
-| `decon_combined_1132.json` | `chatgpt` | 1067 | 268 | 482 | 101 |
-| `decon_combined_1132.json` | `web_search` | 915 | 238 | 409 | 87 |
+| `decon_combined_1132.json` | `chatgpt` | 1067 | 271 | 482 | 101 |
+| `decon_combined_1132.json` | `web_search` | 915 | 241 | 409 | 87 |
 
 Remaining combined-suite leaks are concentrated in Amboss stress rows. The largest residual buckets
 are `amboss_r4_golden` and `amboss_r4_validation`, plus edge cases where the fixture labels exact
 age, medication dose, disease-name collisions, or deeply buried adversarial text as PHI. These are
 the reason the production path still needs the prior OpenMed + regex stack, not rules alone.
+
+Note: the 2026-06-15 usability run intentionally changed the deterministic rules to preserve
+clinically necessary weight and severe lab values for dosing and criteria checks. That slightly
+raises this older PHI-only Amboss count because the Amboss fixture labels some clinically useful
+values as PHI-like, but it improves usability for weight-based dosing and HLH-style lab criteria.
 
 ## 1,132-Case Summary By Destination
 

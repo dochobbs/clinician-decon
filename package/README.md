@@ -84,8 +84,18 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-34 passed
+65 passed
 ```
+
+Run the local usability suite:
+
+```bash
+python scripts/run_usability_eval.py
+```
+
+This generates `package/data/decon_usability_500_2026-06-15.json`,
+`package/reports/local-usability-500-2026-06-15.json`, and
+`docs/qa/2026-06-15-local-usability-500-eval.md`.
 
 ## Safety Notes
 
@@ -94,5 +104,7 @@ Current local snapshot:
   removed or replaced.
 - DOB is converted to age when parseable; ages over 89 are aggregated to `90 or older`.
 - Relative/caregiver names are removed while broad relationship context can remain.
-- Clinical values may be generalized, for example `A1c 8.2` to `elevated A1c`.
+- Clinical values may be generalized when exact values are not necessary, for example `A1c 8.2`
+  to `elevated A1c`; exact weight or severe lab values are preserved when needed for dosing or
+  criteria checks.
 - This is a PHI minimization prototype, not a legal or compliance guarantee.
