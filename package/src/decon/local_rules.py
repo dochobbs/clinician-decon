@@ -39,7 +39,8 @@ MONTH_TERMS = (
   r"January|February|March|April|May|June|July|August|September|October|November|"
   r"December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec"
 )
-DOB_LABEL = r"DOB|D\.O\.B\.?|date of birth|born"
+WEEKDAY_TERMS = r"Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday"
+DOB_LABEL = r"DOB|D\.O\.B\.?|date of birth|birthdate|birthday|born"
 RELATION_TERMS = (
   r"Mom|Mama|Mami|Mother|Dad|Papa|Father|Grandma|Grandpa|Aunt|Auntie|Uncle|"
   r"Tia|Tio|Abuela|Abuelo|Wife|Husband|Spouse|Partner|Sister|Brother|Daughter|"
@@ -69,6 +70,12 @@ PATIENT_NAME_INTRO_PATTERNS: tuple[re.Pattern[str], ...] = (
   re.compile(rf"\b({NAME_TOKEN})'s\s+(?i:(?:mother|mom|father|parent|caregiver))\b"),
   re.compile(
     rf"\b(?i:(?:mother|mom|father|parent|caregiver)\s+reports)\s+({NAME_TOKEN})\b",
+  ),
+  re.compile(
+    rf"\b(?i:(?:mother|mom|father|dad|parent|caregiver))\s+{NAME_TOKEN}\s+"
+    rf"(?i:(?:reports|reported|says|states))\s+({NAME_TOKEN})"
+    r"(?=(?:'s)?\s+(?i:had|has|was|is|reported|reports|improved|worse|worsened|"
+    r"needs|started|stopped|takes|will|should|could|presented|presents|came|comes)\b)",
   ),
   re.compile(rf"\b(?i:(?:the|this)\s+patient)\s+({NAME_TOKEN})\b"),
   re.compile(
@@ -121,7 +128,14 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     r"[A-Za-z0-9]+(?:\s+dot\s+[A-Za-z]{2,})+)\b",
     re.IGNORECASE,
   )),
+  ("email", re.compile(
+    r"\b([A-Za-zÀ-ÖØ-öø-ÿ0-9'-]+"
+    r"(?:\s+dot\s+[A-Za-zÀ-ÖØ-öø-ÿ0-9'-]+){1,10}\s+at\s+"
+    r"[A-Za-z0-9]+(?:\s+dot\s+[A-Za-z]{2,})+)\b",
+    re.IGNORECASE,
+  )),
   ("phone", re.compile(r"(?:\+1[\s-]?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}\b")),
+  ("phone", re.compile(r"\b((?:\d\s+){9}\d)\b")),
   ("phone", re.compile(
     r"\b(?:callback|contact|phone|call|text)\s+((?:\d\s*){10})\b",
     re.IGNORECASE,
@@ -141,6 +155,21 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("mrn", re.compile(r"\b(?:MRN|MR#|medical record(?: number)?)\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{3,})\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b[A-Z]{1,5}-\d{3,8}(?:-\d{3,8})?\b")),
   ("url", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
+  ("pharmacy", re.compile(
+    rf"\b(?:Walgreens|CVS|Rite Aid|Walmart Pharmacy|Costco Pharmacy|Kroger Pharmacy)"
+    rf"\s+(?:on|at|in)\s+{NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}}"
+    rf"(?:\s+in\s+{NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}})?\b",
+    re.IGNORECASE,
+  )),
+  ("school", re.compile(
+    rf"\b(?:{NAME_TOKEN}\s+){{1,4}}(?:Elementary|Middle|High)\s+School\b",
+    re.IGNORECASE,
+  )),
+  ("school", re.compile(
+    rf"\b(?:{NAME_TOKEN}\s+){{1,4}}(?:School|Academy)\b",
+    re.IGNORECASE,
+  )),
+  ("camp", re.compile(rf"\bCamp\s+{NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}}\b")),
   ("practice", re.compile(
     r"\b(?:Lakes\s+Pediatrics|Children['’]s(?:\s+Hospital)?|Mayo\s+Clinic|Cleveland\s+Clinic|"
     r"[A-Z][A-Za-z'’.-]+\s+(?:Pediatrics|Clinic|Hospital|Family Medicine|Medical Group|"
@@ -155,6 +184,14 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("date", re.compile(r"\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}-\d{1,2}-\d{1,2})\b")),
   ("date", re.compile(
     r"\b(?:today|yesterday|last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))\b",
+    re.IGNORECASE,
+  )),
+  ("date", re.compile(
+    rf"\b(?:(?:next|this|last)\s+)?(?:{WEEKDAY_TERMS})\b",
+    re.IGNORECASE,
+  )),
+  ("date", re.compile(
+    rf"\b(?:{MONTH_TERMS})\.?\s+\d{{1,2}}(?:st|nd|rd|th)?(?:,)?\s+\d{{4}}\b",
     re.IGNORECASE,
   )),
   ("date", re.compile(rf"\b(?:{MONTH_TERMS})\.?\s+\d{{1,2}}(?:st|nd|rd|th)?\b", re.IGNORECASE)),
@@ -250,7 +287,15 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
 )
 
 RESIDUAL_HIGH_RISK: tuple[tuple[str, re.Pattern[str]], ...] = (
-  ("possible MRN or record identifier remains", re.compile(r"\b(?:MRN|MR#|record)\s+[A-Z0-9-]{6,}\b", re.IGNORECASE)),
+  ("possible MRN or record identifier remains", re.compile(r"\b(?:MRN|MR#)\s+[A-Z0-9-]{6,}\b", re.IGNORECASE)),
+  ("possible MRN or record identifier remains", re.compile(
+    r"\brecord\s+(?!(?:number|id|identifier)\b)[A-Z0-9-]{6,}\b",
+    re.IGNORECASE,
+  )),
+  ("possible MRN or record identifier remains", re.compile(
+    r"\brecord\s+(?:number|id|identifier)\s+(?=[A-Z0-9-]*\d)[A-Z0-9-]{6,}\b",
+    re.IGNORECASE,
+  )),
   ("possible ZIP code remains", re.compile(r"\b(?:ZIP|zip code)\s*[:#]?\s*\d{5}(?:-\d{4})?\b", re.IGNORECASE)),
   ("possible email remains", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
   ("possible phone remains", re.compile(r"\b\d{3}[\s.-]?\d{3}[\s.-]?\d{4}\b")),
@@ -295,7 +340,15 @@ RELATION_REPLACEMENTS: tuple[tuple[re.Pattern[str], str], ...] = (
   (re.compile(r"\b(?:Aunt|Uncle)\s+\[NAME\]", re.IGNORECASE), "relative"),
 )
 
-DATE_FORMATS = ("%m/%d/%Y", "%m/%d/%y", "%m-%d-%Y", "%m-%d-%y", "%Y-%m-%d")
+DATE_FORMATS = (
+  "%m/%d/%Y",
+  "%m/%d/%y",
+  "%m-%d-%Y",
+  "%m-%d-%y",
+  "%Y-%m-%d",
+  "%B %d, %Y",
+  "%b %d, %Y",
+)
 
 
 def _collect_spans(text: str) -> list[Span]:
@@ -375,6 +428,12 @@ def _replacement_for_span(text: str, span: Span, reference_date: date) -> str:
     return _normalize_age(raw)
   if span.category == "body_measurement":
     return _generalize_body_measurement(raw, text, span)
+  if span.category == "pharmacy":
+    return "pharmacy"
+  if span.category == "school":
+    return _generalize_school(raw)
+  if span.category == "camp":
+    return "camp"
   if span.category == "clinical_value":
     return _generalize_clinical_value(raw)
   if span.category == "date":
@@ -442,9 +501,10 @@ def _normalize_age(raw: str) -> str:
 
 
 def _parse_date(raw: str) -> date | None:
+  normalized = re.sub(r"(\d{1,2})(?:st|nd|rd|th)", r"\1", raw, flags=re.IGNORECASE)
   for date_format in DATE_FORMATS:
     try:
-      return datetime.strptime(raw, date_format).date()
+      return datetime.strptime(normalized, date_format).date()
     except ValueError:
       continue
   return None
@@ -598,6 +658,17 @@ def _generalize_body_measurement(raw: str, text: str, span: Span) -> str:
   return "[BODY_MEASUREMENT]"
 
 
+def _generalize_school(raw: str) -> str:
+  lowered = raw.lower()
+  if "middle school" in lowered:
+    return "middle school"
+  if "high school" in lowered:
+    return "high school"
+  if "elementary" in lowered:
+    return "elementary school"
+  return "school"
+
+
 def _safe_query_from_context(safe_context: str) -> str:
   query = re.sub(r"\[[A-Z_]+\]", " ", safe_context)
   for pattern in QUERY_NOISE_PATTERNS:
@@ -608,7 +679,7 @@ def _safe_query_from_context(safe_context: str) -> str:
 
 def _safe_query_from_text(source: str, safe_context: str, reference_date: date) -> str:
   lower_source = source.lower()
-  safe_age = _extract_safe_age(source, reference_date)
+  safe_age = _extract_safe_age(source, reference_date) or _extract_safe_age(safe_context, reference_date)
   age_prefix = f"{safe_age} " if safe_age else ""
   pediatric_label = "pediatric " if safe_age is None or _is_pediatric_age(safe_age) else ""
   if re.search(

@@ -26,6 +26,7 @@ archetype libraries.
 | --- | ---: | --- | --- | --- |
 | `package/data/decon_usability_500_2026-06-15.json` | 500 | `generate_usability_cases(500, seed=20260615, reference_date=2026-06-15)` in `package/src/decon/usability_eval.py` | Clinician-usability suite: checks whether decon preserves required clinical facts while removing PHI. | `docs/qa/2026-06-15-local-usability-500-eval.md`: 1,500 / 1,500 safe, clinically usable, and handoff usable. |
 | `package/data/decon_adversarial_500_2026-06-15.json` | 500 | `generate_adversarial_cases(500, seed=20260615, reference_date=2026-06-15)` in `package/src/decon/usability_eval.py` | Adversarial stress suite for common failure modes: prompt injection, buried identity, repeated names, OCR identifiers, URL PHI, Spanish family phrasing, small-town uniqueness, copy-pasted notes, contact/date mashups, and eponym collisions. | `docs/qa/2026-06-15-local-adversarial-500-eval.md`: 1,500 / 1,500 safe, clinically usable, and handoff usable. |
+| `package/data/decon_phi_field_prose_25_2026-06-15.json` | 25 | Clinician-authored focused audit from the Marvin-name failure follow-up. | Focused prose PHI field suite: month-name DOB, birthday, weekdays, spaced phones, obfuscated email, named pharmacy/school/camp, practice/location, insurance, and caregiver-name bridge. | `docs/qa/2026-06-15-other-phi-fields-prose-audit.md`: 75 / 75 safe, clinically usable, and handoff usable. |
 | `package/data/decon_persona_regression_2000_2026-06-15.json` | 2,000 | `package/scripts/generate_traces.py --count 2000 --seed 20260615` using `package/data/personas/v1.json` and `package/data/archetypes/v1.json` | Persona-driven regression suite: combines clinician persona, patient context, source channel, perturbation, and clinical archetype metadata. | `docs/qa/2026-06-15-persona-regression-2000-eval.md`: first run found 2,742 / 6,000 PHI-leaked outputs; final run 6,000 / 6,000 safe, clinically usable, and handoff usable. |
 
 ## Persona Regression 2,000 Trace
@@ -76,6 +77,39 @@ Final run after targeted fixes:
 - Missing-critical-fact outputs: `0 / 6,000`
 - Average runtime: `0.289 ms`
 - p95 runtime: `0.399 ms`
+
+## PHI Field Prose 25 Trace
+
+Validation:
+
+```bash
+python3 package/scripts/run_validation.py --suite phi-field-prose
+```
+
+Seed and date:
+
+- Seed: none; clinician-authored deterministic cases.
+- Reference date: `2026-06-15`
+- Destinations: `chatgpt`, `gemini`, `web_search`
+- Outputs per run: `25 cases x 3 destinations = 75 outputs`
+
+Coverage:
+
+- Month-name DOB prose, including `date of birth`, `born`, and `birthday`.
+- Relative weekdays and exact month-day dates.
+- Standard and spaced phone numbers.
+- Standard and obfuscated emails.
+- SSN, URL, address, city/state, ZIP, MRN, and OCR-spaced MRN prose.
+- Named pharmacy, school, camp, practice/location, and insurance references.
+- Caregiver-name bridge: `Mother Jennifer reports Marvin...`.
+
+Final run after fixes:
+
+- Safe outputs: `75 / 75`
+- Clinically usable outputs: `75 / 75`
+- Handoff usable outputs: `75 / 75`
+- PHI-leaked outputs: `0 / 75`
+- Missing-critical-fact outputs: `0 / 75`
 
 ## Adversarial 500 Trace
 

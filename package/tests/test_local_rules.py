@@ -361,6 +361,78 @@ def test_decontextualize_text_uses_learned_rules_for_month_day_dates():
   assert result.removed_categories["date"] >= 1
 
 
+def test_decontextualize_text_removes_common_non_name_phi_prose():
+  cases = (
+    {
+      "source": "Date of birth is March 15, 2013; ADHD follow-up is stable.",
+      "forbidden": ("March 15", "2013"),
+      "required": ("13-year-old", "ADHD"),
+    },
+    {
+      "source": "Birthday is March 15, 2013; ADHD follow-up is stable.",
+      "forbidden": ("March 15", "2013"),
+      "required": ("13-year-old", "ADHD"),
+    },
+    {
+      "source": "Follow-up by Monday or Tuesday before trip next Wednesday.",
+      "forbidden": ("Monday", "Tuesday", "next Wednesday"),
+      "required": ("Follow-up", "trip"),
+    },
+    {
+      "source": "Reach family at 5 1 2 5 5 5 9 3 7 4 after visit.",
+      "forbidden": ("5 1 2 5 5 5 9 3 7 4",),
+      "required": ("family", "visit"),
+    },
+    {
+      "source": "Send to marvin dot family at example dot com with update.",
+      "forbidden": ("marvin dot family at example dot com",),
+      "required": ("update",),
+    },
+    {
+      "source": "Prescription sent to Walgreens on Vernon in Adena.",
+      "forbidden": ("Walgreens", "Vernon", "Adena"),
+      "required": ("Prescription sent to", "pharmacy"),
+    },
+    {
+      "source": "Transition to Adena Middle School this fall is a concern.",
+      "forbidden": ("Adena Middle School", "Adena"),
+      "required": ("middle school", "fall"),
+    },
+    {
+      "source": "Patient is going to Camp Lakeview on July 12th.",
+      "forbidden": ("Camp Lakeview", "July 12th", "12th"),
+      "required": ("camp",),
+    },
+    {
+      "source": "Going to camp July 12th after starting guanfacine.",
+      "forbidden": ("July 12th", "12th"),
+      "required": ("camp",),
+    },
+  )
+
+  for case in cases:
+    result = decontextualize_text(
+      case["source"],
+      destination="chatgpt",
+      reference_date=date(2026, 6, 15),
+    )
+
+    for term in case["forbidden"]:
+      assert term not in result.destination_prompt
+    for term in case["required"]:
+      assert term in result.destination_prompt
+
+
+def test_decontextualize_text_does_not_block_after_medical_record_placeholder():
+  source = "Medical record number AB123456; parent asks about asthma action plan."
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  assert "AB123456" not in result.destination_prompt
+  assert result.risk_level == "low"
+  assert result.copy_allowed is True
+
+
 def test_decontextualize_text_uses_learned_rules_for_parenthetical_family_and_child_names():
   source = (
     "Mom (Jennifer) says little Aiden has been having fevers for 5 days with red eyes "
@@ -508,6 +580,7 @@ def test_decontextualize_text_removes_common_first_name_only_note_mentions():
     "Marvin comes in today for ADHD follow-up and worsening anxiety.",
     "Marvin's mother reports emotional sensitivity on methylphenidate.",
     "Mother reports Marvin had emotional sensitivity on methylphenidate.",
+    "Mother Jennifer reports Marvin had emotional sensitivity on methylphenidate.",
     "Mom reports Marvin had emotional sensitivity on methylphenidate.",
     "The patient Marvin had emotional sensitivity on methylphenidate.",
     "This patient Marvin had emotional sensitivity on methylphenidate.",

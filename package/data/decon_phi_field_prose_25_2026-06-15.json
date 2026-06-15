@@ -1,0 +1,282 @@
+[
+  {
+    "id": "PFP001",
+    "category": "full_name_dob_mrn",
+    "query": "Marcus Johnson DOB 3/15/2013 MRN LP-2024-08432 needs vaccine catch-up guidance.",
+    "phi": ["Marcus", "Johnson", "3/15/2013", "LP-2024-08432"],
+    "forbidden_terms": ["Marcus", "Johnson", "3/15/2013", "LP-2024-08432"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "topic", "acceptable_terms": ["vaccine"]}
+    ]
+  },
+  {
+    "id": "PFP002",
+    "category": "first_name_note_prose",
+    "query": "Marvin is a patient who returns for ADHD and anxiety follow-up after stopping methylphenidate.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["ADHD"]},
+      {"label": "condition", "acceptable_terms": ["anxiety"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "PFP003",
+    "category": "dob_words",
+    "query": "Date of birth is March 15, 2013; ADHD follow-up is stable.",
+    "phi": ["March 15, 2013"],
+    "forbidden_terms": ["March 15", "2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "condition", "acceptable_terms": ["ADHD"]}
+    ]
+  },
+  {
+    "id": "PFP004",
+    "category": "born_words",
+    "query": "Born March 15, 2013, needs HPV catch-up advice.",
+    "phi": ["March 15, 2013"],
+    "forbidden_terms": ["March 15", "2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "vaccine", "acceptable_terms": ["HPV"]}
+    ]
+  },
+  {
+    "id": "PFP005",
+    "category": "birthday_plain",
+    "query": "Birthday is March 15, 2013; what vaccines are due?",
+    "phi": ["March 15, 2013"],
+    "forbidden_terms": ["March 15", "2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "topic", "acceptable_terms": ["vaccines"]}
+    ]
+  },
+  {
+    "id": "PFP006",
+    "category": "mrn_words",
+    "query": "Medical record number AB123456; parent asks about asthma action plan.",
+    "phi": ["AB123456"],
+    "forbidden_terms": ["AB123456"],
+    "critical_facts": [
+      {"label": "topic", "acceptable_terms": ["asthma action plan"]}
+    ]
+  },
+  {
+    "id": "PFP007",
+    "category": "mrn_spaced",
+    "query": "OCR footer M R N L P 2 0 2 4 0 8 4 3 2 phone 5 1 2 5 5 5 0 1 4 7. Fever for 7 days with rash.",
+    "phi": ["L P 2 0 2 4 0 8 4 3 2", "5 1 2 5 5 5 0 1 4 7"],
+    "forbidden_terms": ["L P 2 0 2 4 0 8 4 3 2", "5 1 2 5 5 5 0 1 4 7"],
+    "critical_facts": [
+      {"label": "symptom", "acceptable_terms": ["Fever"]},
+      {"label": "symptom", "acceptable_terms": ["rash"]}
+    ]
+  },
+  {
+    "id": "PFP008",
+    "category": "phone_standard",
+    "query": "Mom called from 512-555-0147 asking about guanfacine dose titration.",
+    "phi": ["512-555-0147"],
+    "forbidden_terms": ["512-555-0147"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["guanfacine"]},
+      {"label": "topic", "acceptable_terms": ["dose titration"]}
+    ]
+  },
+  {
+    "id": "PFP009",
+    "category": "phone_spaced_unlabeled",
+    "query": "Reach family at 5 1 2 5 5 5 9 3 7 4 after visit.",
+    "phi": ["5 1 2 5 5 5 9 3 7 4"],
+    "forbidden_terms": ["5 1 2 5 5 5 9 3 7 4"],
+    "critical_facts": [
+      {"label": "context", "acceptable_terms": ["family"]},
+      {"label": "context", "acceptable_terms": ["visit"]}
+    ]
+  },
+  {
+    "id": "PFP010",
+    "category": "email_standard",
+    "query": "Email marvin.family@example.com with school note instructions for albuterol.",
+    "phi": ["marvin.family@example.com"],
+    "forbidden_terms": ["marvin.family@example.com"],
+    "critical_facts": [
+      {"label": "topic", "acceptable_terms": ["school note"]},
+      {"label": "medication", "acceptable_terms": ["albuterol"]}
+    ]
+  },
+  {
+    "id": "PFP011",
+    "category": "email_obfuscated",
+    "query": "Send to marvin dot family at example dot com with update about methylphenidate intolerance.",
+    "phi": ["marvin dot family at example dot com"],
+    "forbidden_terms": ["marvin dot family at example dot com"],
+    "critical_facts": [
+      {"label": "topic", "acceptable_terms": ["methylphenidate intolerance"]}
+    ]
+  },
+  {
+    "id": "PFP012",
+    "category": "ssn",
+    "query": "SSN 123-45-6789 appears in intake; question is nitrofurantoin in pregnancy.",
+    "phi": ["123-45-6789"],
+    "forbidden_terms": ["123-45-6789"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["nitrofurantoin"]},
+      {"label": "context", "acceptable_terms": ["pregnancy"]}
+    ]
+  },
+  {
+    "id": "PFP013",
+    "category": "url_mychart",
+    "query": "Chart link https://mychart.local/patient/Marvin-Johnson/MRN-LP-2024-08432?callback=5125550147. 6-year-old with asthma flare.",
+    "phi": ["https://mychart.local/patient/Marvin-Johnson/MRN-LP-2024-08432?callback=5125550147", "Marvin", "Johnson", "LP-2024-08432", "5125550147"],
+    "forbidden_terms": ["https://", "Marvin", "Johnson", "LP-2024-08432", "5125550147"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["6-year-old"]},
+      {"label": "condition", "acceptable_terms": ["asthma flare"]}
+    ]
+  },
+  {
+    "id": "PFP014",
+    "category": "street_address_city_zip",
+    "query": "Lives at 123 Oak Street, Adena, TX 78701; needs renal dosing for cephalexin.",
+    "phi": ["123 Oak Street", "Adena, TX", "78701"],
+    "forbidden_terms": ["123 Oak Street", "Adena", "78701"],
+    "critical_facts": [
+      {"label": "topic", "acceptable_terms": ["renal dosing"]},
+      {"label": "medication", "acceptable_terms": ["cephalexin"]}
+    ]
+  },
+  {
+    "id": "PFP015",
+    "category": "city_state",
+    "query": "Patient from Adena, TX asks about RSV prophylaxis eligibility.",
+    "phi": ["Adena, TX"],
+    "forbidden_terms": ["Adena, TX"],
+    "critical_facts": [
+      {"label": "topic", "acceptable_terms": ["RSV prophylaxis"]}
+    ]
+  },
+  {
+    "id": "PFP016",
+    "category": "zip_label",
+    "query": "ZIP 78701, has wheezing despite albuterol q4h.",
+    "phi": ["78701"],
+    "forbidden_terms": ["78701"],
+    "critical_facts": [
+      {"label": "symptom", "acceptable_terms": ["wheezing"]},
+      {"label": "medication", "acceptable_terms": ["albuterol"]}
+    ]
+  },
+  {
+    "id": "PFP017",
+    "category": "pharmacy_street_city",
+    "query": "Prescription sent to Walgreens on Vernon in Adena. Start guanfacine 1 mg each morning.",
+    "phi": ["Walgreens", "Vernon", "Adena"],
+    "forbidden_terms": ["Walgreens", "Vernon", "Adena"],
+    "critical_facts": [
+      {"label": "care setting", "acceptable_terms": ["pharmacy"]},
+      {"label": "medication", "acceptable_terms": ["guanfacine"]},
+      {"label": "dose", "acceptable_terms": ["1 mg"]},
+      {"label": "timing", "acceptable_terms": ["morning"]}
+    ]
+  },
+  {
+    "id": "PFP018",
+    "category": "school_named",
+    "query": "Transition to Adena Middle School this fall is a concern for ADHD support.",
+    "phi": ["Adena Middle School", "Adena"],
+    "forbidden_terms": ["Adena Middle School", "Adena"],
+    "critical_facts": [
+      {"label": "setting", "acceptable_terms": ["middle school"]},
+      {"label": "timing", "acceptable_terms": ["fall"]},
+      {"label": "condition", "acceptable_terms": ["ADHD"]}
+    ]
+  },
+  {
+    "id": "PFP019",
+    "category": "camp_named",
+    "query": "Patient is going to Camp Lakeview on July 12th after starting guanfacine.",
+    "phi": ["Camp Lakeview", "July 12th"],
+    "forbidden_terms": ["Camp Lakeview", "July 12th", "12th"],
+    "critical_facts": [
+      {"label": "setting", "acceptable_terms": ["camp"]},
+      {"label": "medication", "acceptable_terms": ["guanfacine"]}
+    ]
+  },
+  {
+    "id": "PFP020",
+    "category": "camp_generic",
+    "query": "Going to camp July 12th after starting guanfacine.",
+    "phi": ["July 12th"],
+    "forbidden_terms": ["July 12th", "12th"],
+    "critical_facts": [
+      {"label": "setting", "acceptable_terms": ["camp"]},
+      {"label": "medication", "acceptable_terms": ["guanfacine"]}
+    ]
+  },
+  {
+    "id": "PFP021",
+    "category": "weekdays_relative",
+    "query": "Follow-up by Monday or Tuesday before trip next Wednesday depending on response.",
+    "phi": ["Monday", "Tuesday", "next Wednesday"],
+    "forbidden_terms": ["Monday", "Tuesday", "next Wednesday"],
+    "critical_facts": [
+      {"label": "workflow", "acceptable_terms": ["Follow-up"]},
+      {"label": "context", "acceptable_terms": ["trip"]},
+      {"label": "context", "acceptable_terms": ["response"]}
+    ]
+  },
+  {
+    "id": "PFP022",
+    "category": "relative_name_bridge",
+    "query": "Mother Jennifer reports Marvin improved after stopping methylphenidate.",
+    "phi": ["Jennifer", "Marvin"],
+    "forbidden_terms": ["Jennifer", "Marvin"],
+    "critical_facts": [
+      {"label": "relationship", "acceptable_terms": ["parent"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "PFP023",
+    "category": "sibling_name",
+    "query": "Sibling Aiden had mood side effects on methylphenidate and did better on guanfacine.",
+    "phi": ["Aiden"],
+    "forbidden_terms": ["Aiden"],
+    "critical_facts": [
+      {"label": "relationship", "acceptable_terms": ["sibling"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]},
+      {"label": "medication", "acceptable_terms": ["guanfacine"]}
+    ]
+  },
+  {
+    "id": "PFP024",
+    "category": "practice_location",
+    "query": "Referral packet from Riverside Clinic in Lakeville: 10-year-old with HLH and splenomegaly.",
+    "phi": ["Riverside Clinic", "Lakeville"],
+    "forbidden_terms": ["Riverside Clinic", "Lakeville"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["10-year-old"]},
+      {"label": "condition", "acceptable_terms": ["HLH"]},
+      {"label": "finding", "acceptable_terms": ["splenomegaly"]}
+    ]
+  },
+  {
+    "id": "PFP025",
+    "category": "insurance",
+    "query": "Aetna prior auth note includes question about Qelbree vs guanfacine for ADHD.",
+    "phi": ["Aetna"],
+    "forbidden_terms": ["Aetna"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["Qelbree"]},
+      {"label": "medication", "acceptable_terms": ["guanfacine"]},
+      {"label": "condition", "acceptable_terms": ["ADHD"]}
+    ]
+  }
+]

@@ -42,8 +42,9 @@ V1 is local-first and fail-closed by default:
 - Raw pasted text is processed on `127.0.0.1`.
 - Removed PHI values are not shown in the audit panel, only categories.
 - Third-party handoff is copy-to-clipboard plus opening the destination home page.
-- Names, MRNs, phone numbers, email, SSNs, URLs, street addresses, and ZIP-level geography are
-  removed or replaced with placeholders.
+- Names, MRNs, phone numbers, email, SSNs, URLs, street addresses, ZIP-level geography, and
+  common narrative identifiers such as named pharmacies, schools, and camps are removed or
+  generalized.
 - Clinically useful facts may be preserved in safer form, such as age, coarse timing,
   generalized family relationships, or broad lab signals.
 
@@ -62,7 +63,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-97 passed
+101 passed
 ```
 
 Run the headless validation gate:
@@ -83,6 +84,12 @@ Run the larger persona-driven regression gate:
 python3 package/scripts/run_validation.py --suite persona-regression
 ```
 
+Run the focused prose PHI field gate:
+
+```bash
+python3 package/scripts/run_validation.py --suite phi-field-prose
+```
+
 ## Important Docs
 
 - [Source map](SOURCE_MAP.md)
@@ -95,6 +102,7 @@ python3 package/scripts/run_validation.py --suite persona-regression
 - [Synthetic persona library](docs/qa/persona-library.md)
 - [Persona regression 2,000-case eval](docs/qa/2026-06-15-persona-regression-2000-eval.md)
 - [First-name-only note prose audit](docs/qa/2026-06-15-first-name-note-prose-audit.md)
+- [Other PHI fields prose audit](docs/qa/2026-06-15-other-phi-fields-prose-audit.md)
 - [Persona trace generator design](docs/superpowers/specs/2026-06-15-persona-trace-generator-design.md)
 - [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
 - [Local 500-case usability eval](docs/qa/2026-06-15-local-usability-500-eval.md)

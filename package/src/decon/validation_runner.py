@@ -25,6 +25,7 @@ DATA_DIR = PACKAGE_DIR / "data"
 CURRENT_SUITES = {
   "usability": DATA_DIR / "decon_usability_500_2026-06-15.json",
   "adversarial": DATA_DIR / "decon_adversarial_500_2026-06-15.json",
+  "phi-field-prose": DATA_DIR / "decon_phi_field_prose_25_2026-06-15.json",
   "persona-regression": DATA_DIR / "decon_persona_regression_2000_2026-06-15.json",
 }
 
