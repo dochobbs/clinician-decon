@@ -76,6 +76,8 @@ Handoff usable outputs: 13 / 75
 - Safer short web-search fallback after removing a word-spelled phone number.
 - Caregiver-name grammar cleanup so web-search queries do not keep orphaned phrasing like
   `says that had` after removing a patient name.
+- Residual-risk false-positive cleanup so generic prose like `patient had emotional...` is
+  not treated as a possible remaining patient name.
 
 ## Final Verification
 

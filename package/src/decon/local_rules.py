@@ -376,8 +376,7 @@ RESIDUAL_MEDIUM_RISK: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("possible exact date remains", re.compile(r"\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b")),
   ("possible direct name remains", re.compile(r"\b(?:Mr|Mrs|Ms|Miss)\.?\s+[A-Z][a-z]{2,}\b")),
   ("possible patient name remains", re.compile(
-    rf"\b(?:Pt|Patient|Family of|chart for|for patient|for pt)\s+{FULL_NAME}\b",
-    re.IGNORECASE,
+    rf"\b(?i:(?:Pt|Patient|Family of|chart for|for patient|for pt))\s+{FULL_NAME}\b",
   )),
 )
 

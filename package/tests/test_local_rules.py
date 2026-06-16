@@ -65,6 +65,8 @@ def test_decontextualize_text_cleans_caregiver_patient_name_for_web_search():
   assert "asthma flare" in result.safe_query
   assert "methylphenidate" in result.safe_query
   assert "says that had" not in result.safe_query
+  assert result.risk_level == "low"
+  assert result.risk_reasons == []
 
 
 def test_decontextualize_text_preserves_safe_age_from_dob_for_vaccine_search():
