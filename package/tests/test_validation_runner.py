@@ -54,6 +54,23 @@ def test_phi_field_prose_validation_suite_passes_with_zero_failures():
   assert passes_thresholds(result, fail_on_phi=True, min_clinical_usable=1.0) == []
 
 
+def test_validation_blindspot_redteam_suite_passes_with_zero_failures():
+  result = run_validation(
+    suites=("validation-blindspot-redteam",),
+    destinations=("chatgpt", "gemini", "web_search"),
+    reference_date=date(2026, 6, 15),
+  )
+
+  assert result["summary"]["source_cases"] == 17
+  assert result["summary"]["outputs"] == 51
+  assert result["summary"]["clinical_labeled_outputs"] == 51
+  assert result["summary"]["phi_leaked_outputs"] == 0
+  assert result["summary"]["missing_critical_fact_outputs"] == 0
+  assert result["summary"]["clinical_usable_rate"] == 1.0
+  assert result["summary"]["handoff_usable_rate"] == 1.0
+  assert passes_thresholds(result, fail_on_phi=True, min_clinical_usable=1.0) == []
+
+
 def test_persona_regression_validation_suite_passes_with_zero_failures():
   result = run_validation(
     suites=("persona-regression",),

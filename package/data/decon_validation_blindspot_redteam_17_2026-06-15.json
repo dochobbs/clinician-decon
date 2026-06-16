@@ -1,0 +1,187 @@
+[
+  {
+    "id": "VBR001",
+    "category": "caregiver_says_patient_first_name",
+    "query": "Mom says Marvin had emotional sensitivity on methylphenidate.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR002",
+    "category": "caregiver_notes_patient_first_name",
+    "query": "Mother notes Marvin is more anxious at night after methylphenidate.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "symptom", "acceptable_terms": ["anxious"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR003",
+    "category": "caregiver_states_patient_first_name",
+    "query": "Dad states Marvin stopped methylphenidate two days ago.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR004",
+    "category": "caller_name_bridge",
+    "query": "Caller Jennifer says Marvin improved after stopping methylphenidate.",
+    "phi": ["Jennifer", "Marvin"],
+    "forbidden_terms": ["Jennifer", "Marvin"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR005",
+    "category": "preferred_name_label",
+    "query": "Preferred name: Marvin. ADHD follow-up after stopping methylphenidate.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["ADHD"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR006",
+    "category": "patient_named_phrase",
+    "query": "Patient named Marvin reports insomnia from anxiety.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "symptom", "acceptable_terms": ["insomnia"]},
+      {"label": "condition", "acceptable_terms": ["anxiety"]}
+    ]
+  },
+  {
+    "id": "VBR007",
+    "category": "name_label_and_dotted_dob",
+    "query": "Name: Marvin Johnson. DOB: 03.15.2013. Needs vaccine guidance.",
+    "phi": ["Marvin", "Johnson", "03.15.2013"],
+    "forbidden_terms": ["Marvin", "Johnson", "03.15.2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "topic", "acceptable_terms": ["vaccine", "vaccines"]}
+    ]
+  },
+  {
+    "id": "VBR008",
+    "category": "dob_month_day_year_no_comma",
+    "query": "DOB March 15 2013, needs HPV catch-up.",
+    "phi": ["March 15 2013", "2013"],
+    "forbidden_terms": ["March 15 2013", "2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "vaccine", "acceptable_terms": ["HPV"]}
+    ]
+  },
+  {
+    "id": "VBR009",
+    "category": "dob_day_month_year",
+    "query": "DOB 15 Mar 2013, needs HPV catch-up.",
+    "phi": ["15 Mar 2013", "2013"],
+    "forbidden_terms": ["15 Mar 2013", "2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "vaccine", "acceptable_terms": ["HPV"]}
+    ]
+  },
+  {
+    "id": "VBR010",
+    "category": "dob_dotted_numeric",
+    "query": "DOB 03.15.2013, needs HPV catch-up.",
+    "phi": ["03.15.2013"],
+    "forbidden_terms": ["03.15.2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "vaccine", "acceptable_terms": ["HPV"]}
+    ]
+  },
+  {
+    "id": "VBR011",
+    "category": "chart_number",
+    "query": "Chart # CH-884422, ADHD med check after methylphenidate intolerance.",
+    "phi": ["CH-884422"],
+    "forbidden_terms": ["CH-884422"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["ADHD"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR012",
+    "category": "account_number",
+    "query": "Account number ACCT-778812 appears in billing note; asthma action plan question.",
+    "phi": ["ACCT-778812"],
+    "forbidden_terms": ["ACCT-778812"],
+    "critical_facts": [
+      {"label": "topic", "acceptable_terms": ["asthma action plan"]}
+    ]
+  },
+  {
+    "id": "VBR013",
+    "category": "policy_number",
+    "query": "Insurance policy ID POL-88-123456; Qelbree vs guanfacine for ADHD.",
+    "phi": ["POL-88-123456"],
+    "forbidden_terms": ["POL-88-123456"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["Qelbree"]},
+      {"label": "medication", "acceptable_terms": ["guanfacine"]},
+      {"label": "condition", "acceptable_terms": ["ADHD"]}
+    ]
+  },
+  {
+    "id": "VBR014",
+    "category": "license_number",
+    "query": "Driver license D123-456-789 in registration; nitrofurantoin in pregnancy question.",
+    "phi": ["D123-456-789"],
+    "forbidden_terms": ["D123-456-789"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["nitrofurantoin"]},
+      {"label": "context", "acceptable_terms": ["pregnancy"]}
+    ]
+  },
+  {
+    "id": "VBR015",
+    "category": "ip_address",
+    "query": "Telehealth IP 192.168.1.44 in footer; albuterol 6 puffs q4h and O2 91%.",
+    "phi": ["192.168.1.44"],
+    "forbidden_terms": ["192.168.1.44"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["albuterol"]},
+      {"label": "oxygen", "acceptable_terms": ["O2"]},
+      {"label": "oxygen value", "acceptable_terms": ["91%"]}
+    ]
+  },
+  {
+    "id": "VBR016",
+    "category": "apartment_unit",
+    "query": "Lives at 123 Oak Street Apt 5B, Adena, TX 78701; renal dosing for cephalexin.",
+    "phi": ["123 Oak Street", "Apt 5B", "Adena", "78701"],
+    "forbidden_terms": ["123 Oak Street", "Apt 5B", "Adena", "78701"],
+    "critical_facts": [
+      {"label": "topic", "acceptable_terms": ["renal dosing"]},
+      {"label": "medication", "acceptable_terms": ["cephalexin"]}
+    ]
+  },
+  {
+    "id": "VBR017",
+    "category": "fax_phone",
+    "query": "Fax 512-555-0199 includes ferritin 48000 and HLH question.",
+    "phi": ["512-555-0199"],
+    "forbidden_terms": ["512-555-0199"],
+    "critical_facts": [
+      {"label": "lab", "acceptable_terms": ["ferritin"]},
+      {"label": "condition", "acceptable_terms": ["HLH"]}
+    ]
+  }
+]

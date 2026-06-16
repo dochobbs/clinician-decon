@@ -27,6 +27,7 @@ archetype libraries.
 | `package/data/decon_usability_500_2026-06-15.json` | 500 | `generate_usability_cases(500, seed=20260615, reference_date=2026-06-15)` in `package/src/decon/usability_eval.py` | Clinician-usability suite: checks whether decon preserves required clinical facts while removing PHI. | `docs/qa/2026-06-15-local-usability-500-eval.md`: 1,500 / 1,500 safe, clinically usable, and handoff usable. |
 | `package/data/decon_adversarial_500_2026-06-15.json` | 500 | `generate_adversarial_cases(500, seed=20260615, reference_date=2026-06-15)` in `package/src/decon/usability_eval.py` | Adversarial stress suite for common failure modes: prompt injection, buried identity, repeated names, OCR identifiers, URL PHI, Spanish family phrasing, small-town uniqueness, copy-pasted notes, contact/date mashups, and eponym collisions. | `docs/qa/2026-06-15-local-adversarial-500-eval.md`: 1,500 / 1,500 safe, clinically usable, and handoff usable. |
 | `package/data/decon_phi_field_prose_25_2026-06-15.json` | 25 | Clinician-authored focused audit from the Marvin-name failure follow-up. | Focused prose PHI field suite: month-name DOB, birthday, weekdays, spaced phones, obfuscated email, named pharmacy/school/camp, practice/location, insurance, and caregiver-name bridge. | `docs/qa/2026-06-15-other-phi-fields-prose-audit.md`: 75 / 75 safe, clinically usable, and handoff usable. |
+| `package/data/decon_validation_blindspot_redteam_17_2026-06-15.json` | 17 | Skeptical validation audit after aggregate gates missed the Marvin live-server leak. | Hardens against evaluator blind spots: caregiver prose verbs, preferred-name labels, `Patient named`, dotted/no-comma/day-month DOBs, policy/license/IP identifiers, and apartment units. | `docs/qa/2026-06-15-validation-blindspot-red-team.md`: first run found 38 / 51 PHI-leaked outputs and 12 / 51 missing-critical-fact outputs; final run 51 / 51 safe, clinically usable, and handoff usable. |
 | `package/data/decon_persona_regression_2000_2026-06-15.json` | 2,000 | `package/scripts/generate_traces.py --count 2000 --seed 20260615` using `package/data/personas/v1.json` and `package/data/archetypes/v1.json` | Persona-driven regression suite: combines clinician persona, patient context, source channel, perturbation, and clinical archetype metadata. | `docs/qa/2026-06-15-persona-regression-2000-eval.md`: first run found 2,742 / 6,000 PHI-leaked outputs; final run 6,000 / 6,000 safe, clinically usable, and handoff usable. |
 
 ## Persona Regression 2,000 Trace
@@ -110,6 +111,46 @@ Final run after fixes:
 - Handoff usable outputs: `75 / 75`
 - PHI-leaked outputs: `0 / 75`
 - Missing-critical-fact outputs: `0 / 75`
+
+## Validation Blind-Spot Red-Team 17 Trace
+
+Validation:
+
+```bash
+python3 package/scripts/run_validation.py --suite validation-blindspot-redteam
+```
+
+Seed and date:
+
+- Seed: none; skeptical clinician-authored cases.
+- Reference date: `2026-06-15`
+- Destinations: `chatgpt`, `gemini`, `web_search`
+- Outputs per run: `17 cases x 3 destinations = 51 outputs`
+
+Coverage:
+
+- Caregiver prose verbs: `Mom says`, `Mother notes`, `Dad states`, and `Caller Jennifer says`.
+- Name-label prose: `Preferred name:`, `Name:`, and `Patient named`.
+- DOB formats the earlier gates under-sampled: dotted numeric, month-day-year without comma,
+  and day-month-year.
+- Identifier classes from the HIPAA-style remaining-gap list: policy IDs, driver license
+  numbers, IP addresses, and apartment/unit fragments.
+
+First run against the pre-fix rules:
+
+- Safe outputs: `13 / 51`
+- PHI-leaked outputs: `38 / 51`
+- Missing-critical-fact outputs: `12 / 51`
+- Clinically usable outputs: `39 / 51`
+- Handoff usable outputs: `9 / 51`
+
+Final run after fixes:
+
+- Safe outputs: `51 / 51`
+- Clinically usable outputs: `51 / 51`
+- Handoff usable outputs: `51 / 51`
+- PHI-leaked outputs: `0 / 51`
+- Missing-critical-fact outputs: `0 / 51`
 
 ## Adversarial 500 Trace
 

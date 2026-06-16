@@ -63,7 +63,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-101 passed
+102 passed
 ```
 
 Run the headless validation gate:
@@ -90,6 +90,12 @@ Run the focused prose PHI field gate:
 python3 package/scripts/run_validation.py --suite phi-field-prose
 ```
 
+Run the validation blind-spot red-team gate:
+
+```bash
+python3 package/scripts/run_validation.py --suite validation-blindspot-redteam
+```
+
 ## Important Docs
 
 - [Source map](SOURCE_MAP.md)
@@ -103,6 +109,7 @@ python3 package/scripts/run_validation.py --suite phi-field-prose
 - [Persona regression 2,000-case eval](docs/qa/2026-06-15-persona-regression-2000-eval.md)
 - [First-name-only note prose audit](docs/qa/2026-06-15-first-name-note-prose-audit.md)
 - [Other PHI fields prose audit](docs/qa/2026-06-15-other-phi-fields-prose-audit.md)
+- [Validation blind-spot red-team](docs/qa/2026-06-15-validation-blindspot-red-team.md)
 - [Persona trace generator design](docs/superpowers/specs/2026-06-15-persona-trace-generator-design.md)
 - [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
 - [Local 500-case usability eval](docs/qa/2026-06-15-local-usability-500-eval.md)

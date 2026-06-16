@@ -60,6 +60,15 @@ NAME_CUES = (
   r"DOB|MRN|on|has|with|presents|asks?|needs|due|from|is|came|called|wants|"
   r"says|lives|peri-menopausal"
 )
+CAREGIVER_SUBJECT_TERMS = r"Mom|Mother|Dad|Father|Parent|Caregiver|Guardian|Caller"
+CAREGIVER_REPORT_VERBS = (
+  r"reports?|reported|says|said|states?|stated|notes?|noted|mentions?|mentioned|"
+  r"observes?|observed"
+)
+PATIENT_NAME_FOLLOWERS = (
+  r"had|has|was|is|reported|reports|improved|worse|worsened|needs|started|"
+  r"stopped|takes|will|should|could|presented|presents|came|comes|reports"
+)
 PATIENT_NAME_INTRO_PATTERNS: tuple[re.Pattern[str], ...] = (
   re.compile(rf"\b({NAME_TOKEN})\s+(?i:is\s+a\s+patient)\b"),
   re.compile(rf"\b({NAME_TOKEN})\s+(?i:returns\s+for\s+(?:follow-up|followup))\b"),
@@ -72,10 +81,9 @@ PATIENT_NAME_INTRO_PATTERNS: tuple[re.Pattern[str], ...] = (
     rf"\b(?i:(?:mother|mom|father|parent|caregiver)\s+reports)\s+({NAME_TOKEN})\b",
   ),
   re.compile(
-    rf"\b(?i:(?:mother|mom|father|dad|parent|caregiver))\s+{NAME_TOKEN}\s+"
-    rf"(?i:(?:reports|reported|says|states))\s+({NAME_TOKEN})"
-    r"(?=(?:'s)?\s+(?i:had|has|was|is|reported|reports|improved|worse|worsened|"
-    r"needs|started|stopped|takes|will|should|could|presented|presents|came|comes)\b)",
+    rf"\b(?i:(?:{CAREGIVER_SUBJECT_TERMS}))(?:\s+{NAME_TOKEN})?\s+"
+    rf"(?i:(?:{CAREGIVER_REPORT_VERBS}))\s+({NAME_TOKEN})"
+    rf"(?=(?:'s)?\s+(?i:{PATIENT_NAME_FOLLOWERS})\b)",
   ),
   re.compile(rf"\b(?i:(?:the|this)\s+patient)\s+({NAME_TOKEN})\b"),
   re.compile(
@@ -109,6 +117,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     rf"\b\d{{1,6}}\s+(?:[A-Za-z0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?",
     re.IGNORECASE,
   )),
+  ("address", re.compile(r"\b(?:Apt|Apartment|Unit|Suite|Ste|#)\s*[A-Z0-9-]+\b", re.IGNORECASE)),
   ("location", re.compile(
     rf"\b(?i:(?:lives?|resides|located)\s+(?:at|in))\s+"
     rf"\d{{1,6}}\s+(?:[A-Za-z0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?,\s*"
@@ -146,6 +155,16 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     re.IGNORECASE,
   )),
   ("ssn", re.compile(r"\b\d{3}-\d{2}-\d{4}\b")),
+  ("identifier", re.compile(
+    r"\b(?:chart|account|acct|policy|member|subscriber|insurance policy)\s*"
+    r"(?:number|no\.?|id|#)?\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{5,})\b",
+    re.IGNORECASE,
+  )),
+  ("identifier", re.compile(
+    r"\b(?:driver'?s?\s+license|license|certificate|cert(?:ificate)?|device|serial)\s*"
+    r"(?:number|no\.?|id|#)?\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{5,})\b",
+    re.IGNORECASE,
+  )),
   ("mrn", re.compile(
     r"\b(?:patient number|patient no\.?|patient #|pt number)\s*"
     r"([A-Z0-9][A-Z0-9-]{3,})\b",
@@ -154,6 +173,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("mrn", re.compile(r"\bM\s+R\s+N\s+((?:[A-Z0-9]\s+){5,19}[A-Z0-9])\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b(?:MRN|MR#|medical record(?: number)?)\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{3,})\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b[A-Z]{1,5}-\d{3,8}(?:-\d{3,8})?\b")),
+  ("ip_address", re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")),
   ("url", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
   ("pharmacy", re.compile(
     rf"\b(?:Walgreens|CVS|Rite Aid|Walmart Pharmacy|Costco Pharmacy|Kroger Pharmacy)"
@@ -181,7 +201,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     r"Anthem|Medicaid|Medicare|Tricare)\b",
     re.IGNORECASE,
   )),
-  ("date", re.compile(r"\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}-\d{1,2}-\d{1,2})\b")),
+  ("date", re.compile(r"\b(?:\d{1,2}[./-]\d{1,2}[./-]\d{2,4}|\d{4}-\d{1,2}-\d{1,2})\b")),
   ("date", re.compile(
     r"\b(?:today|yesterday|last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))\b",
     re.IGNORECASE,
@@ -192,6 +212,10 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   )),
   ("date", re.compile(
     rf"\b(?:{MONTH_TERMS})\.?\s+\d{{1,2}}(?:st|nd|rd|th)?(?:,)?\s+\d{{4}}\b",
+    re.IGNORECASE,
+  )),
+  ("date", re.compile(
+    rf"\b\d{{1,2}}(?:st|nd|rd|th)?\s+(?:{MONTH_TERMS})\.?\s+\d{{4}}\b",
     re.IGNORECASE,
   )),
   ("date", re.compile(rf"\b(?:{MONTH_TERMS})\.?\s+\d{{1,2}}(?:st|nd|rd|th)?\b", re.IGNORECASE)),
@@ -230,7 +254,18 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     rf'"(?i:patient_name)"\s*:\s*"({FULL_NAME})"'
   )),
   ("name", re.compile(
+    rf"\b(?i:(?:preferred\s+name|patient\s+name|name))\s*[:#-]\s*({FULL_NAME}|{NAME_TOKEN})\b"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:patient\s+named)\s+({FULL_NAME}|{NAME_TOKEN})"
+    rf"(?=\s+(?i:{PATIENT_NAME_FOLLOWERS})\b)"
+  )),
+  ("name", re.compile(
     rf"\b(?i:caller)\s+({NAME_TOKEN})(?=\s+at\b)"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:caller|caregiver|guardian))\s+({NAME_TOKEN})"
+    rf"(?=\s+(?i:(?:{CAREGIVER_REPORT_VERBS}|at|callback|called))\b)"
   )),
   ("name", re.compile(
     rf"\b(?i:sibling)\s+({NAME_TOKEN})(?=\s+(?:is|was|has|had|needs|worried|worries)\b)"
@@ -261,7 +296,8 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     rf"[A-Z0-9-]+,\s*({FULL_NAME})(?=,\s*(?i:(?:date of birth|DOB))\b)",
   )),
   ("name", re.compile(
-    rf"^({NAME_TOKEN})(?=\s+(?:has|presents|needs|asks|is|was|reports|states)\b)"
+    rf"^(?!(?:{RELATION_TERMS}|Caller)\b)({NAME_TOKEN})"
+    r"(?=\s+(?:has|presents|needs|asks|is|was|reports|states)\b)"
   )),
   ("name", re.compile(rf"\b(?:calls?\s+(?:him|her|them)|known\s+as|nicknamed)\s+({NAME_TOKEN})\b")),
   ("name", re.compile(
@@ -345,9 +381,15 @@ DATE_FORMATS = (
   "%m/%d/%y",
   "%m-%d-%Y",
   "%m-%d-%y",
+  "%m.%d.%Y",
+  "%m.%d.%y",
   "%Y-%m-%d",
   "%B %d, %Y",
   "%b %d, %Y",
+  "%B %d %Y",
+  "%b %d %Y",
+  "%d %B %Y",
+  "%d %b %Y",
 )
 
 
@@ -449,7 +491,7 @@ def _normalize_safe_context(text: str) -> str:
   safe = re.sub(r"\[NAME\]'s\b", "patient's", safe)
   safe = re.sub(r"\bBoth\s+\[NAME\]\s+and\s+(?:his|her|their)\s+mother\b", "Both patient and mother", safe, flags=re.IGNORECASE)
   safe = re.sub(
-    rf"\b(?:{DOB_LABEL})\s+(?=(?:newborn|\d{{1,2}}-month-old|\d{{1,3}}-year-old|90 or older)\b)",
+    rf"\b(?:{DOB_LABEL})\s*[:#.-]?\s*(?=(?:newborn|\d{{1,2}}-month-old|\d{{1,3}}-year-old|90 or older)\b)",
     "",
     safe,
     flags=re.IGNORECASE,
@@ -561,7 +603,9 @@ def _extract_safe_age(source: str, reference_date: date) -> str | None:
     return _normalize_age(explicit_age.group(0))
   dob_match = re.search(
     rf"\b(?:{DOB_LABEL})\s*[:#.-]?\s*"
-    r"(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}-\d{1,2}-\d{1,2})\b",
+    rf"(\d{{1,2}}[./-]\d{{1,2}}[./-]\d{{2,4}}|\d{{4}}-\d{{1,2}}-\d{{1,2}}|"
+    rf"(?:{MONTH_TERMS})\.?\s+\d{{1,2}}(?:st|nd|rd|th)?(?:,)?\s+\d{{4}}|"
+    rf"\d{{1,2}}(?:st|nd|rd|th)?\s+(?:{MONTH_TERMS})\.?\s+\d{{4}})\b",
     source,
     flags=re.IGNORECASE,
   )
