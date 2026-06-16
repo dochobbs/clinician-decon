@@ -74,6 +74,8 @@ Handoff usable outputs: 13 / 75
 - `MR #` pattern support and chart IDs with internal spaces.
 - Room-number, hash-unit, and word-spelled phone stripping.
 - Safer short web-search fallback after removing a word-spelled phone number.
+- Caregiver-name grammar cleanup so web-search queries do not keep orphaned phrasing like
+  `says that had` after removing a patient name.
 
 ## Final Verification
 
@@ -102,7 +104,7 @@ python3 package/scripts/run_validation.py --suite persona-regression
 6,000 / 6,000 safe, clinically usable, and handoff usable
 
 python3 -m pytest package/tests
-103 passed
+104 passed
 ```
 
 ## Hardening Lesson

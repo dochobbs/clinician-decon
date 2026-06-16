@@ -45,6 +45,28 @@ def test_decontextualize_text_builds_useful_web_search_query_from_redacted_chart
   assert "Jennifer" not in result.safe_query
 
 
+def test_decontextualize_text_cleans_caregiver_patient_name_for_web_search():
+  source = (
+    "Callback is five one two five five five zero one four seven; asthma flare. "
+    "Mom says that Marvin had emotional sensitivity on methylphenidate. DOB 3 15 2013."
+  )
+
+  result = decontextualize_text(
+    source,
+    destination="web_search",
+    reference_date=date(2026, 6, 15),
+  )
+
+  assert "Marvin" not in result.destination_prompt
+  assert "five one two" not in result.destination_prompt
+  assert "3 15 2013" not in result.destination_prompt
+  assert "13-year-old" in result.destination_prompt
+  assert "parent reports patient" in result.safe_context
+  assert "asthma flare" in result.safe_query
+  assert "methylphenidate" in result.safe_query
+  assert "says that had" not in result.safe_query
+
+
 def test_decontextualize_text_preserves_safe_age_from_dob_for_vaccine_search():
   source = (
     "Marcus Johnson DOB 3/15/2013 MRN LP-2024-08432 came in today. "

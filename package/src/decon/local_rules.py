@@ -392,6 +392,19 @@ QUERY_NOISE_PATTERNS: tuple[re.Pattern[str], ...] = (
 )
 
 RELATION_REPLACEMENTS: tuple[tuple[re.Pattern[str], str], ...] = (
+  (re.compile(
+    r"\b(?:Mom|Mother|Dad|Father|Parent|MOC|FOC)(?:\s+\[NAME\])?\s+"
+    r"(?:reports?|says|states?|notes?|mentions?|observes?)\s+(?:that\s+)?\[NAME\]",
+    re.IGNORECASE,
+  ), "parent reports patient"),
+  (re.compile(
+    r"\bPer\s+(?:mom|mother|dad|father|parent|MOC|FOC)(?:\s+\[NAME\])?,\s+\[NAME\]",
+    re.IGNORECASE,
+  ), "parent reports patient"),
+  (re.compile(
+    r"\b\[NAME\],\s+per\s+(?:mom|mother|dad|father|parent|MOC|FOC)\b",
+    re.IGNORECASE,
+  ), "patient"),
   (re.compile(r"\b(?:Mom|Mother|Dad|Father)\s+\[NAME\]", re.IGNORECASE), "parent"),
   (re.compile(r"\b(?:MOC|FOC)\s+\[NAME\]", re.IGNORECASE), "parent"),
   (re.compile(r"\b(?:Mom|Mother|Dad|Father)\s+\(\[NAME\]\)", re.IGNORECASE), "parent"),

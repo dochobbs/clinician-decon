@@ -63,7 +63,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-103 passed
+104 passed
 ```
 
 Run the headless validation gate:
