@@ -135,6 +135,7 @@ is unavailable.
 - [Validation blind-spot red-team R2](docs/qa/2026-06-15-validation-blindspot-red-team-r2.md)
 - [Local rules and OpenMed pipeline audit](docs/qa/2026-06-16-local-rules-openmed-audit.md)
 - [Philter-UCSF head-to-head](docs/qa/2026-06-16-philter-ucsf-head-to-head.md)
+- [Philter-UCSF representative error samples](docs/qa/2026-06-16-philter-error-samples.md)
 - [Persona trace generator design](docs/superpowers/specs/2026-06-15-persona-trace-generator-design.md)
 - [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
 - [Local 500-case usability eval](docs/qa/2026-06-15-local-usability-500-eval.md)
