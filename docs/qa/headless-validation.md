@@ -44,10 +44,13 @@ It checks both safety and usefulness:
 - expected PHI must not survive in copied output
 - required clinical facts must remain present
 - copy must not be allowed when a PHI leak is detected
+- copy must be allowed for PHI-safe, clinically usable outputs; a fail-closed OpenMed setup
+  failure is not a passing release gate
 
 For local development without the OpenMed runtime, `python3 package/scripts/run_validation.py`
 uses `auto` and may fall back to `local-rules`. Do not treat an `auto`/`local-rules` pass as the
-production gate.
+production gate. Explicit `--engine rules+openmed` fails the gate when missing model/runtime
+dependencies force copy-blocked fallback outputs.
 
 ## Installable Command
 
@@ -165,6 +168,7 @@ This means:
 - any detected PHI leak fails the gate
 - any unsafe copy-allowed leak fails the gate
 - any missing required clinical fact in current labeled suites fails the gate
+- any copy-blocked output that prevents handoff usability fails the gate
 
 For exploratory model or rules work, use a lower clinical threshold only when the goal is to
 compare branches. Do not use a lower threshold as a release gate without documenting why.

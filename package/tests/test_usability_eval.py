@@ -64,6 +64,30 @@ def test_evaluate_output_flags_safe_but_clinically_unusable_signal_loss():
   assert result.handoff_usable is False
 
 
+def test_evaluate_output_accepts_age_band_for_exact_age_critical_fact():
+  case = UsabilityCase(
+    id="TAGE",
+    category="vaccine_schedule",
+    query="Marcus DOB 2013-03-15 asks about vaccines.",
+    phi=("Marcus", "2013-03-15"),
+    critical_facts=(
+      CriticalFact("age", ("13-year-old",)),
+      CriticalFact("topic", ("vaccines",)),
+    ),
+  )
+
+  result = evaluate_output(
+    case,
+    output="adolescent immunization schedule vaccines current guidelines",
+    destination="web_search",
+    copy_allowed=True,
+    risk_level="low",
+  )
+
+  assert result.missing_critical_facts == []
+  assert result.clinically_usable is True
+
+
 def test_evaluate_output_uses_forbidden_terms_when_phi_collides_with_clinical_eponym():
   case = UsabilityCase(
     id="T003",

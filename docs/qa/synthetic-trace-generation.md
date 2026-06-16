@@ -41,7 +41,7 @@ An archetype is a compact clinical scenario with explicit labels:
   "must_remove_phi": ["patient_name", "dob", "mrn"],
   "must_preserve_clinical_fact": ["age", "under-immunized", "vaccine"],
   "acceptable_generalization": {
-    "dob": "age"
+    "dob": "clinical age band"
   },
   "unsafe_if_preserved": ["patient_name", "dob", "mrn"]
 }
@@ -80,7 +80,7 @@ Every generated case should include:
   "critical_facts": [
     {
       "label": "age",
-      "acceptable_terms": ["9-year-old"]
+      "acceptable_terms": ["school-age child"]
     },
     {
       "label": "condition",
@@ -91,6 +91,10 @@ Every generated case should include:
   "seed": 20260615
 }
 ```
+
+Age labels should target the rendered safe form, not exact source age. Use clinical bands such as
+`school-age child`, `adolescent`, or task-specific threshold hints such as
+`early adolescent in HPV/Tdap vaccine range`.
 
 Existing current suites already contain most of this shape:
 

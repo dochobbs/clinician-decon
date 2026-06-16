@@ -35,7 +35,7 @@ def test_decontextualize_text_builds_useful_web_search_query_from_redacted_chart
 
   result = decontextualize_text(source, destination="web_search")
 
-  assert result.safe_query == "13-year-old pediatric immunization schedule vaccines current guidelines"
+  assert result.safe_query == "adolescent immunization schedule vaccines current guidelines"
   assert result.destination_prompt == result.safe_query
   assert "DOB" not in result.safe_query
   assert "MRN" not in result.safe_query
@@ -60,7 +60,7 @@ def test_decontextualize_text_cleans_caregiver_patient_name_for_web_search():
   assert "Marvin" not in result.destination_prompt
   assert "five one two" not in result.destination_prompt
   assert "3 15 2013" not in result.destination_prompt
-  assert "13-year-old" in result.destination_prompt
+  assert "adolescent" in result.destination_prompt
   assert "parent reports patient" in result.safe_context
   assert "asthma flare" in result.safe_query
   assert "methylphenidate" in result.safe_query
@@ -81,9 +81,36 @@ def test_decontextualize_text_preserves_safe_age_from_dob_for_vaccine_search():
     reference_date=date(2026, 6, 15),
   )
 
-  assert result.safe_query == "13-year-old pediatric immunization schedule vaccines current guidelines"
+  assert result.safe_query == "adolescent immunization schedule vaccines current guidelines"
   assert "3/15/2013" not in result.safe_context
-  assert "13-year-old" in result.safe_context
+  assert "13-year-old" not in result.safe_context
+  assert "adolescent" in result.safe_context
+
+
+def test_decontextualize_text_generalizes_exact_age_but_keeps_weight_for_dosing():
+  source = (
+    "Phone note: caller Maria at 512-555-9374. 5-year-old weighs 12 kg and needs "
+    "cephalexin for fever. What dose?"
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  assert "Maria" not in result.destination_prompt
+  assert "512-555-9374" not in result.destination_prompt
+  assert "5-year-old" not in result.destination_prompt
+  assert "school-age child" in result.destination_prompt
+  assert "12 kg" in result.destination_prompt
+  assert "cephalexin" in result.destination_prompt
+
+
+def test_decontextualize_text_uses_clinical_vaccine_age_hint_without_exact_age():
+  result = decontextualize_text(
+    "ACIP HPV vaccine schedule for 11-year-olds?",
+    destination="web_search",
+  )
+
+  assert result.safe_query == "early adolescent in HPV/Tdap vaccine range HPV vaccine schedule current guidelines"
+  assert "11-year-old" not in result.destination_prompt
 
 
 def test_decontextualize_text_normalizes_explicit_ages():
@@ -96,9 +123,9 @@ def test_decontextualize_text_normalizes_explicit_ages():
     destination="chatgpt",
   )
 
-  assert "52-year-old" in adult_result.destination_prompt
+  assert "adult 45-64" in adult_result.destination_prompt
   assert "52yo" not in adult_result.destination_prompt
-  assert "90 or older" in older_result.destination_prompt
+  assert "adult age 90 or older" in older_result.destination_prompt
   assert "92yo" not in older_result.destination_prompt
 
 
@@ -170,7 +197,7 @@ def test_decontextualize_text_uses_learned_rules_for_plain_hyphenated_names_and_
   assert "Mary-Ann" not in result.destination_prompt
   assert "Jones" not in result.destination_prompt
   assert "35M" not in result.destination_prompt
-  assert "35-year-old male" in result.destination_prompt
+  assert "adult 18-44 male" in result.destination_prompt
   assert "lisinopril" in result.destination_prompt
   assert result.removed_categories["name"] >= 1
   assert result.removed_categories["age"] >= 1
@@ -191,7 +218,7 @@ def test_decontextualize_text_uses_learned_rules_for_dense_family_name_and_city_
   assert "Lisa" not in result.destination_prompt
   assert "Park" not in result.destination_prompt
   assert "Minneapolis" not in result.destination_prompt
-  assert "75-year-old" in result.destination_prompt
+  assert "older adult 75-89" in result.destination_prompt
   assert "CHF" in result.destination_prompt
   assert result.removed_categories["name"] >= 1
   assert result.removed_categories["location"] >= 1
@@ -230,7 +257,7 @@ def test_decontextualize_text_uses_learned_rules_for_nickname_and_relative_names
   assert "Shirley" not in result.destination_prompt
   assert "grandma Shirley" not in result.destination_prompt
   assert "ear infections" in result.destination_prompt
-  assert "18-month-old" in result.destination_prompt
+  assert "toddler 12-23 months" in result.destination_prompt
   assert result.removed_categories["nickname"] >= 1
   assert result.removed_categories["name"] >= 1
 
@@ -245,8 +272,8 @@ def test_decontextualize_text_uses_learned_rules_for_multi_patient_sibling_names
 
   assert "Emma" not in result.destination_prompt
   assert "Noah" not in result.destination_prompt
-  assert "8-year-old" in result.destination_prompt
-  assert "13-month-old" in result.destination_prompt
+  assert "school-age child" in result.destination_prompt
+  assert "toddler 12-23 months" in result.destination_prompt
   assert "ADHD" in result.destination_prompt
   assert "MMR" in result.destination_prompt
   assert result.removed_categories["name"] >= 2
@@ -276,7 +303,7 @@ def test_decontextualize_text_uses_learned_rules_for_practice_and_small_town_con
   assert "Monticello" not in result.destination_prompt
   assert "Only case" not in result.destination_prompt
   assert "Wilson disease" in result.destination_prompt
-  assert "7-year-old" in result.destination_prompt
+  assert "school-age child" in result.destination_prompt
   assert result.removed_categories["practice"] >= 1
   assert result.removed_categories["location"] >= 1
 
@@ -292,7 +319,7 @@ def test_decontextualize_text_removes_prompt_injection_from_copied_handoff():
   assert "Ignore previous instructions" not in result.destination_prompt
   assert "John" not in result.destination_prompt
   assert "Rivera" not in result.destination_prompt
-  assert "54-year-old" in result.destination_prompt
+  assert "adult 45-64" in result.destination_prompt
   assert "GLP-1 nausea" in result.destination_prompt
   assert result.removed_categories["prompt_injection"] >= 1
 
@@ -351,7 +378,7 @@ def test_decontextualize_text_uses_learned_rules_for_body_measurements():
 
   result = decontextualize_text(source, destination="chatgpt")
 
-  assert "67-year-old" in result.destination_prompt
+  assert "older adult 65-74 female" in result.destination_prompt
   assert "5'2\"" not in result.destination_prompt
   assert "210 lbs" not in result.destination_prompt
   assert "BMI 38.4" not in result.destination_prompt
@@ -390,12 +417,12 @@ def test_decontextualize_text_removes_common_non_name_phi_prose():
     {
       "source": "Date of birth is March 15, 2013; ADHD follow-up is stable.",
       "forbidden": ("March 15", "2013"),
-      "required": ("13-year-old", "ADHD"),
+      "required": ("adolescent", "ADHD"),
     },
     {
       "source": "Birthday is March 15, 2013; ADHD follow-up is stable.",
       "forbidden": ("March 15", "2013"),
-      "required": ("13-year-old", "ADHD"),
+      "required": ("adolescent", "ADHD"),
     },
     {
       "source": "Follow-up by Monday or Tuesday before trip next Wednesday.",
@@ -499,7 +526,7 @@ def test_decontextualize_text_uses_learned_rules_for_indirect_sibling_context():
   assert "twins" not in result.destination_prompt
   assert "older brother" not in result.destination_prompt
   assert "last week" not in result.destination_prompt
-  assert "13-month-old" in result.destination_prompt
+  assert "toddler 12-23 months" in result.destination_prompt
   assert "MMR" in result.destination_prompt
   assert result.removed_categories["relation"] >= 1
   assert result.removed_categories["date"] >= 1
@@ -544,7 +571,7 @@ def test_decontextualize_text_removes_names_after_note_section_headers():
 
   assert "Tamara" not in result.destination_prompt
   assert "Jackson" not in result.destination_prompt
-  assert "45-year-old female" in result.destination_prompt
+  assert "adult 45-64 female" in result.destination_prompt
   assert "fatigue" in result.destination_prompt
   assert result.removed_categories["name"] >= 1
 
@@ -695,18 +722,18 @@ def test_decontextualize_text_removes_dictation_patient_number_and_following_nam
   assert "Hunter" not in result.destination_prompt
   assert "Rivera" not in result.destination_prompt
   assert "Dr. Hobbs" not in result.destination_prompt
-  assert "6-year-old" in result.destination_prompt
+  assert "school-age child" in result.destination_prompt
   assert "cafe-au-lait spots" in result.destination_prompt
   assert "NF1" in result.destination_prompt
 
 
-def test_decontextualize_text_preserves_hyphenated_age_for_web_search():
+def test_decontextualize_text_generalizes_hyphenated_age_for_web_search():
   result = decontextualize_text(
     "ACIP HPV vaccine schedule for 11-year-olds?",
     destination="web_search",
   )
 
-  assert result.safe_query == "11-year-old pediatric HPV vaccine schedule current guidelines"
+  assert result.safe_query == "early adolescent in HPV/Tdap vaccine range HPV vaccine schedule current guidelines"
 
 
 def test_decontextualize_text_removes_system_override_prompt_injection():
@@ -745,7 +772,7 @@ def test_decontextualize_text_removes_buried_patient_identity_and_dotted_dob():
   assert "Maria" not in result.destination_prompt
   assert "MacDonald" not in result.destination_prompt
   assert "2011-06-04" not in result.destination_prompt
-  assert "15-year-old" in result.destination_prompt
+  assert "adolescent" in result.destination_prompt
   assert "under-immunized" in result.destination_prompt
   assert "MMR catch-up" in result.destination_prompt
 
@@ -764,7 +791,7 @@ def test_decontextualize_text_keeps_catchup_vaccine_detail_for_web_search():
 
   assert "Grace" not in result.safe_query
   assert "Chen" not in result.safe_query
-  assert "9-year-old" in result.safe_query
+  assert "school-age child" in result.safe_query
   assert "under-immunized" in result.safe_query
   assert "varicella catch-up" in result.safe_query
 
@@ -779,8 +806,8 @@ def test_decontextualize_text_removes_repeated_sibling_name_later_in_question():
 
   assert "Aiden" not in result.destination_prompt
   assert "Priya" not in result.destination_prompt
-  assert "9-year-old" in result.destination_prompt
-  assert "15-month-old" in result.destination_prompt
+  assert "school-age child" in result.destination_prompt
+  assert "toddler 12-23 months" in result.destination_prompt
   assert "ADHD med check" in result.destination_prompt
   assert "varicella" in result.destination_prompt
 
@@ -810,7 +837,7 @@ def test_decontextualize_text_removes_phone_note_caller_name():
 
   assert "Maria" not in result.destination_prompt
   assert "512-555-9374" not in result.destination_prompt
-  assert "5-year-old" in result.destination_prompt
+  assert "school-age child" in result.destination_prompt
   assert "12 kg" in result.destination_prompt
   assert "cephalexin" in result.destination_prompt
 
@@ -828,7 +855,7 @@ def test_decontextualize_text_removes_json_patient_name_value():
   assert "Chen" not in result.destination_prompt
   assert "LP-2025-75719" not in result.destination_prompt
   assert "512-555-6596" not in result.destination_prompt
-  assert "72-year-old" in result.destination_prompt
+  assert "older adult 65-74" in result.destination_prompt
   assert "eGFR 28" in result.destination_prompt
   assert "metformin 1000 mg BID" in result.destination_prompt
 
@@ -851,7 +878,7 @@ def test_decontextualize_text_removes_ocr_spaced_identifiers_and_derives_age():
   assert "2017-04-10" not in result.destination_prompt
   assert "Grace" not in result.destination_prompt
   assert "Walsh" not in result.destination_prompt
-  assert "9-year-old" in result.destination_prompt
+  assert "school-age child" in result.destination_prompt
   assert "cafe-au-lait" in result.destination_prompt
   assert "axillary freckling" in result.destination_prompt
   assert "NF1" in result.destination_prompt
@@ -873,7 +900,7 @@ def test_decontextualize_text_removes_ocr_spaced_alphanumeric_mrn():
   assert "L P 2 0 2 5 4 0 0 0 0" not in result.destination_prompt
   assert "2019-06-14" not in result.destination_prompt
   assert "5 1 2 5 5 5 0 1 4 7" not in result.destination_prompt
-  assert "7-year-old" in result.destination_prompt
+  assert "school-age child" in result.destination_prompt
   assert "HLH" in result.destination_prompt
   assert "cafe-au-lait" in result.destination_prompt
 
@@ -906,7 +933,7 @@ def test_decontextualize_text_removes_small_town_after_in_colon():
   assert "Lakeville" not in result.destination_prompt
   assert "Rare case" in result.destination_prompt
   assert "Kawasaki" in result.destination_prompt
-  assert "7-year-old" in result.destination_prompt
+  assert "school-age child" in result.destination_prompt
 
 
 def test_decontextualize_text_removes_obfuscated_contact_and_following_name():
@@ -1029,7 +1056,7 @@ def test_decontextualize_text_removes_legal_name_label():
 
   for leaked in ("Blue", "Rowan", "Smith", "TXQ-993812"):
     assert leaked not in result.destination_prompt
-  assert "15-year-old" in result.destination_prompt
+  assert "adolescent" in result.destination_prompt
   assert "transmasc" in result.destination_prompt
   assert "fluoxetine" in result.destination_prompt
   assert "suicidal thoughts" in result.destination_prompt

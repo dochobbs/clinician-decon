@@ -51,7 +51,7 @@ Perturbation profiles declare:
 
 The first library emphasizes failure modes already seen in this project:
 
-- DOB-to-age conversion without losing age specificity.
+- DOB/exact-age conversion to clinical age bands without losing task-relevant age thresholds.
 - Pediatric vaccine and weight-based dosing questions.
 - Exact severe lab or dosing values that must not be over-generalized.
 - Names that collide with clinical eponyms.

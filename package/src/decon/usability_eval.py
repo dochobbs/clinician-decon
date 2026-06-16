@@ -8,6 +8,8 @@ import random
 import re
 from typing import Iterable
 
+from .local_rules import _normalize_age
+
 
 @dataclass(frozen=True)
 class CriticalFact:
@@ -68,7 +70,7 @@ def evaluate_output(
   missing = [
     fact.label
     for fact in case.critical_facts
-    if not any(_contains_term(output, option) for option in fact.acceptable_terms)
+    if not any(_contains_term(output, option) for option in _expanded_fact_terms(fact))
   ]
 
   flags: list[str] = []
@@ -207,6 +209,34 @@ def _contains_term(text: str, term: str) -> bool:
     return False
   pattern = re.compile(r"(?<![A-Za-z0-9])" + re.escape(term) + r"(?![A-Za-z0-9])", re.IGNORECASE)
   return bool(pattern.search(text))
+
+
+def _expanded_fact_terms(fact: CriticalFact) -> tuple[str, ...]:
+  terms = list(fact.acceptable_terms)
+  label = fact.label.lower()
+  if "age" in label and "gestational" not in label:
+    for term in fact.acceptable_terms:
+      terms.extend(_age_band_terms(term))
+  return tuple(dict.fromkeys(term for term in terms if term))
+
+
+def _age_band_terms(term: str) -> tuple[str, ...]:
+  candidates: list[str] = []
+  normalized = _normalize_age(term)
+  if normalized != "[AGE]":
+    candidates.append(normalized)
+
+  age_match = re.search(r"\bage\s+(?P<amount>\d{1,3})\b", term, re.IGNORECASE)
+  if age_match:
+    candidates.append(_normalize_age(f"{age_match.group('amount')}yo"))
+
+  sex_match = re.search(r"\b(?P<sex>male|female)\b", term, re.IGNORECASE)
+  sex = sex_match.group("sex").lower() if sex_match else None
+  if sex:
+    for candidate in tuple(candidates):
+      if not re.search(rf"\b{sex}\b", candidate, re.IGNORECASE):
+        candidates.append(f"{candidate} {sex}")
+  return tuple(dict.fromkeys(candidates))
 
 
 def _is_too_sparse(output: str) -> bool:

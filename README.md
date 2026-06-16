@@ -33,7 +33,8 @@ Current behavior:
 - destination options for ChatGPT, Gemini, Claude, OpenEvidence, Web Search, and Copy Only
 - no prompt text embedded in third-party URLs
 - setup/model status endpoint that verifies repo-local model files and Python runtime support
-- safe derived fields for common cases, such as DOB to age and `A1c 8.2` to `elevated A1c`
+- safe derived fields for common cases, such as DOB/exact age to clinical age band and
+  `A1c 8.2` to `elevated A1c`
 
 ## Safety Model
 
@@ -47,7 +48,7 @@ V1 is local-first and fail-closed by default:
 - Names, MRNs, phone numbers, email, SSNs, URLs, street addresses, ZIP-level geography, and
   common narrative identifiers such as named pharmacies, schools, and camps are removed or
   generalized.
-- Clinically useful facts may be preserved in safer form, such as age, coarse timing,
+- Clinically useful facts may be preserved in safer form, such as age band, coarse timing,
   generalized family relationships, or broad lab signals.
 
 This prototype helps minimize PHI before using non-BAA tools. It does not replace legal review,
@@ -65,7 +66,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-119 passed
+123 passed
 ```
 
 Run the model-backed headless validation gate:
@@ -78,7 +79,8 @@ PYTHONPATH=package/src /path/to/python-with-transformers \
 Current `rules+openmed` validation snapshot with the repo-local OpenMed model:
 
 ```text
-1,000 source cases, 3,000 destination outputs, 0 PHI leaks, 0 missing clinical facts
+1,000 source cases, 3,000 destination outputs, 0 PHI leaks, 0 missing clinical facts,
+100% handoff usable
 ```
 
 Run the 10-case clinician seed-gold gate:

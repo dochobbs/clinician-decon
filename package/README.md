@@ -68,13 +68,13 @@ Mom Jennifer called from 512-555-0147 asking what vaccines he needs at this age.
 Web Search output:
 
 ```text
-13-year-old pediatric immunization schedule vaccines current guidelines
+adolescent immunization schedule vaccines current guidelines
 ```
 
 Review context:
 
 ```text
-[NAME] 13-year-old [MRN] came in same-day. parent called from [PHONE] asking what vaccines he needs at this age.
+[NAME] adolescent [MRN] came in same-day. parent called from [PHONE] asking what vaccines he needs at this age.
 ```
 
 ## CLI
@@ -96,7 +96,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-119 passed
+123 passed
 ```
 
 ## Headless Validation
@@ -176,7 +176,10 @@ This generates `package/data/decon_usability_500_2026-06-15.json`,
   network API.
 - Names, MRNs, phone numbers, email, SSNs, URLs, street addresses, and ZIP-level geography are
   removed or replaced.
-- DOB is converted to age when parseable; ages over 89 are aggregated to `90 or older`.
+- DOB and exact ages are converted to clinical age bands when parseable, such as
+  `adolescent`, `school-age child`, `older adult 65-74`, or `adult age 90 or older`.
+- Web Search can add task-specific age hints, such as
+  `early adolescent in HPV/Tdap vaccine range`, without restoring exact age.
 - Relative/caregiver names are removed while broad relationship context can remain.
 - Clinical values may be generalized when exact values are not necessary, for example `A1c 8.2`
   to `elevated A1c`; exact weight or severe lab values are preserved when needed for dosing or

@@ -28,7 +28,7 @@ The generated case file uses the current `UsabilityCase` JSON shape so it can be
   "phi": ["synthetic identifier"],
   "forbidden_terms": [],
   "critical_facts": [
-    {"label": "age", "acceptable_terms": ["10-year-old"]}
+    {"label": "age", "acceptable_terms": ["school-age child"]}
   ],
   "source_archetype": "pediatric-vaccine-catchup",
   "personas": {
@@ -37,7 +37,7 @@ The generated case file uses the current `UsabilityCase` JSON shape so it can be
     "source_channel": "portal-message-thread",
     "perturbations": ["relationship-noise"]
   },
-  "slot_values": {"age": "10-year-old"},
+  "slot_values": {"age": "10-year-old", "age_band": "school-age child"},
   "seed": 20260615,
   "reference_date": "2026-06-15"
 }

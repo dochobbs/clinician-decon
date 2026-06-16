@@ -110,7 +110,7 @@ Fix direction:
 The vaccine case now produces:
 
 ```text
-13-year-old pediatric immunization schedule vaccines current guidelines
+adolescent immunization schedule vaccines current guidelines
 ```
 
 But non-vaccine Web Search prompts are mostly leftover redacted context. Example:

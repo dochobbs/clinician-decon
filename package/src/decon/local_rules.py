@@ -46,6 +46,22 @@ SUPPORTED_ENGINES = {AUTO_ENGINE, LOCAL_RULES_ENGINE, OPENMED_ENGINE}
 
 AGE_UNITS = r"yo|y/o|yrs?|years? old|months? old|months?|mo"
 EXPLICIT_AGE_UNITS = r"yo|y/o|yrs?|years? old|months? old|mo"
+SAFE_AGE_PHRASES = (
+  "newborn",
+  "infant under 6 months",
+  "infant 6-11 months",
+  "toddler 12-23 months",
+  "preschool child",
+  "school-age child",
+  "early adolescent",
+  "adolescent",
+  "adult 18-44",
+  "adult 45-64",
+  "older adult 65-74",
+  "older adult 75-89",
+  "adult age 90 or older",
+)
+SAFE_AGE_PATTERN = "|".join(re.escape(phrase) for phrase in SAFE_AGE_PHRASES)
 LAB_TERMS = r"A1c|HbA1c|INR|TSH|LDH|WBC|platelets?|ferritin|lipase|amylase"
 MONTH_TERMS = (
   r"January|February|March|April|May|June|July|August|September|October|November|"
@@ -276,6 +292,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   )),
   ("age", re.compile(r"\b\d{1,3}\s*(?:M|F)\b", re.IGNORECASE)),
   ("age", re.compile(rf"\b(?:he'?s|she'?s|patient is|pt is)\s+(\d{{1,3}}\s+months?)\b", re.IGNORECASE)),
+  ("age", re.compile(r"\b\d{1,3}-month-olds?\b", re.IGNORECASE)),
   ("age", re.compile(r"\b\d{1,3}-year-olds?\b", re.IGNORECASE)),
   ("age", re.compile(rf"\b\d{{1,3}}\s*(?:{EXPLICIT_AGE_UNITS})\b", re.IGNORECASE)),
   ("relation", re.compile(
@@ -601,8 +618,16 @@ def _normalize_safe_context(text: str) -> str:
   safe = re.sub(r"\[NAME\]'s\b", "patient's", safe)
   safe = re.sub(r"\bBoth\s+\[NAME\]\s+and\s+(?:his|her|their)\s+mother\b", "Both patient and mother", safe, flags=re.IGNORECASE)
   safe = re.sub(
-    rf"\b(?:{DOB_LABEL})\s*[:#.-]?\s*(?=(?:newborn|\d{{1,2}}-month-old|\d{{1,3}}-year-old|90 or older)\b)",
+    rf"\b(?:{DOB_LABEL})\s*[:#.-]?\s*"
+    rf"(?:is\s+)?"
+    rf"(?=(?:{SAFE_AGE_PATTERN})(?:\s+(?:male|female))?\b)",
     "",
+    safe,
+    flags=re.IGNORECASE,
+  )
+  safe = re.sub(
+    r"\b((?:older\s+)?adult(?:\s+age)?\s+(?:18-44|45-64|65-74|75-89|90\s+or\s+older))\s+adult\b",
+    r"\1",
     safe,
     flags=re.IGNORECASE,
   )
@@ -615,6 +640,14 @@ def _normalize_safe_context(text: str) -> str:
 
 
 def _normalize_age(raw: str) -> str:
+  hyphen_month_match = re.search(
+    r"\b(?P<amount>\d{1,3})-month-olds?\b",
+    raw,
+    flags=re.IGNORECASE,
+  )
+  if hyphen_month_match:
+    amount = int(hyphen_month_match.group("amount"))
+    return _age_band_from_months(amount)
   hyphen_year_match = re.search(
     r"\b(?P<amount>\d{1,3})-year-olds?\b",
     raw,
@@ -622,9 +655,7 @@ def _normalize_age(raw: str) -> str:
   )
   if hyphen_year_match:
     amount = int(hyphen_year_match.group("amount"))
-    if amount >= 90:
-      return "90 or older"
-    return f"{amount}-year-old"
+    return _age_band_from_years(amount)
   compact_match = re.search(
     r"\b(?P<amount>\d{1,3})\s*(?P<sex>M|F)\b",
     raw,
@@ -633,9 +664,7 @@ def _normalize_age(raw: str) -> str:
   if compact_match:
     amount = int(compact_match.group("amount"))
     sex = "male" if compact_match.group("sex").lower() == "m" else "female"
-    if amount >= 90:
-      return f"90 or older {sex}"
-    return f"{amount}-year-old {sex}"
+    return _age_band_from_years(amount, sex=sex)
   match = re.search(
     rf"\b(?P<amount>\d{{1,3}})\s*(?P<unit>{AGE_UNITS})\b",
     raw,
@@ -646,10 +675,46 @@ def _normalize_age(raw: str) -> str:
   amount = int(match.group("amount"))
   unit = match.group("unit").lower()
   if unit in ("mo", "month", "months", "month old", "months old"):
-    return f"{amount}-month-old"
-  if amount >= 90:
-    return "90 or older"
-  return f"{amount}-year-old"
+    return _age_band_from_months(amount)
+  return _age_band_from_years(amount)
+
+
+def _age_band_from_years(years: int, *, sex: str | None = None) -> str:
+  if years >= 90:
+    phrase = "adult age 90 or older"
+  elif years >= 75:
+    phrase = "older adult 75-89"
+  elif years >= 65:
+    phrase = "older adult 65-74"
+  elif years >= 45:
+    phrase = "adult 45-64"
+  elif years >= 18:
+    phrase = "adult 18-44"
+  elif years >= 13:
+    phrase = "adolescent"
+  elif years >= 11:
+    phrase = "early adolescent"
+  elif years >= 5:
+    phrase = "school-age child"
+  elif years >= 2:
+    phrase = "preschool child"
+  elif years == 1:
+    phrase = "toddler 12-23 months"
+  else:
+    phrase = "newborn"
+  return f"{phrase} {sex}" if sex else phrase
+
+
+def _age_band_from_months(months: int) -> str:
+  if months <= 0:
+    return "newborn"
+  if months < 6:
+    return "infant under 6 months"
+  if months < 12:
+    return "infant 6-11 months"
+  if months < 24:
+    return "toddler 12-23 months"
+  return _age_band_from_years(months // 12)
 
 
 def _parse_date(raw: str) -> date | None:
@@ -669,16 +734,12 @@ def _age_from_dob(dob: date, reference_date: date) -> str | None:
   years = reference_date.year - dob.year
   if (reference_date.month, reference_date.day) < (dob.month, dob.day):
     years -= 1
-  if years >= 90:
-    return "90 or older"
   if years >= 2:
-    return f"{years}-year-old"
+    return _age_band_from_years(years)
   months = (reference_date.year - dob.year) * 12 + reference_date.month - dob.month
   if reference_date.day < dob.day:
     months -= 1
-  if months <= 0:
-    return "newborn"
-  return f"{months}-month-old"
+  return _age_band_from_months(months)
 
 
 def _derive_age_for_date(text: str, span: Span, reference_date: date) -> str | None:
@@ -692,6 +753,13 @@ def _derive_age_for_date(text: str, span: Span, reference_date: date) -> str | N
 
 
 def _extract_safe_age(source: str, reference_date: date) -> str | None:
+  safe_age_match = re.search(
+    rf"\b(?:{SAFE_AGE_PATTERN})(?:\s+(?:male|female))?\b",
+    source,
+    flags=re.IGNORECASE,
+  )
+  if safe_age_match:
+    return safe_age_match.group(0)
   compact_age = re.search(r"\b\d{1,3}\s*(?:M|F)\b", source, flags=re.IGNORECASE)
   if compact_age:
     return _normalize_age(compact_age.group(0))
@@ -714,6 +782,7 @@ def _extract_safe_age(source: str, reference_date: date) -> str | None:
     return _normalize_age(explicit_age.group(0))
   dob_match = re.search(
     rf"\b(?:{DOB_LABEL})\s*[:#.-]?\s*"
+    rf"(?:is\s+)?"
     rf"(\d{{1,2}}[./-]\d{{1,2}}[./-]\d{{2,4}}|\d{{1,2}}\s+\d{{1,2}}\s+\d{{4}}|"
     rf"\d{{4}}[/-]\d{{1,2}}[/-]\d{{1,2}}|"
     rf"(?:{MONTH_TERMS})\.?\s+\d{{1,2}}(?:st|nd|rd|th)?(?:,)?\s+\d{{4}}|"
@@ -731,10 +800,7 @@ def _extract_safe_age(source: str, reference_date: date) -> str | None:
 def _is_pediatric_age(age: str | None) -> bool:
   if age is None:
     return False
-  if age == "newborn" or "month-old" in age:
-    return True
-  match = re.match(r"(\d{1,3})-year-old", age)
-  return bool(match and int(match.group(1)) < 18)
+  return bool(re.search(r"\b(?:newborn|infant|toddler|child|adolescent)\b", age, re.IGNORECASE))
 
 
 def _generalize_date(raw: str) -> str:
@@ -836,19 +902,35 @@ def _safe_query_from_context(safe_context: str) -> str:
   return query or "de-identified clinical question"
 
 
+def _age_query_hint(age: str | None, *, lower_source: str, topic: str) -> str:
+  if not age:
+    return ""
+  base = re.sub(r"\s+(?:male|female)\b", "", age, flags=re.IGNORECASE).strip()
+  if topic == "hpv" and base == "early adolescent":
+    return "early adolescent in HPV/Tdap vaccine range"
+  if topic == "vaccine" and base in {"infant 6-11 months", "toddler 12-23 months"}:
+    return f"{base} vaccine schedule range"
+  if "screening" in lower_source and re.search(r"\b(?:adult 45-64|older adult 65-74)\b", base):
+    return "adult in preventive screening age range"
+  return base
+
+
 def _safe_query_from_text(source: str, safe_context: str, reference_date: date) -> str:
   lower_source = source.lower()
   safe_age = _extract_safe_age(source, reference_date) or _extract_safe_age(safe_context, reference_date)
-  age_prefix = f"{safe_age} " if safe_age else ""
-  pediatric_label = "pediatric " if safe_age is None or _is_pediatric_age(safe_age) else ""
+  vaccine_age_hint = _age_query_hint(safe_age, lower_source=lower_source, topic="vaccine")
+  hpv_age_hint = _age_query_hint(safe_age, lower_source=lower_source, topic="hpv")
+  pediatric_label = "" if safe_age else "pediatric "
   if re.search(
     r"\b(?:under-immunized|under immunized|catch-up|siblings?|separate shots|adhd)\b",
     lower_source,
   ):
     return _safe_query_from_context(safe_context)
   if re.search(r"\b(?:hpv|human papillomavirus)\b", lower_source):
+    age_prefix = f"{hpv_age_hint} " if hpv_age_hint else ""
     return f"{age_prefix}{pediatric_label}HPV vaccine schedule current guidelines".strip()
   if re.search(r"\b(?:vaccine|vaccines|vaccination|immunization|shots)\b", lower_source):
+    age_prefix = f"{vaccine_age_hint} " if vaccine_age_hint else ""
     return f"{age_prefix}{pediatric_label}immunization schedule vaccines current guidelines".strip()
   return _safe_query_from_context(safe_context)
 

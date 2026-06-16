@@ -54,8 +54,8 @@ Result on the repo-local OpenMed model:
 - Missing-critical-fact outputs: `0 / 3,000`
 - Clinical usability rate: `100.00%`
 - Handoff usability rate: `100.00%`
-- Max average runtime: `93.554 ms`
-- Max p95 runtime: `111.71 ms`
+- Max average runtime: `95.051 ms`
+- Max p95 runtime: `116.482 ms`
 
 The model was loaded from:
 

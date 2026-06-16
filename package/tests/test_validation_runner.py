@@ -154,6 +154,23 @@ def test_threshold_check_reports_phi_and_clinical_failures():
   assert "Clinical usability rate 90.00% is below required 95.00%." in failures
 
 
+def test_threshold_check_reports_handoff_usability_failures():
+  result = {
+    "summary": {
+      "phi_leaked_outputs": 0,
+      "unsafe_copy_allowed_outputs": 0,
+      "clinical_labeled_outputs": 10,
+      "clinical_usable_outputs": 10,
+      "clinical_usable_rate": 1.0,
+      "handoff_usable_rate": 0.0,
+    }
+  }
+
+  failures = passes_thresholds(result, fail_on_phi=True, min_clinical_usable=1.0)
+
+  assert "Handoff usability rate 0.00% is below required 100.00%." in failures
+
+
 def test_validation_cli_prints_summary_and_returns_success(capsys):
   exit_code = validation_main([
     "--suite",

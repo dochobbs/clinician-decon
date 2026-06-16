@@ -98,6 +98,7 @@ def passes_thresholds(
   unsafe_copy_allowed_outputs = int(summary["unsafe_copy_allowed_outputs"])
   clinical_labeled_outputs = int(summary["clinical_labeled_outputs"])
   clinical_usable_rate = float(summary["clinical_usable_rate"])
+  handoff_usable_rate = float(summary.get("handoff_usable_rate", clinical_usable_rate))
 
   if fail_on_phi and phi_leaked_outputs:
     failures.append(f"PHI leaked in {phi_leaked_outputs} output(s).")
@@ -109,6 +110,11 @@ def passes_thresholds(
     failures.append(
       "Clinical usability rate "
       f"{clinical_usable_rate:.2%} is below required {min_clinical_usable:.2%}."
+    )
+  if clinical_labeled_outputs and handoff_usable_rate < min_clinical_usable:
+    failures.append(
+      "Handoff usability rate "
+      f"{handoff_usable_rate:.2%} is below required {min_clinical_usable:.2%}."
     )
   return failures
 
