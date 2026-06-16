@@ -28,6 +28,7 @@ archetype libraries.
 | `package/data/decon_adversarial_500_2026-06-15.json` | 500 | `generate_adversarial_cases(500, seed=20260615, reference_date=2026-06-15)` in `package/src/decon/usability_eval.py` | Adversarial stress suite for common failure modes: prompt injection, buried identity, repeated names, OCR identifiers, URL PHI, Spanish family phrasing, small-town uniqueness, copy-pasted notes, contact/date mashups, and eponym collisions. | `docs/qa/2026-06-15-local-adversarial-500-eval.md`: 1,500 / 1,500 safe, clinically usable, and handoff usable. |
 | `package/data/decon_phi_field_prose_25_2026-06-15.json` | 25 | Clinician-authored focused audit from the Marvin-name failure follow-up. | Focused prose PHI field suite: month-name DOB, birthday, weekdays, spaced phones, obfuscated email, named pharmacy/school/camp, practice/location, insurance, and caregiver-name bridge. | `docs/qa/2026-06-15-other-phi-fields-prose-audit.md`: 75 / 75 safe, clinically usable, and handoff usable. |
 | `package/data/decon_validation_blindspot_redteam_17_2026-06-15.json` | 17 | Skeptical validation audit after aggregate gates missed the Marvin live-server leak. | Hardens against evaluator blind spots: caregiver prose verbs, preferred-name labels, `Patient named`, dotted/no-comma/day-month DOBs, policy/license/IP identifiers, and apartment units. | `docs/qa/2026-06-15-validation-blindspot-red-team.md`: first run found 38 / 51 PHI-leaked outputs and 12 / 51 missing-critical-fact outputs; final run 51 / 51 safe, clinically usable, and handoff usable. |
+| `package/data/decon_validation_blindspot_redteam_r2_25_2026-06-15.json` | 25 | Second skeptical clinician-authored pass after R1 fixes. | Hardens against more natural prose: `says that`, `per mom`, name-is/goes-by/alias labels, lowercase name labels, MOC/FOC, space/ISO/period DOBs, `MR #`, chart IDs with spaces, room numbers, hash unit numbers, and word-spelled phone numbers. | `docs/qa/2026-06-15-validation-blindspot-red-team-r2.md`: first run found 56 / 75 PHI-leaked outputs and 12 / 75 missing-critical-fact outputs; final run 75 / 75 safe, clinically usable, and handoff usable. |
 | `package/data/decon_persona_regression_2000_2026-06-15.json` | 2,000 | `package/scripts/generate_traces.py --count 2000 --seed 20260615` using `package/data/personas/v1.json` and `package/data/archetypes/v1.json` | Persona-driven regression suite: combines clinician persona, patient context, source channel, perturbation, and clinical archetype metadata. | `docs/qa/2026-06-15-persona-regression-2000-eval.md`: first run found 2,742 / 6,000 PHI-leaked outputs; final run 6,000 / 6,000 safe, clinically usable, and handoff usable. |
 
 ## Persona Regression 2,000 Trace
@@ -151,6 +152,47 @@ Final run after fixes:
 - Handoff usable outputs: `51 / 51`
 - PHI-leaked outputs: `0 / 51`
 - Missing-critical-fact outputs: `0 / 51`
+
+## Validation Blind-Spot Red-Team R2 25 Trace
+
+Validation:
+
+```bash
+python3 package/scripts/run_validation.py --suite validation-blindspot-redteam-r2
+```
+
+Seed and date:
+
+- Seed: none; skeptical clinician-authored cases.
+- Reference date: `2026-06-15`
+- Destinations: `chatgpt`, `gemini`, `web_search`
+- Outputs per run: `25 cases x 3 destinations = 75 outputs`
+
+Coverage:
+
+- Caregiver prose with `that` and `per caregiver` phrasing.
+- `Child's name is`, `Patient goes by`, `Alias`, lowercase `patient name`, and lowercase
+  `preferred name` labels.
+- `MOC` and `FOC` parent abbreviations.
+- DOB formats with spaces, ISO slashes, and abbreviated month periods.
+- `MR #`, chart IDs with internal spaces, room numbers, hash unit numbers, and word-spelled
+  phone numbers.
+
+First run against the pre-fix rules:
+
+- Safe outputs: `19 / 75`
+- PHI-leaked outputs: `56 / 75`
+- Missing-critical-fact outputs: `12 / 75`
+- Clinically usable outputs: `63 / 75`
+- Handoff usable outputs: `13 / 75`
+
+Final run after fixes:
+
+- Safe outputs: `75 / 75`
+- Clinically usable outputs: `75 / 75`
+- Handoff usable outputs: `75 / 75`
+- PHI-leaked outputs: `0 / 75`
+- Missing-critical-fact outputs: `0 / 75`
 
 ## Adversarial 500 Trace
 

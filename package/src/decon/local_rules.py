@@ -44,7 +44,7 @@ DOB_LABEL = r"DOB|D\.O\.B\.?|date of birth|birthdate|birthday|born"
 RELATION_TERMS = (
   r"Mom|Mama|Mami|Mother|Dad|Papa|Father|Grandma|Grandpa|Aunt|Auntie|Uncle|"
   r"Tia|Tio|Abuela|Abuelo|Wife|Husband|Spouse|Partner|Sister|Brother|Daughter|"
-  r"Son|Guardian|Caregiver"
+  r"Son|Guardian|Caregiver|MOC|FOC"
 )
 STREET_TYPES = (
   r"St|Street|Ave|Avenue|Rd|Road|Dr|Drive|Blvd|Boulevard|Ln|Lane|Way|Ct|Court|"
@@ -54,13 +54,18 @@ NAME_TOKEN = (
   r"(?:[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+|[A-ZÀ-ÖØ-Þ])"
   r"(?:[-'][A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+)?"
 )
+LABEL_NAME_VALUE = (
+  r"[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'-]*"
+  r"(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'-]*){0,3}"
+)
+NUMBER_WORD = r"zero|one|two|three|four|five|six|seven|eight|nine|oh|o"
 NAME_PARTICLES = r"van|von|der|den|de|del|da|la|le|di|du|dos|das"
 FULL_NAME = rf"{NAME_TOKEN}(?:\s+(?:(?:{NAME_PARTICLES})\s+)*{NAME_TOKEN}){{1,3}}"
 NAME_CUES = (
   r"DOB|MRN|on|has|with|presents|asks?|needs|due|from|is|came|called|wants|"
   r"says|lives|peri-menopausal"
 )
-CAREGIVER_SUBJECT_TERMS = r"Mom|Mother|Dad|Father|Parent|Caregiver|Guardian|Caller"
+CAREGIVER_SUBJECT_TERMS = r"Mom|Mother|Dad|Father|Parent|Caregiver|Guardian|Caller|MOC|FOC"
 CAREGIVER_REPORT_VERBS = (
   r"reports?|reported|says|said|states?|stated|notes?|noted|mentions?|mentioned|"
   r"observes?|observed"
@@ -82,8 +87,15 @@ PATIENT_NAME_INTRO_PATTERNS: tuple[re.Pattern[str], ...] = (
   ),
   re.compile(
     rf"\b(?i:(?:{CAREGIVER_SUBJECT_TERMS}))(?:\s+{NAME_TOKEN})?\s+"
-    rf"(?i:(?:{CAREGIVER_REPORT_VERBS}))\s+({NAME_TOKEN})"
+    rf"(?i:(?:{CAREGIVER_REPORT_VERBS}))\s+(?i:that\s+)?({NAME_TOKEN})"
     rf"(?=(?:'s)?\s+(?i:{PATIENT_NAME_FOLLOWERS})\b)",
+  ),
+  re.compile(
+    rf"\b(?i:per)\s+(?i:(?:{CAREGIVER_SUBJECT_TERMS}))(?:\s+{NAME_TOKEN})?,\s+({NAME_TOKEN})"
+    rf"(?=(?:'s)?\s+(?i:{PATIENT_NAME_FOLLOWERS})\b)",
+  ),
+  re.compile(
+    rf"^({NAME_TOKEN})(?=,\s+(?i:per)\s+(?i:(?:{CAREGIVER_SUBJECT_TERMS}))\b)"
   ),
   re.compile(rf"\b(?i:(?:the|this)\s+patient)\s+({NAME_TOKEN})\b"),
   re.compile(
@@ -117,7 +129,8 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     rf"\b\d{{1,6}}\s+(?:[A-Za-z0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?",
     re.IGNORECASE,
   )),
-  ("address", re.compile(r"\b(?:Apt|Apartment|Unit|Suite|Ste|#)\s*[A-Z0-9-]+\b", re.IGNORECASE)),
+  ("address", re.compile(r"(?<!\w)(?:Apt|Apartment|Unit|Suite|Ste|#)\s*[A-Z0-9-]+\b", re.IGNORECASE)),
+  ("location", re.compile(r"\bRoom\s+[A-Z0-9-]+\b", re.IGNORECASE)),
   ("location", re.compile(
     rf"\b(?i:(?:lives?|resides|located)\s+(?:at|in))\s+"
     rf"\d{{1,6}}\s+(?:[A-Za-z0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?,\s*"
@@ -146,6 +159,10 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("phone", re.compile(r"(?:\+1[\s-]?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}\b")),
   ("phone", re.compile(r"\b((?:\d\s+){9}\d)\b")),
   ("phone", re.compile(
+    rf"\b((?:(?:{NUMBER_WORD})\s+){{9}}(?:{NUMBER_WORD}))\b",
+    re.IGNORECASE,
+  )),
+  ("phone", re.compile(
     r"\b(?:callback|contact|phone|call|text)\s+((?:\d\s*){10})\b",
     re.IGNORECASE,
   )),
@@ -161,6 +178,11 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     re.IGNORECASE,
   )),
   ("identifier", re.compile(
+    r"\b(?:chart|account|acct|policy|member|subscriber|insurance policy)\s*"
+    r"(?:number|no\.?|id|#)?\s*[:#-]?\s*([A-Z]{1,6}\s+\d{4,})\b",
+    re.IGNORECASE,
+  )),
+  ("identifier", re.compile(
     r"\b(?:driver'?s?\s+license|license|certificate|cert(?:ificate)?|device|serial)\s*"
     r"(?:number|no\.?|id|#)?\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{5,})\b",
     re.IGNORECASE,
@@ -171,7 +193,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     re.IGNORECASE,
   )),
   ("mrn", re.compile(r"\bM\s+R\s+N\s+((?:[A-Z0-9]\s+){5,19}[A-Z0-9])\b", re.IGNORECASE)),
-  ("mrn", re.compile(r"\b(?:MRN|MR#|medical record(?: number)?)\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{3,})\b", re.IGNORECASE)),
+  ("mrn", re.compile(r"\b(?:MRN|MR\s*#|MR#|medical record(?: number)?)\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{3,})\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b[A-Z]{1,5}-\d{3,8}(?:-\d{3,8})?\b")),
   ("ip_address", re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")),
   ("url", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
@@ -201,7 +223,8 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     r"Anthem|Medicaid|Medicare|Tricare)\b",
     re.IGNORECASE,
   )),
-  ("date", re.compile(r"\b(?:\d{1,2}[./-]\d{1,2}[./-]\d{2,4}|\d{4}-\d{1,2}-\d{1,2})\b")),
+  ("date", re.compile(r"\b(?:\d{1,2}[./-]\d{1,2}[./-]\d{2,4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})\b")),
+  ("date", re.compile(r"\b\d{1,2}\s+\d{1,2}\s+\d{4}\b")),
   ("date", re.compile(
     r"\b(?:today|yesterday|last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))\b",
     re.IGNORECASE,
@@ -254,11 +277,17 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     rf'"(?i:patient_name)"\s*:\s*"({FULL_NAME})"'
   )),
   ("name", re.compile(
-    rf"\b(?i:(?:preferred\s+name|patient\s+name|name))\s*[:#-]\s*({FULL_NAME}|{NAME_TOKEN})\b"
+    rf"\b(?i:(?:preferred\s+name|patient\s+name|name|alias))\s*[:#-]\s*({FULL_NAME}|{NAME_TOKEN}|{LABEL_NAME_VALUE})\b"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:child|patient))'?s?\s+name\s+is\s+({FULL_NAME}|{NAME_TOKEN}|{LABEL_NAME_VALUE})\b"
   )),
   ("name", re.compile(
     rf"\b(?i:patient\s+named)\s+({FULL_NAME}|{NAME_TOKEN})"
     rf"(?=\s+(?i:{PATIENT_NAME_FOLLOWERS})\b)"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:patient\s+goes\s+by)\s+({FULL_NAME}|{NAME_TOKEN}|{LABEL_NAME_VALUE})\b"
   )),
   ("name", re.compile(
     rf"\b(?i:caller)\s+({NAME_TOKEN})(?=\s+at\b)"
@@ -296,7 +325,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     rf"[A-Z0-9-]+,\s*({FULL_NAME})(?=,\s*(?i:(?:date of birth|DOB))\b)",
   )),
   ("name", re.compile(
-    rf"^(?!(?:{RELATION_TERMS}|Caller)\b)({NAME_TOKEN})"
+    rf"^(?!(?:{RELATION_TERMS}|Caller|Callback|Fax|Phone|Email|Chart|Account|Policy|Visit|Encounter)\b)({NAME_TOKEN})"
     r"(?=\s+(?:has|presents|needs|asks|is|was|reports|states)\b)"
   )),
   ("name", re.compile(rf"\b(?:calls?\s+(?:him|her|them)|known\s+as|nicknamed)\s+({NAME_TOKEN})\b")),
@@ -364,6 +393,7 @@ QUERY_NOISE_PATTERNS: tuple[re.Pattern[str], ...] = (
 
 RELATION_REPLACEMENTS: tuple[tuple[re.Pattern[str], str], ...] = (
   (re.compile(r"\b(?:Mom|Mother|Dad|Father)\s+\[NAME\]", re.IGNORECASE), "parent"),
+  (re.compile(r"\b(?:MOC|FOC)\s+\[NAME\]", re.IGNORECASE), "parent"),
   (re.compile(r"\b(?:Mom|Mother|Dad|Father)\s+\(\[NAME\]\)", re.IGNORECASE), "parent"),
   (re.compile(r"\b(?:La\s+mam[aá]|El\s+pap[aá])\s+de\s+\[NAME\]", re.IGNORECASE), "parent"),
   (re.compile(r"\blittle\s+\[NAME\]", re.IGNORECASE), "child"),
@@ -383,7 +413,10 @@ DATE_FORMATS = (
   "%m-%d-%y",
   "%m.%d.%Y",
   "%m.%d.%y",
+  "%m %d %Y",
+  "%m %d %y",
   "%Y-%m-%d",
+  "%Y/%m/%d",
   "%B %d, %Y",
   "%b %d, %Y",
   "%B %d %Y",
@@ -544,6 +577,7 @@ def _normalize_age(raw: str) -> str:
 
 def _parse_date(raw: str) -> date | None:
   normalized = re.sub(r"(\d{1,2})(?:st|nd|rd|th)", r"\1", raw, flags=re.IGNORECASE)
+  normalized = re.sub(r"\b([A-Za-z]{3})\.", r"\1", normalized)
   for date_format in DATE_FORMATS:
     try:
       return datetime.strptime(normalized, date_format).date()
@@ -603,7 +637,8 @@ def _extract_safe_age(source: str, reference_date: date) -> str | None:
     return _normalize_age(explicit_age.group(0))
   dob_match = re.search(
     rf"\b(?:{DOB_LABEL})\s*[:#.-]?\s*"
-    rf"(\d{{1,2}}[./-]\d{{1,2}}[./-]\d{{2,4}}|\d{{4}}-\d{{1,2}}-\d{{1,2}}|"
+    rf"(\d{{1,2}}[./-]\d{{1,2}}[./-]\d{{2,4}}|\d{{1,2}}\s+\d{{1,2}}\s+\d{{4}}|"
+    rf"\d{{4}}[/-]\d{{1,2}}[/-]\d{{1,2}}|"
     rf"(?:{MONTH_TERMS})\.?\s+\d{{1,2}}(?:st|nd|rd|th)?(?:,)?\s+\d{{4}}|"
     rf"\d{{1,2}}(?:st|nd|rd|th)?\s+(?:{MONTH_TERMS})\.?\s+\d{{4}})\b",
     source,
@@ -718,6 +753,9 @@ def _safe_query_from_context(safe_context: str) -> str:
   for pattern in QUERY_NOISE_PATTERNS:
     query = pattern.sub(" ", query)
   query = re.sub(r"\s+", " ", query).strip(" ,.;:-")
+  query = re.sub(r"^(?:is|was|are|were)\s*(?:[;:,.]\s*)?", "", query, flags=re.IGNORECASE)
+  if 0 < len(re.findall(r"[A-Za-z][A-Za-z0-9+-]*", query)) < 4:
+    query = f"{query} clinical guidance".strip()
   return query or "de-identified clinical question"
 
 

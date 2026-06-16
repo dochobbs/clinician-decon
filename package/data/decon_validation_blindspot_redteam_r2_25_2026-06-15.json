@@ -1,0 +1,267 @@
+[
+  {
+    "id": "VBR2-001",
+    "category": "caregiver_says_that_patient",
+    "query": "Mom says that Marvin had emotional sensitivity on methylphenidate.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR2-002",
+    "category": "caregiver_reports_that_patient",
+    "query": "Mother reports that Marvin is sleeping poorly from anxiety.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "symptom", "acceptable_terms": ["sleeping"]},
+      {"label": "condition", "acceptable_terms": ["anxiety"]}
+    ]
+  },
+  {
+    "id": "VBR2-003",
+    "category": "per_caregiver_named_patient",
+    "query": "Per mom Jennifer, Marvin stopped methylphenidate two days ago.",
+    "phi": ["Jennifer", "Marvin"],
+    "forbidden_terms": ["Jennifer", "Marvin"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR2-004",
+    "category": "per_caregiver_patient",
+    "query": "Per mother, Marvin improved after stopping methylphenidate.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR2-005",
+    "category": "patient_name_before_per_caregiver",
+    "query": "Marvin, per mother, stopped methylphenidate two days ago.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR2-006",
+    "category": "child_name_is",
+    "query": "Child's name is Marvin; ADHD follow-up after stopping methylphenidate.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["ADHD"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR2-007",
+    "category": "patient_goes_by",
+    "query": "Patient goes by Marvin. ADHD follow-up after stopping methylphenidate.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["ADHD"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR2-008",
+    "category": "alias_label",
+    "query": "Alias: Marvin. Anxiety insomnia after stimulant trial.",
+    "phi": ["Marvin"],
+    "forbidden_terms": ["Marvin"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["Anxiety", "anxiety"]},
+      {"label": "symptom", "acceptable_terms": ["insomnia"]},
+      {"label": "medication class", "acceptable_terms": ["stimulant"]}
+    ]
+  },
+  {
+    "id": "VBR2-009",
+    "category": "lowercase_patient_name_label",
+    "query": "patient name: marvin johnson. DOB 03/15/2013. vaccine guidance.",
+    "phi": ["marvin", "johnson", "03/15/2013"],
+    "forbidden_terms": ["marvin", "johnson", "03/15/2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "topic", "acceptable_terms": ["vaccine", "vaccines"]}
+    ]
+  },
+  {
+    "id": "VBR2-010",
+    "category": "lowercase_preferred_name",
+    "query": "preferred name: marvin. ADHD follow-up after methylphenidate.",
+    "phi": ["marvin"],
+    "forbidden_terms": ["marvin"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["ADHD"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR2-011",
+    "category": "moc_abbreviation",
+    "query": "MOC Jennifer says Marvin is anxious after methylphenidate.",
+    "phi": ["Jennifer", "Marvin"],
+    "forbidden_terms": ["Jennifer", "Marvin"],
+    "critical_facts": [
+      {"label": "symptom", "acceptable_terms": ["anxious"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR2-012",
+    "category": "foc_abbreviation",
+    "query": "FOC Carlos reports Marvin stopped methylphenidate.",
+    "phi": ["Carlos", "Marvin"],
+    "forbidden_terms": ["Carlos", "Marvin"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR2-013",
+    "category": "dob_space_separated",
+    "query": "DOB 3 15 2013, needs HPV catch-up.",
+    "phi": ["3 15 2013", "2013"],
+    "forbidden_terms": ["3 15 2013", "2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "vaccine", "acceptable_terms": ["HPV"]}
+    ]
+  },
+  {
+    "id": "VBR2-014",
+    "category": "dob_iso_slash",
+    "query": "DOB 2013/03/15, needs HPV catch-up.",
+    "phi": ["2013/03/15"],
+    "forbidden_terms": ["2013/03/15"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "vaccine", "acceptable_terms": ["HPV"]}
+    ]
+  },
+  {
+    "id": "VBR2-015",
+    "category": "dob_month_period",
+    "query": "DOB Mar. 15, 2013, needs HPV catch-up.",
+    "phi": ["Mar. 15, 2013", "2013"],
+    "forbidden_terms": ["Mar. 15, 2013", "2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "vaccine", "acceptable_terms": ["HPV"]}
+    ]
+  },
+  {
+    "id": "VBR2-016",
+    "category": "dob_day_month_period",
+    "query": "DOB 15 Mar. 2013, needs HPV catch-up.",
+    "phi": ["15 Mar. 2013", "2013"],
+    "forbidden_terms": ["15 Mar. 2013", "2013"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "vaccine", "acceptable_terms": ["HPV"]}
+    ]
+  },
+  {
+    "id": "VBR2-017",
+    "category": "mr_hash_space",
+    "query": "MR # LP202408432, asthma action plan question.",
+    "phi": ["LP202408432"],
+    "forbidden_terms": ["LP202408432"],
+    "critical_facts": [
+      {"label": "topic", "acceptable_terms": ["asthma action plan"]}
+    ]
+  },
+  {
+    "id": "VBR2-018",
+    "category": "chart_id_space",
+    "query": "Chart ID CH 884422, ADHD med check after methylphenidate intolerance.",
+    "phi": ["CH 884422"],
+    "forbidden_terms": ["CH 884422"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["ADHD"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]}
+    ]
+  },
+  {
+    "id": "VBR2-019",
+    "category": "visit_id",
+    "query": "Visit ID VIS-2026-00991; guanfacine follow-up question.",
+    "phi": ["VIS-2026-00991"],
+    "forbidden_terms": ["VIS-2026-00991"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["guanfacine"]}
+    ]
+  },
+  {
+    "id": "VBR2-020",
+    "category": "encounter_id",
+    "query": "Encounter ENC-778812 includes asthma action plan question.",
+    "phi": ["ENC-778812"],
+    "forbidden_terms": ["ENC-778812"],
+    "critical_facts": [
+      {"label": "topic", "acceptable_terms": ["asthma action plan"]}
+    ]
+  },
+  {
+    "id": "VBR2-021",
+    "category": "school_room_number",
+    "query": "Room 12B at school; needs albuterol form guidance.",
+    "phi": ["12B"],
+    "forbidden_terms": ["12B"],
+    "critical_facts": [
+      {"label": "setting", "acceptable_terms": ["school"]},
+      {"label": "medication", "acceptable_terms": ["albuterol"]}
+    ]
+  },
+  {
+    "id": "VBR2-022",
+    "category": "address_hash_unit",
+    "query": "Lives at 123 Oak Street #5B, Adena, TX 78701; renal dosing for cephalexin.",
+    "phi": ["123 Oak Street", "#5B", "Adena", "78701"],
+    "forbidden_terms": ["123 Oak Street", "#5B", "Adena", "78701"],
+    "critical_facts": [
+      {"label": "topic", "acceptable_terms": ["renal dosing"]},
+      {"label": "medication", "acceptable_terms": ["cephalexin"]}
+    ]
+  },
+  {
+    "id": "VBR2-023",
+    "category": "phone_number_words",
+    "query": "Callback is five one two five five five zero one four seven; asthma flare.",
+    "phi": ["five one two five five five zero one four seven"],
+    "forbidden_terms": ["five one two five five five zero one four seven"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["asthma flare"]}
+    ]
+  },
+  {
+    "id": "VBR2-024",
+    "category": "email_angle_brackets",
+    "query": "Send update to <marvin.family@example.com> about guanfacine.",
+    "phi": ["marvin.family@example.com"],
+    "forbidden_terms": ["marvin.family@example.com"],
+    "critical_facts": [
+      {"label": "medication", "acceptable_terms": ["guanfacine"]}
+    ]
+  },
+  {
+    "id": "VBR2-025",
+    "category": "bare_mychart_domain_url",
+    "query": "mychart.local/patient/Marvin-Johnson/MRN-LP-2024-08432 has asthma flare note.",
+    "phi": ["mychart.local", "Marvin", "Johnson", "LP-2024-08432"],
+    "forbidden_terms": ["mychart.local", "Marvin", "Johnson", "LP-2024-08432"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["asthma flare"]}
+    ]
+  }
+]

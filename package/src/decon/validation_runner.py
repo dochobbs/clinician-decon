@@ -27,6 +27,7 @@ CURRENT_SUITES = {
   "adversarial": DATA_DIR / "decon_adversarial_500_2026-06-15.json",
   "phi-field-prose": DATA_DIR / "decon_phi_field_prose_25_2026-06-15.json",
   "validation-blindspot-redteam": DATA_DIR / "decon_validation_blindspot_redteam_17_2026-06-15.json",
+  "validation-blindspot-redteam-r2": DATA_DIR / "decon_validation_blindspot_redteam_r2_25_2026-06-15.json",
   "persona-regression": DATA_DIR / "decon_persona_regression_2000_2026-06-15.json",
 }
 
