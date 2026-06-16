@@ -9,7 +9,7 @@ import re
 import time
 from typing import Iterable
 
-from .local_rules import decontextualize_text
+from .local_rules import AUTO_ENGINE, decontextualize_text
 from .usability_eval import (
   CriticalFact,
   UsabilityCase,
@@ -28,6 +28,7 @@ CURRENT_SUITES = {
   "phi-field-prose": DATA_DIR / "decon_phi_field_prose_25_2026-06-15.json",
   "validation-blindspot-redteam": DATA_DIR / "decon_validation_blindspot_redteam_17_2026-06-15.json",
   "validation-blindspot-redteam-r2": DATA_DIR / "decon_validation_blindspot_redteam_r2_25_2026-06-15.json",
+  "clinician-seed-gold": DATA_DIR / "decon_clinician_seed_gold_10_2026-06-16.json",
   "persona-regression": DATA_DIR / "decon_persona_regression_2000_2026-06-15.json",
 }
 
@@ -46,6 +47,7 @@ def run_validation(
   suites: Iterable[str],
   destinations: Iterable[str] = DEFAULT_DESTINATIONS,
   reference_date: date,
+  engine: str = AUTO_ENGINE,
 ) -> dict[str, object]:
   """Run one or more validation suites and return a CI-friendly summary."""
   suite_names = _expand_suite_names(tuple(suites))
@@ -59,6 +61,7 @@ def run_validation(
         path=CURRENT_SUITES[suite_name],
         destinations=destination_names,
         reference_date=reference_date,
+        engine=engine,
       ))
     elif suite_name in LEGACY_PHI_SUITES:
       suite_results.append(_run_legacy_phi_suite(
@@ -66,6 +69,7 @@ def run_validation(
         path=LEGACY_PHI_SUITES[suite_name],
         destinations=destination_names,
         reference_date=reference_date,
+        engine=engine,
       ))
     else:
       raise ValueError(f"unknown validation suite: {suite_name}")
@@ -74,6 +78,7 @@ def run_validation(
     "generated_at": datetime.now(timezone.utc).isoformat(),
     "reference_date": reference_date.isoformat(),
     "destinations": list(destination_names),
+    "engine": engine,
     "suites": list(suite_names),
     "summary": _aggregate_summaries(item["summary"] for item in suite_results),
     "suite_results": suite_results,
@@ -145,6 +150,7 @@ def _run_clinical_suite(
   path: Path,
   destinations: tuple[str, ...],
   reference_date: date,
+  engine: str,
 ) -> dict[str, object]:
   cases = _load_usability_cases(path)
   records = []
@@ -157,6 +163,7 @@ def _run_clinical_suite(
         case.query,
         destination=destination,
         reference_date=reference_date,
+        engine=engine,
       )
       timings.append(time.perf_counter() - start)
       evaluation = evaluate_output(
@@ -197,6 +204,7 @@ def _run_legacy_phi_suite(
   path: Path,
   destinations: tuple[str, ...],
   reference_date: date,
+  engine: str,
 ) -> dict[str, object]:
   cases = json.loads(path.read_text(encoding="utf-8"))
   records = []
@@ -210,6 +218,7 @@ def _run_legacy_phi_suite(
         case["query"],
         destination=destination,
         reference_date=reference_date,
+        engine=engine,
       )
       timings.append(time.perf_counter() - start)
       output = _copied_output(result, destination)

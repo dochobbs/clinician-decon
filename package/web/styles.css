@@ -221,6 +221,17 @@ button:disabled {
   line-height: 1.45;
 }
 
+.engine-status {
+  margin-top: 10px;
+  color: var(--accent-dark);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.engine-status-warning {
+  color: var(--danger);
+}
+
 @media (max-width: 860px) {
   .shell {
     padding: 12px;

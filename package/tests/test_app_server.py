@@ -14,6 +14,8 @@ def test_build_decon_payload_does_not_return_removed_phi_values():
   assert payload["handoff"]["open_url"] == "https://chatgpt.com/"
   assert payload["handoff"]["copy_text"] == payload["destination_prompt"]
   assert payload["handoff"]["copy_text"] not in payload["handoff"]["open_url"]
+  assert payload["engine_requested"] == "auto"
+  assert payload["engine"] in ("local-rules", "rules+openmed")
 
 
 def test_build_decon_payload_copies_clean_web_search_query():
@@ -38,6 +40,18 @@ def test_build_decon_payload_rejects_empty_text():
   assert payload["copy_allowed"] is False
 
 
+def test_build_decon_payload_rejects_unsupported_engine():
+  payload = build_decon_payload({
+    "text": "13-year-old asks about asthma.",
+    "destination": "chatgpt",
+    "engine": "cloud",
+  })
+
+  assert payload["error"] == "unsupported_engine"
+  assert payload["copy_allowed"] is False
+  assert "Unsupported decon engine" in payload["message"]
+
+
 def test_build_setup_status_payload_is_local(tmp_path, monkeypatch):
   monkeypatch.setenv("DECON_HOME", str(tmp_path))
 
@@ -46,3 +60,21 @@ def test_build_setup_status_payload_is_local(tmp_path, monkeypatch):
   assert payload["local_rules_ready"] is True
   assert payload["raw_phi_leaves_device"] is False
   assert payload["setup_required"] is True
+
+
+def test_build_decon_payload_reports_openmed_fallback_when_model_missing(tmp_path, monkeypatch):
+  monkeypatch.setenv("DECON_HOME", str(tmp_path))
+  source = "Freya DOB 3/15/2013 asks about asthma."
+
+  payload = build_decon_payload({
+    "text": source,
+    "destination": "chatgpt",
+    "engine": "rules+openmed",
+  })
+
+  assert payload["engine_requested"] == "rules+openmed"
+  assert payload["engine"] == "local-rules"
+  assert "OpenMed" in payload["engine_fallback_reason"]
+  assert payload["risk_level"] == "high"
+  assert payload["copy_allowed"] is False
+  assert any("OpenMed" in reason for reason in payload["risk_reasons"])

@@ -4,3 +4,5 @@ __pycache__/
 .venv/
 *.pyc
 package/reports/latest-validation.json
+package/local-models/
+package/.decon-home/

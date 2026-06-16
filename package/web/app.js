@@ -10,6 +10,7 @@ const setupStatus = document.querySelector("#setupStatus");
 const riskBadge = document.querySelector("#riskBadge");
 const categoryList = document.querySelector("#categoryList");
 const reasonList = document.querySelector("#reasonList");
+const engineStatus = document.querySelector("#engineStatus");
 
 let lastPayload = null;
 
@@ -48,6 +49,25 @@ function renderReasons(reasons) {
   }
 }
 
+function renderEngine(payload) {
+  if (!payload || !payload.engine) {
+    engineStatus.textContent = "Engine: not run";
+    engineStatus.className = "engine-status";
+    return;
+  }
+  const label = payload.engine === "rules+openmed" ? "Rules + OpenMed" : "Local rules";
+  const requested = payload.engine_requested && payload.engine_requested !== payload.engine
+    ? ` (requested ${payload.engine_requested})`
+    : "";
+  engineStatus.textContent = `Engine: ${label}${requested}`;
+  if (payload.engine_fallback_reason) {
+    engineStatus.textContent += ` — ${payload.engine_fallback_reason}`;
+  }
+  engineStatus.className = payload.engine_fallback_reason
+    ? "engine-status engine-status-warning"
+    : "engine-status";
+}
+
 function setButtons(payload) {
   const allowed = Boolean(payload && payload.copy_allowed && payload.handoff);
   copyButton.disabled = !allowed;
@@ -84,6 +104,7 @@ async function runDecon() {
     setRisk(payload.risk_level);
     renderCategories(payload.removed_categories);
     renderReasons(payload.risk_reasons);
+    renderEngine(payload);
     setButtons(payload);
   } finally {
     runButton.disabled = false;
@@ -110,6 +131,7 @@ clearButton.addEventListener("click", () => {
   setRisk(null);
   renderCategories({});
   renderReasons([]);
+  renderEngine(null);
   setButtons(null);
 });
 
@@ -129,6 +151,7 @@ if ("serviceWorker" in navigator) {
 setRisk(null);
 renderCategories({});
 renderReasons([]);
+renderEngine(null);
 setButtons(null);
 loadSetupStatus().catch(() => {
   setupStatus.textContent = "Setup status unavailable";

@@ -15,12 +15,15 @@ Related docs:
   generator.
 - `docs/qa/2026-06-15-persona-regression-2000-eval.md`: first 2,000-case persona-regression
   run, failure trace, fixes, and final result.
+- `docs/qa/2026-06-16-local-rules-openmed-audit.md`: model-backed pipeline audit and
+  seed-gold verification.
 
 ## Current Regression Gates
 
 The default `current` gate still runs the 500-case usability suite plus the 500-case adversarial
-suite. `persona-regression` is a larger explicit gate that uses the versioned persona and
-archetype libraries.
+suite. Production validation should run it with `--engine rules+openmed`, not rules-only `auto`.
+`clinician-seed-gold` is the high-signal 10-case clinician review seed. `persona-regression` is a
+larger explicit gate that uses the versioned persona and archetype libraries.
 
 | Query set | Rows | Source | Purpose | Latest result |
 | --- | ---: | --- | --- | --- |
@@ -29,7 +32,73 @@ archetype libraries.
 | `package/data/decon_phi_field_prose_25_2026-06-15.json` | 25 | Clinician-authored focused audit from the Marvin-name failure follow-up. | Focused prose PHI field suite: month-name DOB, birthday, weekdays, spaced phones, obfuscated email, named pharmacy/school/camp, practice/location, insurance, and caregiver-name bridge. | `docs/qa/2026-06-15-other-phi-fields-prose-audit.md`: 75 / 75 safe, clinically usable, and handoff usable. |
 | `package/data/decon_validation_blindspot_redteam_17_2026-06-15.json` | 17 | Skeptical validation audit after aggregate gates missed the Marvin live-server leak. | Hardens against evaluator blind spots: caregiver prose verbs, preferred-name labels, `Patient named`, dotted/no-comma/day-month DOBs, policy/license/IP identifiers, and apartment units. | `docs/qa/2026-06-15-validation-blindspot-red-team.md`: first run found 38 / 51 PHI-leaked outputs and 12 / 51 missing-critical-fact outputs; final run 51 / 51 safe, clinically usable, and handoff usable. |
 | `package/data/decon_validation_blindspot_redteam_r2_25_2026-06-15.json` | 25 | Second skeptical clinician-authored pass after R1 fixes. | Hardens against more natural prose: `says that`, `per mom`, name-is/goes-by/alias labels, lowercase name labels, MOC/FOC, space/ISO/period DOBs, `MR #`, chart IDs with spaces, room numbers, hash unit numbers, and word-spelled phone numbers. | `docs/qa/2026-06-15-validation-blindspot-red-team-r2.md`: first run found 56 / 75 PHI-leaked outputs and 12 / 75 missing-critical-fact outputs; final run 75 / 75 safe, clinically usable, and handoff usable. |
+| `package/data/decon_clinician_seed_gold_10_2026-06-16.json` | 10 | Clinician-selected hard cases created after the Marvin miss and OpenMed audit. | Seed-gold gate for patient-name prose, multi-patient sibling notes, legal-name labels, Spanish family phrasing, camp/school/pharmacy/location, and clinical eponym preservation. | `docs/qa/2026-06-16-local-rules-openmed-audit.md`: `rules+openmed` run on 2026-06-16 passed 30 / 30 outputs with 0 PHI leaks and 0 missing clinical facts. |
 | `package/data/decon_persona_regression_2000_2026-06-15.json` | 2,000 | `package/scripts/generate_traces.py --count 2000 --seed 20260615` using `package/data/personas/v1.json` and `package/data/archetypes/v1.json` | Persona-driven regression suite: combines clinician persona, patient context, source channel, perturbation, and clinical archetype metadata. | `docs/qa/2026-06-15-persona-regression-2000-eval.md`: first run found 2,742 / 6,000 PHI-leaked outputs; final run 6,000 / 6,000 safe, clinically usable, and handoff usable. |
+
+## 2026-06-16 OpenMed-Backed Current Gate
+
+Validation:
+
+```bash
+PYTHONPATH=package/src /path/to/python-with-transformers \
+  package/scripts/run_validation.py --engine rules+openmed
+```
+
+Result on the repo-local OpenMed model:
+
+- Source cases: `1,000`
+- Destination outputs: `3,000`
+- PHI-leaked outputs: `0 / 3,000`
+- Unsafe copy-allowed leaks: `0 / 3,000`
+- Clinically usable outputs: `3,000 / 3,000`
+- Missing-critical-fact outputs: `0 / 3,000`
+- Clinical usability rate: `100.00%`
+- Handoff usability rate: `100.00%`
+- Max average runtime: `93.554 ms`
+- Max p95 runtime: `111.71 ms`
+
+The model was loaded from:
+
+```text
+package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1/
+```
+
+That directory is ignored by git and should be populated by the installer or local setup before
+running `--engine rules+openmed`.
+
+## Clinician Seed-Gold 10 Trace
+
+Validation:
+
+```bash
+python3 package/scripts/run_validation.py --suite clinician-seed-gold --engine rules+openmed
+```
+
+Seed and date:
+
+- Seed: none; clinician-selected deterministic cases.
+- Reference date: `2026-06-15`
+- Destinations: `chatgpt`, `gemini`, `web_search`
+- Outputs per run: `10 cases x 3 destinations = 30 outputs`
+
+Coverage:
+
+- Marvin-style patient-name prose with caregiver, DOB, phone, camp, and medication side effects.
+- Multi-patient sibling notes where both sibling names must be removed but both ages/facts remain.
+- Clinical eponyms and patient names in the same note, especially `Addison disease`.
+- Named pharmacy, location, school, camp, room, Spanish family phrasing, and legal-name labels.
+- Rare-disease/search prompts where school/practice uniqueness must be removed but the clinical
+  condition remains useful.
+
+Current `rules+openmed` result:
+
+- Safe outputs: `30 / 30`
+- Clinically usable outputs: `30 / 30`
+- Handoff usable outputs: `30 / 30`
+- PHI-leaked outputs: `0 / 30`
+- Missing-critical-fact outputs: `0 / 30`
+- Max average runtime: `186.146 ms`
+- Max p95 runtime: `106.107 ms`
 
 ## Persona Regression 2,000 Trace
 

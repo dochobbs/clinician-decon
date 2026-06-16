@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date, datetime
 import re
-from typing import Iterable
+from typing import Callable, Iterable
 
 from .destinations import build_handoff, render_prompt
 
@@ -15,6 +15,9 @@ class Span:
   category: str
   start: int
   end: int
+
+
+SpanDetector = Callable[[str], Iterable[Span]]
 
 
 @dataclass(frozen=True)
@@ -30,6 +33,15 @@ class LocalDeconResult:
   copy_allowed: bool
   open_url: str | None
   action_label: str
+  engine: str
+  engine_requested: str
+  engine_fallback_reason: str
+
+
+LOCAL_RULES_ENGINE = "local-rules"
+OPENMED_ENGINE = "rules+openmed"
+AUTO_ENGINE = "auto"
+SUPPORTED_ENGINES = {AUTO_ENGINE, LOCAL_RULES_ENGINE, OPENMED_ENGINE}
 
 
 AGE_UNITS = r"yo|y/o|yrs?|years? old|months? old|months?|mo"
@@ -72,7 +84,7 @@ CAREGIVER_REPORT_VERBS = (
 )
 PATIENT_NAME_FOLLOWERS = (
   r"had|has|was|is|reported|reports|improved|worse|worsened|needs|started|"
-  r"stopped|takes|will|should|could|presented|presents|came|comes|reports"
+  r"stopped|takes|will|should|could|presented|presents|came|comes|reports|at"
 )
 PATIENT_NAME_INTRO_PATTERNS: tuple[re.Pattern[str], ...] = (
   re.compile(rf"\b({NAME_TOKEN})\s+(?i:is\s+a\s+patient)\b"),
@@ -93,6 +105,18 @@ PATIENT_NAME_INTRO_PATTERNS: tuple[re.Pattern[str], ...] = (
   re.compile(
     rf"\b(?i:per)\s+(?i:(?:{CAREGIVER_SUBJECT_TERMS}))(?:\s+{NAME_TOKEN})?,\s+({NAME_TOKEN})"
     rf"(?=(?:'s)?\s+(?i:{PATIENT_NAME_FOLLOWERS})\b)",
+  ),
+  re.compile(
+    rf"\b(?i:per)\s+(?i:(?:{CAREGIVER_SUBJECT_TERMS}))(?:\s+{NAME_TOKEN})?,\s+({NAME_TOKEN})"
+    rf"(?=\s+and\s+(?i:sibling)\s+{NAME_TOKEN}\b)",
+  ),
+  re.compile(
+    rf"\b(?i:per)\s+(?i:(?:{CAREGIVER_SUBJECT_TERMS}))(?:\s+{NAME_TOKEN})?,\s+{NAME_TOKEN}"
+    rf"\s+and\s+(?i:sibling)\s+({NAME_TOKEN})\b",
+  ),
+  re.compile(
+    rf"\b(?i:(?:La\s+mam[aá]|El\s+pap[aá]|Mi\s+hij[oa]|Su\s+hij[oa]|El\s+paciente|"
+    rf"La\s+paciente))\s+(?:de\s+)?({NAME_TOKEN})\b",
   ),
   re.compile(
     rf"^({NAME_TOKEN})(?=,\s+(?i:per)\s+(?i:(?:{CAREGIVER_SUBJECT_TERMS}))\b)"
@@ -125,11 +149,15 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     re.IGNORECASE,
   )),
   ("contextual_identifier", re.compile(r"\bonly case\b", re.IGNORECASE)),
+  ("mrn", re.compile(r"\bMR\s*#\s*[A-Z0-9][A-Z0-9-]{3,}\b", re.IGNORECASE)),
   ("address", re.compile(
     rf"\b\d{{1,6}}\s+(?:[A-Za-z0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?",
     re.IGNORECASE,
   )),
-  ("address", re.compile(r"(?<!\w)(?:Apt|Apartment|Unit|Suite|Ste|#)\s*[A-Z0-9-]+\b", re.IGNORECASE)),
+  ("address", re.compile(
+    r"(?<!\w)(?:(?:Apt|Apartment|Unit|Suite|Ste)\.?\s+[A-Z0-9-]+|#\s*[A-Z0-9-]+)\b",
+    re.IGNORECASE,
+  )),
   ("location", re.compile(r"\bRoom\s+[A-Z0-9-]+\b", re.IGNORECASE)),
   ("location", re.compile(
     rf"\b(?i:(?:lives?|resides|located)\s+(?:at|in))\s+"
@@ -204,12 +232,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     re.IGNORECASE,
   )),
   ("school", re.compile(
-    rf"\b(?:{NAME_TOKEN}\s+){{1,4}}(?:Elementary|Middle|High)\s+School\b",
-    re.IGNORECASE,
-  )),
-  ("school", re.compile(
-    rf"\b(?:{NAME_TOKEN}\s+){{1,4}}(?:School|Academy)\b",
-    re.IGNORECASE,
+    rf"\b(?:{NAME_TOKEN}\s+){{1,4}}(?:(?:Elementary|Middle|High)(?:\s+School)?|School|Academy)\b",
   )),
   ("camp", re.compile(rf"\bCamp\s+{NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}}\b")),
   ("practice", re.compile(
@@ -277,7 +300,13 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     rf'"(?i:patient_name)"\s*:\s*"({FULL_NAME})"'
   )),
   ("name", re.compile(
+    rf"\b(?i:legal\s+name)\s*[:#-]?\s*({FULL_NAME}|{NAME_TOKEN}|{LABEL_NAME_VALUE})\b"
+  )),
+  ("name", re.compile(
     rf"\b(?i:(?:preferred\s+name|patient\s+name|name|alias))\s*[:#-]\s*({FULL_NAME}|{NAME_TOKEN}|{LABEL_NAME_VALUE})\b"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:chart\s+says)\s+({FULL_NAME})(?=,\s*(?i:(?:DOB|date of birth|D\.O\.B\.?))\b)"
   )),
   ("name", re.compile(
     rf"\b(?i:(?:child|patient))'?s?\s+name\s+is\s+({FULL_NAME}|{NAME_TOKEN}|{LABEL_NAME_VALUE})\b"
@@ -438,7 +467,7 @@ DATE_FORMATS = (
 )
 
 
-def _collect_spans(text: str) -> list[Span]:
+def _collect_spans(text: str, extra_spans: Iterable[Span] = ()) -> list[Span]:
   spans: list[Span] = []
   for category, pattern in PATTERNS:
     for match in pattern.finditer(text):
@@ -448,8 +477,44 @@ def _collect_spans(text: str) -> list[Span]:
         start, end = match.span(0)
       if start != end:
         spans.append(Span(category=category, start=start, end=end))
+  spans.extend(extra_spans)
   spans.extend(_propagated_patient_name_spans(text))
   return _select_non_overlapping(spans)
+
+
+def _engine_extra_spans(
+  text: str,
+  *,
+  requested_engine: str,
+  span_detector: SpanDetector | None,
+) -> tuple[str, str, list[Span]]:
+  if requested_engine not in SUPPORTED_ENGINES:
+    raise ValueError(
+      f"Unsupported decon engine '{requested_engine}'. "
+      f"Supported engines: {', '.join(sorted(SUPPORTED_ENGINES))}."
+    )
+  if requested_engine == LOCAL_RULES_ENGINE:
+    return LOCAL_RULES_ENGINE, "", []
+  if span_detector is not None:
+    return OPENMED_ENGINE, "", list(span_detector(text))
+
+  try:
+    from .model_setup import get_model_status
+    status = get_model_status()
+    if not status.ner_model_ready:
+      reason = "OpenMed model is not installed; used local-rules engine."
+      return LOCAL_RULES_ENGINE, reason if requested_engine == OPENMED_ENGINE else "", []
+
+    from .openmed_ner import OpenMedUnavailable, get_openmed_span_detector
+    try:
+      detector = get_openmed_span_detector(status.model_id, str(status.model_dir))
+      return OPENMED_ENGINE, "", list(detector(text))
+    except OpenMedUnavailable as exc:
+      reason = f"OpenMed unavailable: {exc}; used local-rules engine."
+      return LOCAL_RULES_ENGINE, reason if requested_engine == OPENMED_ENGINE else "", []
+  except Exception as exc:
+    reason = f"OpenMed setup failed: {exc}; used local-rules engine."
+    return LOCAL_RULES_ENGINE, reason if requested_engine == OPENMED_ENGINE else "", []
 
 
 def _propagated_patient_name_spans(text: str) -> list[Span]:
@@ -803,14 +868,24 @@ def decontextualize_text(
   *,
   destination: str,
   reference_date: date | None = None,
+  engine: str = AUTO_ENGINE,
+  span_detector: SpanDetector | None = None,
 ) -> LocalDeconResult:
   """Run local rule-based decontextualization and render destination handoff data."""
   source = text.strip()
   ref_date = reference_date or date.today()
-  spans = _collect_spans(source)
+  actual_engine, engine_fallback_reason, extra_spans = _engine_extra_spans(
+    source,
+    requested_engine=engine,
+    span_detector=span_detector,
+  )
+  spans = _collect_spans(source, extra_spans)
   safe_context, removed_categories = _apply_spans(source, spans, ref_date)
   safe_query = _safe_query_from_text(source, safe_context, ref_date)
   risk_level, risk_reasons = _risk(safe_context)
+  if engine == OPENMED_ENGINE and engine_fallback_reason:
+    risk_level = "high"
+    risk_reasons = [*risk_reasons, engine_fallback_reason]
   destination_prompt = render_prompt(destination, safe_context=safe_context, safe_query=safe_query)
   handoff = build_handoff(destination, destination_prompt)
   return LocalDeconResult(
@@ -825,4 +900,7 @@ def decontextualize_text(
     copy_allowed=risk_level != "high",
     open_url=handoff.open_url,
     action_label=handoff.action_label,
+    engine=actual_engine,
+    engine_requested=engine,
+    engine_fallback_reason=engine_fallback_reason,
   )

@@ -1,0 +1,132 @@
+[
+  {
+    "id": "GOLD-001",
+    "category": "caregiver_dob_spelled_phone_camp",
+    "query": "Mom says that Marvin had anxiety worse on methylphenidate. DOB 3 15 2013.\nCallback is five one two five five five zero one four seven.\nNeeds ADHD med alternative before camp July 12.",
+    "phi": ["Marvin", "3 15 2013", "five one two five five five zero one four seven", "July 12"],
+    "forbidden_terms": ["Marvin", "3 15 2013", "five one two five five five zero one four seven", "July 12"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["ADHD"]},
+      {"label": "medication", "acceptable_terms": ["methylphenidate"]},
+      {"label": "symptom", "acceptable_terms": ["anxiety"]},
+      {"label": "age", "acceptable_terms": ["13-year-old"]}
+    ]
+  },
+  {
+    "id": "GOLD-002",
+    "category": "multi_patient_sibling_portal",
+    "query": "Per MOC Jennifer, Lia and sibling Omar share portal thread MR # LP202408432.\nLia has peanut allergy; Omar has asthma and needs albuterol school form.\nQuestion is whether to use cetirizine or epinephrine plan for Lia.",
+    "phi": ["Jennifer", "Lia", "Omar", "LP202408432"],
+    "forbidden_terms": ["Jennifer", "Lia", "Omar", "LP202408432"],
+    "critical_facts": [
+      {"label": "allergy", "acceptable_terms": ["peanut allergy"]},
+      {"label": "condition", "acceptable_terms": ["asthma"]},
+      {"label": "medication", "acceptable_terms": ["albuterol"]},
+      {"label": "treatment_options", "acceptable_terms": ["cetirizine", "epinephrine"]}
+    ]
+  },
+  {
+    "id": "GOLD-003",
+    "category": "eponym_name_collision",
+    "query": "Patient goes by Addie; chart says Addison Ford, DOB Mar. 15, 2013.\nEndocrine note: Addison disease on hydrocortisone, vomiting today.\nFamily asks stress-dose steroid guidance before ER.",
+    "phi": ["Addie", "Addison Ford", "Mar. 15, 2013"],
+    "forbidden_terms": ["Addie", "Addison Ford", "Mar. 15, 2013", "stress-dose [ADDRESS]"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["Addison disease"]},
+      {"label": "medication", "acceptable_terms": ["hydrocortisone"]},
+      {"label": "symptom", "acceptable_terms": ["vomiting"]},
+      {"label": "topic", "acceptable_terms": ["stress-dose steroid"]}
+    ]
+  },
+  {
+    "id": "GOLD-004",
+    "category": "caregiver_patient_room_visit_id",
+    "query": "FOC Carlos reports Mateo at Room 12B had hives after amoxicillin.\nSchool nurse called from 512.555.0147; visit ID VIS-2026-00991.\nNeed cephalexin vs azithromycin alternative for strep.",
+    "phi": ["Carlos", "Mateo", "12B", "512.555.0147", "VIS-2026-00991"],
+    "forbidden_terms": ["Carlos", "Mateo", "12B", "512.555.0147", "VIS-2026-00991"],
+    "critical_facts": [
+      {"label": "reaction", "acceptable_terms": ["hives"]},
+      {"label": "medication", "acceptable_terms": ["amoxicillin"]},
+      {"label": "alternatives", "acceptable_terms": ["cephalexin", "azithromycin"]},
+      {"label": "condition", "acceptable_terms": ["strep"]}
+    ]
+  },
+  {
+    "id": "GOLD-005",
+    "category": "pregnancy_email_pharmacy",
+    "query": "Send update to <nina.parent@example.com>; patient name: nina rodriguez.\n11 weeks pregnant, takes sertraline, asks about nausea meds.\nPharmacy is Walgreens on Vernon in Adena.",
+    "phi": ["nina.parent@example.com", "nina rodriguez", "Walgreens", "Vernon", "Adena"],
+    "forbidden_terms": ["nina.parent@example.com", "nina rodriguez", "Walgreens", "Vernon", "Adena"],
+    "critical_facts": [
+      {"label": "pregnancy", "acceptable_terms": ["11 weeks pregnant"]},
+      {"label": "medication", "acceptable_terms": ["sertraline"]},
+      {"label": "symptom", "acceptable_terms": ["nausea"]}
+    ]
+  },
+  {
+    "id": "GOLD-006",
+    "category": "url_patient_fever_under_immunized",
+    "query": "mychart.local/patient/Eli-Park/MRN-LP-2024-08432 says fever 104.2 at 2am.\nDad says Eli is 18 months, under-immunized, no wet diapers since yesterday.\nNeed triage and antipyretic dosing.",
+    "phi": ["mychart.local", "Eli", "Park", "LP-2024-08432", "yesterday"],
+    "forbidden_terms": ["mychart.local", "Eli", "Park", "LP-2024-08432", "yesterday"],
+    "critical_facts": [
+      {"label": "fever", "acceptable_terms": ["104.2"]},
+      {"label": "age", "acceptable_terms": ["18-month-old", "18 months"]},
+      {"label": "immunization", "acceptable_terms": ["under-immunized"]},
+      {"label": "hydration", "acceptable_terms": ["no wet diapers"]}
+    ]
+  },
+  {
+    "id": "GOLD-007",
+    "category": "spanish_repeated_name_address",
+    "query": "La mama de Sofia llama desde 512 555 0199, vive en 123 Oak Street #5B.\nSofia tiene tos, wheeze, uso albuterol cada 3 horas.\nPregunta si necesita prednisolone o ED.",
+    "phi": ["Sofia", "512 555 0199", "123 Oak Street", "#5B"],
+    "forbidden_terms": ["Sofia", "512 555 0199", "123 Oak Street", "#5B"],
+    "critical_facts": [
+      {"label": "symptom", "acceptable_terms": ["tos", "wheeze"]},
+      {"label": "medication", "acceptable_terms": ["albuterol"]},
+      {"label": "frequency", "acceptable_terms": ["cada 3 horas"]},
+      {"label": "treatment", "acceptable_terms": ["prednisolone", "ED"]}
+    ]
+  },
+  {
+    "id": "GOLD-008",
+    "category": "alias_legal_name_psych",
+    "query": "Alias: Blue. Legal name Rowan Smith; insurance policy BCBS TXQ-993812.\n15-year-old transmasc patient on fluoxetine has suicidal thoughts but denies plan.\nParent asks whether to wait for therapist tomorrow.",
+    "phi": ["Blue", "Rowan", "Smith", "BCBS", "TXQ-993812"],
+    "forbidden_terms": ["Blue", "Rowan", "Smith", "BCBS", "TXQ-993812"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["15-year-old"]},
+      {"label": "identity_context", "acceptable_terms": ["transmasc"]},
+      {"label": "medication", "acceptable_terms": ["fluoxetine"]},
+      {"label": "safety", "acceptable_terms": ["suicidal thoughts", "denies plan"]}
+    ]
+  },
+  {
+    "id": "GOLD-009",
+    "category": "rare_disease_school_town",
+    "query": "Child's name is June; small town Adena, TX, attends Cedar Creek Middle School.\nHLH history, fever, ferritin 3200, ANC 450, platelets 41.\nNeed whether outpatient labs are enough or send to ED.",
+    "phi": ["June", "Adena, TX", "Cedar Creek Middle School"],
+    "forbidden_terms": ["June", "Adena, TX", "Cedar Creek Middle School"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["HLH"]},
+      {"label": "symptom", "acceptable_terms": ["fever"]},
+      {"label": "labs", "acceptable_terms": ["Ferritin 3200", "ANC 450", "platelets 41"]},
+      {"label": "disposition", "acceptable_terms": ["ED"]}
+    ]
+  },
+  {
+    "id": "GOLD-010",
+    "category": "provider_practice_metformin",
+    "query": "Dr. Patel at Northside Pediatrics saw ACCT 884422, DOB 2013/03/15.\nPatient had A1c 8.2, BMI 31, started metformin; mom asks about vomiting.\nNeed sick-day guidance and when to hold metformin.",
+    "phi": ["Patel", "Northside Pediatrics", "884422", "2013/03/15", "A1c 8.2", "BMI 31"],
+    "forbidden_terms": ["Patel", "Northside Pediatrics", "884422", "2013/03/15", "A1c 8.2", "BMI 31"],
+    "critical_facts": [
+      {"label": "age", "acceptable_terms": ["13-year-old"]},
+      {"label": "lab", "acceptable_terms": ["elevated A1c"]},
+      {"label": "body_measurement", "acceptable_terms": ["obesity-range BMI"]},
+      {"label": "medication", "acceptable_terms": ["metformin"]},
+      {"label": "symptom", "acceptable_terms": ["vomiting"]}
+    ]
+  }
+]

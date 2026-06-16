@@ -16,6 +16,7 @@ from .validation_runner import (
   run_validation,
   write_report,
 )
+from .local_rules import SUPPORTED_ENGINES
 
 
 SUITE_CHOICES = (
@@ -48,6 +49,12 @@ def build_parser() -> argparse.ArgumentParser:
     "--reference-date",
     default="2026-06-15",
     help="Reference date for DOB-to-age conversion in YYYY-MM-DD format.",
+  )
+  parser.add_argument(
+    "--engine",
+    choices=tuple(sorted(SUPPORTED_ENGINES)),
+    default="auto",
+    help="Decon engine to validate. Use rules+openmed to require the local OpenMed layer.",
   )
   parser.add_argument(
     "--min-clinical-usable",
@@ -84,6 +91,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     suites=suites,
     destinations=destinations,
     reference_date=reference_date,
+    engine=args.engine,
   )
   failures = passes_thresholds(
     result,
@@ -126,6 +134,7 @@ def _format_summary(result: dict[str, object], *, report_path: Path | None) -> s
     f"Decon validation {status}",
     f"Suites: {', '.join(result['suites'])}",
     f"Destinations: {', '.join(result['destinations'])}",
+    f"Engine: {result['engine']}",
     f"Source cases: {summary['source_cases']}",
     f"Outputs: {summary['outputs']}",
     f"PHI leaked outputs: {summary['phi_leaked_outputs']}",

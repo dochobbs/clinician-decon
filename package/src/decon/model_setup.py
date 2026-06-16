@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -11,6 +12,15 @@ from typing import Any
 
 
 DEFAULT_MODEL_ID = "OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1"
+PACKAGE_ROOT = Path(__file__).resolve().parents[2]
+LOCAL_MODELS_DIR = PACKAGE_ROOT / "local-models"
+REQUIRED_MODEL_FILES = (
+  "config.json",
+  "model.safetensors",
+  "tokenizer.json",
+  "tokenizer_config.json",
+  "special_tokens_map.json",
+)
 
 
 @dataclass(frozen=True)
@@ -48,20 +58,32 @@ def get_decon_home() -> Path:
 
 def model_dir_for(model_id: str = DEFAULT_MODEL_ID, decon_home: Path | None = None) -> Path:
   safe_name = model_id.replace("/", "--")
+  repo_local_model = LOCAL_MODELS_DIR / safe_name
+  if decon_home is None and "DECON_HOME" not in os.environ and repo_local_model.exists():
+    return repo_local_model
   return (decon_home or get_decon_home()) / "models" / safe_name
 
 
 def get_model_status(model_id: str = DEFAULT_MODEL_ID) -> ModelStatus:
   """Return local setup status. This function never downloads anything."""
   decon_home = get_decon_home()
-  model_dir = model_dir_for(model_id, decon_home)
-  metadata_path = model_dir / "decon-model.json"
-  ner_ready = metadata_path.exists()
-  next_action = (
-    "Ready for local regex and NER decontextualization."
-    if ner_ready
-    else "Download the local privacy model to enable OpenMed NER."
-  )
+  model_dir = model_dir_for(model_id)
+  missing_files = [filename for filename in REQUIRED_MODEL_FILES if not (model_dir / filename).is_file()]
+  transformers_ready = importlib.util.find_spec("transformers") is not None
+  torch_ready = importlib.util.find_spec("torch") is not None
+  ner_ready = not missing_files and transformers_ready and torch_ready
+  if ner_ready:
+    next_action = "Ready for local regex and OpenMed NER decontextualization."
+    last_error = ""
+  elif missing_files:
+    next_action = "Copy or download the local privacy model to enable OpenMed NER."
+    last_error = f"Missing model files: {', '.join(missing_files)}"
+  elif not transformers_ready:
+    next_action = "Install transformers in the app runtime to enable OpenMed NER."
+    last_error = "Missing Python dependency: transformers"
+  else:
+    next_action = "Install torch in the app runtime to enable OpenMed NER."
+    last_error = "Missing Python dependency: torch"
   return ModelStatus(
     decon_home=decon_home,
     model_id=model_id,
@@ -71,6 +93,7 @@ def get_model_status(model_id: str = DEFAULT_MODEL_ID) -> ModelStatus:
     setup_required=not ner_ready,
     raw_phi_leaves_device=False,
     next_action=next_action,
+    last_error=last_error,
   )
 
 

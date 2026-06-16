@@ -28,11 +28,11 @@ http://127.0.0.1:8769
 
 Current behavior:
 
-- local rules-based PHI minimization
+- deterministic rules plus optional local OpenMed PHI-NER (`rules+openmed`)
 - browser-based paste, decon, review, copy, and open workflow
 - destination options for ChatGPT, Gemini, Claude, OpenEvidence, Web Search, and Copy Only
 - no prompt text embedded in third-party URLs
-- setup/model status endpoint for the future local model installer
+- setup/model status endpoint that verifies repo-local model files and Python runtime support
 - safe derived fields for common cases, such as DOB to age and `A1c 8.2` to `elevated A1c`
 
 ## Safety Model
@@ -40,6 +40,8 @@ Current behavior:
 V1 is local-first and fail-closed by default:
 
 - Raw pasted text is processed on `127.0.0.1`.
+- OpenMed model loading uses local model files with `local_files_only=True`; decon does not
+  download model files or call a network API.
 - Removed PHI values are not shown in the audit panel, only categories.
 - Third-party handoff is copy-to-clipboard plus opening the destination home page.
 - Names, MRNs, phone numbers, email, SSNs, URLs, street addresses, ZIP-level geography, and
@@ -63,39 +65,58 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-104 passed
+119 passed
 ```
 
-Run the headless validation gate:
+Run the model-backed headless validation gate:
 
 ```bash
-python3 package/scripts/run_validation.py
+PYTHONPATH=package/src /path/to/python-with-transformers \
+  package/scripts/run_validation.py --engine rules+openmed
 ```
 
-Current validation snapshot:
+Current `rules+openmed` validation snapshot with the repo-local OpenMed model:
 
 ```text
 1,000 source cases, 3,000 destination outputs, 0 PHI leaks, 0 missing clinical facts
 ```
 
+Run the 10-case clinician seed-gold gate:
+
+```bash
+PYTHONPATH=package/src /path/to/python-with-transformers \
+  package/scripts/run_validation.py --suite clinician-seed-gold --engine rules+openmed
+```
+
 Run the larger persona-driven regression gate:
 
 ```bash
-python3 package/scripts/run_validation.py --suite persona-regression
+python3 package/scripts/run_validation.py --suite persona-regression --engine rules+openmed
 ```
 
 Run the focused prose PHI field gate:
 
 ```bash
-python3 package/scripts/run_validation.py --suite phi-field-prose
+python3 package/scripts/run_validation.py --suite phi-field-prose --engine rules+openmed
 ```
 
 Run the validation blind-spot red-team gate:
 
 ```bash
-python3 package/scripts/run_validation.py --suite validation-blindspot-redteam
-python3 package/scripts/run_validation.py --suite validation-blindspot-redteam-r2
+python3 package/scripts/run_validation.py --suite validation-blindspot-redteam --engine rules+openmed
+python3 package/scripts/run_validation.py --suite validation-blindspot-redteam-r2 --engine rules+openmed
 ```
+
+The model directory is intentionally ignored by git:
+
+```text
+package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1/
+```
+
+On this development machine it has been copied into the repo and verified locally. Fresh clones
+should use the installer path to populate `package/local-models/` before running
+`--engine rules+openmed`; explicit `rules+openmed` requests fail closed when the model or runtime
+is unavailable.
 
 ## Important Docs
 
@@ -112,6 +133,7 @@ python3 package/scripts/run_validation.py --suite validation-blindspot-redteam-r
 - [Other PHI fields prose audit](docs/qa/2026-06-15-other-phi-fields-prose-audit.md)
 - [Validation blind-spot red-team](docs/qa/2026-06-15-validation-blindspot-red-team.md)
 - [Validation blind-spot red-team R2](docs/qa/2026-06-15-validation-blindspot-red-team-r2.md)
+- [Local rules and OpenMed pipeline audit](docs/qa/2026-06-16-local-rules-openmed-audit.md)
 - [Persona trace generator design](docs/superpowers/specs/2026-06-15-persona-trace-generator-design.md)
 - [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
 - [Local 500-case usability eval](docs/qa/2026-06-15-local-usability-500-eval.md)
@@ -167,6 +189,6 @@ Use `package/` as the fork seed and promote the best parts of
 `from-cds-eval/local_cds/decon.py` into the package:
 
 1. Keep task-specific modes from `package/src/decon/tasks.py`.
-2. Add the local regex + OpenMed NER pipeline as the default path.
+2. Keep local regex + OpenMed NER as the default production path.
 3. Keep cloud LLM rewrite as an optional BAA-covered or explicitly enabled fallback.
 4. Use the `from-cds-eval/data/` and `from-cds-eval/results/` artifacts as regression tests.

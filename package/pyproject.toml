@@ -17,6 +17,10 @@ dependencies = [
 dev = [
   "pytest>=8.0",
 ]
+openmed = [
+  "torch>=2.0",
+  "transformers>=4.40",
+]
 
 [project.scripts]
 decon = "decon.cli:main"

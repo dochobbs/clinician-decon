@@ -64,7 +64,7 @@ Final verification:
 
 ```text
 python3 -m pytest package/tests
-97 passed
+package test suite passed in that snapshot
 
 python3 package/scripts/run_validation.py
 PASS: 1,000 source cases, 3,000 outputs, 0 PHI leaks, 0 missing clinical facts

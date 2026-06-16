@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from .local_rules import decontextualize_text
+from .local_rules import SUPPORTED_ENGINES, decontextualize_text
 from .model_setup import get_model_status
 
 
@@ -26,6 +26,7 @@ def build_decon_payload(request: dict[str, Any]) -> dict[str, Any]:
   """Build a decon API response without returning raw source text or removed values."""
   text = str(request.get("text", ""))
   destination = str(request.get("destination", "copy_only"))
+  engine = str(request.get("engine", "auto"))
   if not text.strip():
     return {
       "error": "empty_text",
@@ -33,9 +34,20 @@ def build_decon_payload(request: dict[str, Any]) -> dict[str, Any]:
       "risk_level": "high",
       "risk_reasons": ["Paste clinical text before running decon."],
     }
+  if engine not in SUPPORTED_ENGINES:
+    return {
+      "error": "unsupported_engine",
+      "message": (
+        f"Unsupported decon engine '{engine}'. "
+        f"Supported engines: {', '.join(sorted(SUPPORTED_ENGINES))}."
+      ),
+      "copy_allowed": False,
+      "risk_level": "high",
+      "risk_reasons": ["Unsupported decon engine."],
+    }
 
   try:
-    result = decontextualize_text(text, destination=destination)
+    result = decontextualize_text(text, destination=destination, engine=engine)
   except ValueError as exc:
     return {
       "error": "unsupported_destination",
@@ -55,6 +67,9 @@ def build_decon_payload(request: dict[str, Any]) -> dict[str, Any]:
     "risk_level": result.risk_level,
     "risk_reasons": result.risk_reasons,
     "copy_allowed": result.copy_allowed,
+    "engine": result.engine,
+    "engine_requested": result.engine_requested,
+    "engine_fallback_reason": result.engine_fallback_reason,
     "handoff": {
       "copy_text": result.destination_prompt,
       "open_url": result.open_url,

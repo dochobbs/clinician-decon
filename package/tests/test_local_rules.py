@@ -1,6 +1,6 @@
 from datetime import date
 
-from decon.local_rules import decontextualize_text
+from decon.local_rules import Span, decontextualize_text
 
 
 def test_decontextualize_text_removes_common_identifiers_without_returning_values():
@@ -942,3 +942,117 @@ def test_decontextualize_text_removes_hyphenated_and_latin_obfuscated_emails():
   assert "Mary-Ann" not in result.destination_prompt
   assert "Hernandez-Garcia" not in result.destination_prompt
   assert "cellulitis" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_multi_patient_seed_gold_names():
+  source = (
+    "Per MOC Jennifer, Lia and sibling Omar share portal thread MR # LP202408432. "
+    "Lia has peanut allergy; Omar has asthma and needs albuterol school form. "
+    "Question is whether to use cetirizine or epinephrine plan for Lia."
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  for leaked in ("Jennifer", "Lia", "Omar", "LP202408432"):
+    assert leaked not in result.destination_prompt
+  assert "peanut allergy" in result.destination_prompt
+  assert "asthma" in result.destination_prompt
+  assert "albuterol" in result.destination_prompt
+  assert "cetirizine" in result.destination_prompt
+  assert "epinephrine" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_alias_and_chart_name_without_mangling_steroid():
+  source = (
+    "Patient goes by Addie; chart says Addison Ford, DOB Mar. 15, 2013. "
+    "Endocrine note: Addison disease on hydrocortisone, vomiting today. "
+    "Family asks stress-dose steroid guidance before ER."
+  )
+
+  result = decontextualize_text(
+    source,
+    destination="chatgpt",
+    reference_date=date(2026, 6, 15),
+  )
+
+  assert "Addie" not in result.destination_prompt
+  assert "Addison Ford" not in result.destination_prompt
+  assert "Addison disease" in result.destination_prompt
+  assert "hydrocortisone" in result.destination_prompt
+  assert "stress-dose steroid" in result.destination_prompt
+  assert "[ADDRESS] guidance" not in result.destination_prompt
+
+
+def test_decontextualize_text_removes_caregiver_reported_patient_name_with_location():
+  source = (
+    "FOC Carlos reports Mateo at Room 12B had hives after amoxicillin. "
+    "School nurse called from 512.555.0147; visit ID VIS-2026-00991. "
+    "Need cephalexin vs azithromycin alternative for strep."
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  for leaked in ("Carlos", "Mateo", "12B", "512.555.0147", "VIS-2026-00991"):
+    assert leaked not in result.destination_prompt
+  assert "hives after amoxicillin" in result.destination_prompt
+  assert "cephalexin" in result.destination_prompt
+  assert "azithromycin" in result.destination_prompt
+  assert "strep" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_repeated_spanish_patient_name():
+  source = (
+    "La mama de Sofia llama desde 512 555 0199, vive en 123 Oak Street #5B. "
+    "Sofia tiene tos, wheeze, uso albuterol cada 3 horas. "
+    "Pregunta si necesita prednisolone o ED."
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  assert "Sofia" not in result.destination_prompt
+  assert "512 555 0199" not in result.destination_prompt
+  assert "123 Oak Street" not in result.destination_prompt
+  assert "tos" in result.destination_prompt
+  assert "wheeze" in result.destination_prompt
+  assert "albuterol cada 3 horas" in result.destination_prompt
+  assert "prednisolone" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_legal_name_label():
+  source = (
+    "Alias: Blue. Legal name Rowan Smith; insurance policy BCBS TXQ-993812. "
+    "15-year-old transmasc patient on fluoxetine has suicidal thoughts but denies plan. "
+    "Parent asks whether to wait for therapist tomorrow."
+  )
+
+  result = decontextualize_text(source, destination="chatgpt")
+
+  for leaked in ("Blue", "Rowan", "Smith", "TXQ-993812"):
+    assert leaked not in result.destination_prompt
+  assert "15-year-old" in result.destination_prompt
+  assert "transmasc" in result.destination_prompt
+  assert "fluoxetine" in result.destination_prompt
+  assert "suicidal thoughts" in result.destination_prompt
+  assert "denies plan" in result.destination_prompt
+
+
+def test_decontextualize_text_can_apply_openmed_detector_spans():
+  source = "Freya has asthma and needs albuterol form guidance."
+
+  def fake_openmed_detector(text: str):
+    start = text.index("Freya")
+    return [Span(category="name", start=start, end=start + len("Freya"))]
+
+  result = decontextualize_text(
+    source,
+    destination="chatgpt",
+    engine="rules+openmed",
+    span_detector=fake_openmed_detector,
+  )
+
+  assert "Freya" not in result.destination_prompt
+  assert "asthma" in result.destination_prompt
+  assert "albuterol" in result.destination_prompt
+  assert result.engine_requested == "rules+openmed"
+  assert result.engine == "rules+openmed"
+  assert result.engine_fallback_reason == ""

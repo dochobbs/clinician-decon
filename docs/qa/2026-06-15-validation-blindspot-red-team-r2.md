@@ -106,7 +106,7 @@ python3 package/scripts/run_validation.py --suite persona-regression
 6,000 / 6,000 safe, clinically usable, and handoff usable
 
 python3 -m pytest package/tests
-104 passed
+package test suite passed in that snapshot
 ```
 
 ## Hardening Lesson

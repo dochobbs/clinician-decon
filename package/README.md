@@ -2,13 +2,16 @@
 
 Python package and local web prototype for clinician-facing PHI minimization.
 
-The package can run as a local browser app, CLI, or library. The current app path is fully local
-and rules-based. Older model-backed code and evaluation fixtures are still present so we can
-compare local rules, local NER, and cloud or BAA-covered rewrite approaches.
+The package can run as a local browser app, CLI, or library. The current app path is fully local:
+deterministic rules plus optional local OpenMed PHI-NER. Older model-backed code and evaluation
+fixtures are still present so we can compare local rules, local NER, and cloud or BAA-covered
+rewrite approaches.
 
 ## What Is Here
 
-- `src/decon/local_rules.py`: local deterministic decon engine used by the web app.
+- `src/decon/local_rules.py`: deterministic decon, engine routing, and residual risk checks.
+- `src/decon/openmed_ner.py`: optional local OpenMed PHI-NER span detector.
+- `src/decon/model_setup.py`: repo-local model/runtime readiness checks.
 - `src/decon/app_server.py`: stdlib HTTP server for the local prototype.
 - `web/`: static PWA-style interface.
 - `src/decon/destinations.py`: ChatGPT, Gemini, Claude, OpenEvidence, Web Search, and Copy Only
@@ -28,6 +31,15 @@ pip install -e .[dev]
 ```
 
 No API key is needed for the local web app.
+
+To run the OpenMed engine, the app runtime needs `transformers` and `torch`, and model files must
+exist under:
+
+```text
+local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1/
+```
+
+That directory is intentionally ignored by git.
 
 ## Run the Local App
 
@@ -84,7 +96,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-97 passed
+119 passed
 ```
 
 ## Headless Validation
@@ -93,13 +105,14 @@ From a source checkout:
 
 ```bash
 cd /Users/dochobbs/Downloads/Consult/clinician-decon
-python3 package/scripts/run_validation.py
+PYTHONPATH=package/src /path/to/python-with-transformers \
+  package/scripts/run_validation.py --engine rules+openmed
 ```
 
 After package install:
 
 ```bash
-decon-validate
+decon-validate --engine rules+openmed
 ```
 
 Current default gate:
@@ -108,6 +121,7 @@ Current default gate:
 Decon validation PASS
 Suites: usability, adversarial
 Destinations: chatgpt, gemini, web_search
+Engine: rules+openmed
 Source cases: 1000
 Outputs: 3000
 PHI leaked outputs: 0
@@ -119,7 +133,7 @@ Clinically usable outputs: 3000
 Run the larger persona-driven regression gate:
 
 ```bash
-python3 package/scripts/run_validation.py --suite persona-regression
+python3 package/scripts/run_validation.py --suite persona-regression --engine rules+openmed
 ```
 
 Generate the checked-in persona regression suite:
@@ -137,6 +151,7 @@ Write a JSON report for CI:
 ```bash
 python3 package/scripts/run_validation.py \
   --suite current \
+  --engine rules+openmed \
   --report package/reports/latest-validation.json
 ```
 
@@ -157,6 +172,8 @@ This generates `package/data/decon_usability_500_2026-06-15.json`,
 ## Safety Notes
 
 - The local app processes text on `127.0.0.1`.
+- OpenMed loads with `local_files_only=True`; decon does not download model files or call a
+  network API.
 - Names, MRNs, phone numbers, email, SSNs, URLs, street addresses, and ZIP-level geography are
   removed or replaced.
 - DOB is converted to age when parseable; ages over 89 are aggregated to `90 or older`.

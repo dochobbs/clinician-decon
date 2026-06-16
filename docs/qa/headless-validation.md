@@ -7,9 +7,14 @@ the repo. It is designed for contributors, partner evaluators, and release check
 
 ## Quick Start From A Fresh Clone
 
+The production validation path is explicit `rules+openmed`. A fresh clone must first have the
+OpenMed model files present under `package/local-models/` and a Python runtime with
+`transformers` plus `torch`.
+
 ```bash
 cd clinician-decon
-python3 package/scripts/run_validation.py
+PYTHONPATH=package/src /path/to/python-with-transformers \
+  package/scripts/run_validation.py --engine rules+openmed
 ```
 
 Expected current result:
@@ -18,6 +23,7 @@ Expected current result:
 Decon validation PASS
 Suites: usability, adversarial
 Destinations: chatgpt, gemini, web_search
+Engine: rules+openmed
 Source cases: 1000
 Outputs: 3000
 PHI leaked outputs: 0
@@ -28,7 +34,7 @@ Clinical usability rate: 100.00%
 Handoff usability rate: 100.00%
 ```
 
-This default command runs the current release gate:
+This command runs the current release gate:
 
 - `package/data/decon_usability_500_2026-06-15.json`
 - `package/data/decon_adversarial_500_2026-06-15.json`
@@ -39,6 +45,10 @@ It checks both safety and usefulness:
 - required clinical facts must remain present
 - copy must not be allowed when a PHI leak is detected
 
+For local development without the OpenMed runtime, `python3 package/scripts/run_validation.py`
+uses `auto` and may fall back to `local-rules`. Do not treat an `auto`/`local-rules` pass as the
+production gate.
+
 ## Installable Command
 
 After installing the package:
@@ -48,7 +58,7 @@ cd package
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .[dev]
-decon-validate
+decon-validate --engine rules+openmed
 ```
 
 The package command and source-checkout wrapper call the same code path.
@@ -59,7 +69,10 @@ Recommended PR gate:
 
 ```bash
 python3 -m pytest package/tests
-python3 package/scripts/run_validation.py --report package/reports/latest-validation.json
+PYTHONPATH=package/src /path/to/python-with-transformers \
+  package/scripts/run_validation.py \
+  --engine rules+openmed \
+  --report package/reports/latest-validation.json
 ```
 
 The command exits with:
@@ -72,13 +85,13 @@ The command exits with:
 Run only the current safety + usability gate:
 
 ```bash
-python3 package/scripts/run_validation.py --suite current
+python3 package/scripts/run_validation.py --suite current --engine rules+openmed
 ```
 
 Run one destination:
 
 ```bash
-python3 package/scripts/run_validation.py --suite current --destinations chatgpt
+python3 package/scripts/run_validation.py --suite current --destinations chatgpt --engine rules+openmed
 ```
 
 Write a JSON report:
@@ -86,19 +99,26 @@ Write a JSON report:
 ```bash
 python3 package/scripts/run_validation.py \
   --suite current \
+  --engine rules+openmed \
   --report package/reports/latest-validation.json
+```
+
+Run the clinician seed-gold gate:
+
+```bash
+python3 package/scripts/run_validation.py --suite clinician-seed-gold --engine rules+openmed
 ```
 
 Run the larger persona-driven regression gate:
 
 ```bash
-python3 package/scripts/run_validation.py --suite persona-regression
+python3 package/scripts/run_validation.py --suite persona-regression --engine rules+openmed
 ```
 
 Print the full JSON payload:
 
 ```bash
-python3 package/scripts/run_validation.py --json-only
+python3 package/scripts/run_validation.py --engine rules+openmed --json-only
 ```
 
 Explore legacy PHI-only fixtures without failing on known legacy label conflicts:
@@ -120,6 +140,7 @@ python3 package/scripts/run_validation.py --min-clinical-usable 0.99
 | `current` | alias | yes | Runs `usability` plus `adversarial`. |
 | `usability` | clinical-usability | yes | Confirms clinically necessary facts survive decon. |
 | `adversarial` | clinical-usability | yes | Probes hard PHI and prompt-shape failures. |
+| `clinician-seed-gold` | clinical-usability | no | Ten difficult clinician-reviewed seed cases for high-signal regression checks. |
 | `persona-regression` | clinical-usability | no | Runs the 2,000-case persona/archetype generated suite. |
 | `legacy-phi` | alias | no | Runs older copied PHI-only suites except the combined duplicate. |
 | `legacy-synth-500` | PHI-only | no | Broad synthetic PHI coverage from prior work. |
@@ -135,6 +156,7 @@ The current release gate should use:
 ```bash
 python3 package/scripts/run_validation.py \
   --suite current \
+  --engine rules+openmed \
   --min-clinical-usable 1.0
 ```
 
