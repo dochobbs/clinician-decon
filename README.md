@@ -202,28 +202,31 @@ Without OpenMed setup, the user-facing app and CLI still run local rules, but th
 missing model as high risk and block copy by default. Use `--engine local-rules` only for explicit
 rule-development or regression testing.
 
-## Mac Bootstrap DMG
+## Mac Self-Contained DMG
 
-Build the current unsigned Mac bootstrap DMG from a checkout:
+Build the current unsigned self-contained Mac DMG from a checkout:
 
 ```bash
-installer/mac/build_dmg.sh
+installer/mac/build_self_contained_dmg.sh
 ```
 
 Expected output:
 
 ```text
-dist/mac/Clinician-Decon-0.1.0.dmg
+dist/mac/Clinician-Decon-0.1.0-self-contained-arm64.dmg
 ```
 
-The DMG contains `Clinician Decon.app`. On first launch, the app creates a local runtime under
-`~/Library/Application Support/Clinician Decon`, installs OpenMed runtime dependencies, downloads
-the OpenMed model into the local model cache, starts the server on `127.0.0.1`, and opens the
-browser UI. The model files are not bundled in git or in the DMG.
+The DMG contains `Clinician Decon.app`, a bundled Python runtime, OpenMed runtime
+dependencies, the decon package, and the OpenMed model files. On first launch, the app starts the
+server on `127.0.0.1` and opens the browser UI. It should not require Terminal, Python, pip, or a
+model download.
 
-This is a bootstrap installer for pilot testing. It is not signed or notarized, and it still
-requires Python 3 with `venv` support on the Mac. See [Mac clean install](docs/install/mac-clean-install.md)
-and [Mac installer QA](docs/qa/mac-installer-qa.md).
+Model files are bundled in the generated self-contained DMG, but they are not tracked in git. The
+build script copies them from ignored local model storage.
+
+The current local artifact is not Developer ID signed or notarized. See
+[Mac clean install](docs/install/mac-clean-install.md) and
+[Mac installer QA](docs/qa/mac-installer-qa.md).
 
 ## Validation
 
@@ -237,7 +240,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-135 passed
+136 passed
 ```
 
 Run the model-backed headless validation gate:
@@ -288,6 +291,8 @@ clinician-decon/
   SOURCE_MAP.md
   package/
     Python package, local server, web UI, tests, fixtures, and scripts.
+  installer/
+    Mac packaging scripts and app launcher assets.
   docs/
     QA reports, design notes, installer planning, and validation runbooks.
 ```

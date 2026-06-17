@@ -160,7 +160,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-135 passed
+136 passed
 ```
 
 ## Headless Validation
@@ -225,6 +225,23 @@ See:
 - `../docs/qa/persona-library.md`
 - `../docs/install/mac-clean-install.md`
 - `../docs/qa/mac-installer-qa.md`
+
+## Mac Installer
+
+The doctor-facing Mac artifact is the self-contained DMG:
+
+```bash
+../installer/mac/build_self_contained_dmg.sh
+```
+
+Expected Apple Silicon output:
+
+```text
+../dist/mac/Clinician-Decon-0.1.0-self-contained-arm64.dmg
+```
+
+The smaller bootstrap DMG remains available for development and troubleshooting, but it is not the
+clinician install path.
 
 ## Safety Notes
 

@@ -22,6 +22,19 @@ def test_model_status_uses_local_app_data_dir(tmp_path, monkeypatch):
   assert status.raw_phi_leaves_device is False
 
 
+def test_model_status_can_use_explicit_bundled_model_dir(tmp_path, monkeypatch):
+  app_home = tmp_path / "app-support"
+  bundled_model = tmp_path / "Clinician Decon.app" / "Contents" / "Resources" / "package" / "local-models" / "OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1"
+  monkeypatch.setenv("DECON_HOME", str(app_home))
+  monkeypatch.setenv("DECON_MODEL_DIR", str(bundled_model))
+
+  status = get_model_status()
+
+  assert status.decon_home == app_home
+  assert status.model_dir == bundled_model
+  assert status.raw_phi_leaves_device is False
+
+
 def test_model_status_reports_missing_model_without_network(tmp_path, monkeypatch):
   monkeypatch.setenv("DECON_HOME", str(tmp_path))
 

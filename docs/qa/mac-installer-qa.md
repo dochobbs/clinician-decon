@@ -8,28 +8,30 @@ Run from the repository root:
 
 ```bash
 PYTHONPATH=package/src python -m pytest package/tests -q
-installer/mac/build_dmg.sh
+installer/mac/build_self_contained_dmg.sh
 ```
 
 Expected:
 
 - tests pass,
-- `dist/mac/Clinician-Decon-0.1.0.dmg` exists,
+- `dist/mac/Clinician-Decon-0.1.0-self-contained-arm64.dmg` exists on Apple Silicon,
 - `Clinician Decon.app` is present inside the mounted DMG,
-- `package/local-models/` is not copied into the app bundle.
+- `Contents/Resources/python/bin/python` exists inside the app bundle,
+- `Contents/Resources/python-packages/` exists inside the app bundle,
+- `Contents/Resources/package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1/`
+  exists inside the app bundle,
+- first launch does not require Python, pip, Terminal, or a model download.
 
 ## Clean Install Smoke
 
 Use a clean macOS user account or a machine without the existing app-support directory.
 
-1. Mount `dist/mac/Clinician-Decon-0.1.0.dmg`.
+1. Mount `dist/mac/Clinician-Decon-0.1.0-self-contained-arm64.dmg`.
 2. Drag `Clinician Decon.app` to `Applications`.
 3. Open the app.
-4. Confirm first-run setup creates:
+4. Confirm first launch creates:
 
 ```text
-~/Library/Application Support/Clinician Decon/venv
-~/Library/Application Support/Clinician Decon/models
 ~/Library/Application Support/Clinician Decon/logs
 ```
 
@@ -48,6 +50,8 @@ http://127.0.0.1:8769/
 }
 ```
 
+7. Confirm `ner_model_ready` is `true`.
+
 ## Synthetic Snippets
 
 Paste these snippets one at a time.
@@ -62,7 +66,7 @@ Expected:
 
 - names, DOB, MRN, and phone are removed or generalized,
 - age-band vaccine question remains clinically useful,
-- copy is allowed only when model-backed setup is ready.
+- copy is allowed because bundled model-backed setup is ready.
 
 ### Prompt Injection
 
@@ -100,7 +104,9 @@ Interrupt network during first-run setup.
 
 Expected:
 
-- app opens with copy blocked if OpenMed setup is incomplete,
-- UI reports model setup pending,
-- setup can be retried by reopening the app,
-- no raw pasted text is written to setup logs.
+- self-contained app still opens because no first-run network setup is required,
+- model-backed setup remains ready,
+- no raw pasted text is written to logs.
+
+Run the same interruption test against `installer/mac/build_dmg.sh` only when validating the
+bootstrap fallback.

@@ -49,7 +49,8 @@ End-user and pilot-install documentation.
 
 Repeatable Mac bootstrap packaging assets.
 
-- `build_dmg.sh`: creates `dist/mac/Clinician-Decon-0.1.0.dmg`
+- `build_self_contained_dmg.sh`: creates the doctor-facing all-in-one DMG
+- `build_dmg.sh`: creates the smaller bootstrap pilot DMG
 - `app/Info.plist`: app bundle metadata
 - `app/clinician-decon-launcher`: first-run runtime/model setup and local app launcher
 

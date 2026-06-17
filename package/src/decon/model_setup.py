@@ -57,6 +57,9 @@ def get_decon_home() -> Path:
 
 
 def model_dir_for(model_id: str = DEFAULT_MODEL_ID, decon_home: Path | None = None) -> Path:
+  explicit_model_dir = os.environ.get("DECON_MODEL_DIR")
+  if explicit_model_dir:
+    return Path(explicit_model_dir).expanduser()
   safe_name = model_id.replace("/", "--")
   repo_local_model = LOCAL_MODELS_DIR / safe_name
   if decon_home is None and "DECON_HOME" not in os.environ and repo_local_model.exists():

@@ -1,62 +1,64 @@
 # Mac Clean Install
 
-This is the clean-install path for the current Mac bootstrap DMG. It is intended for local testing
-and pilot review before a signed, notarized clinical installer.
+This is the clinician-facing Mac install path: download the self-contained DMG, drag the app to
+Applications, open it, and use the local browser app. A busy clinician should not need Terminal,
+Python, pip, or a model download.
 
-## What The DMG Does
+## Primary Artifact
 
-The DMG contains `Clinician Decon.app` and a read-me. The app bundles the source package, then on
-first launch creates a per-user runtime under:
+Build the self-contained DMG from the repository root:
 
-```text
-~/Library/Application Support/Clinician Decon
+```bash
+installer/mac/build_self_contained_dmg.sh
 ```
 
-The first launch attempts to:
+Expected output on Apple Silicon:
 
-1. create `venv/` in the app-support directory,
-2. install the bundled decon package with OpenMed runtime dependencies,
-3. download OpenMed model files into the app-support model cache,
-4. start the local web app on `127.0.0.1:8769`,
-5. open the local app in the user's browser.
+```text
+dist/mac/Clinician-Decon-0.1.0-self-contained-arm64.dmg
+```
 
-The model files are not bundled in the DMG. The current OpenMed model cache is about 1.6 GB after
-download, and the Python dependency install can require several additional GB during setup.
+The self-contained DMG bundles:
 
-## Clean Mac Requirements
+- `Clinician Decon.app`
+- a bundled Python runtime under `Contents/Resources/python/`
+- installed Python packages under `Contents/Resources/python-packages/`
+- installed OpenMed runtime dependencies
+- the bundled decon package
+- OpenMed model files under `Contents/Resources/package/local-models/`
 
-Minimum pilot requirements:
+OpenMed model files are bundled in this self-contained DMG. They are still not tracked in git; the
+build script copies them from the repo-local ignored model directory during packaging.
 
-- macOS 13 or newer.
-- Apple Silicon or Intel Mac.
-- Python 3 with `venv` support available as `/usr/bin/python3` or through `DECON_PYTHON`.
-- Internet access for first-run Python dependencies and OpenMed model download.
-- At least 8 GB RAM; 16 GB is preferred for model-backed local NER.
-- At least 8 GB free disk for the runtime, package cache, model file, and temporary install files.
+## Clinician Install Steps
 
-For a release-grade one-click clinical installer, the next packaging step is to bundle a signed
-Python runtime and prebuilt dependencies so clinicians do not need a separate Python install.
-
-## Install Steps
-
-1. Open `Clinician-Decon-0.1.0.dmg`.
+1. Open `Clinician-Decon-0.1.0-self-contained-arm64.dmg`.
 2. Drag `Clinician Decon.app` to `Applications`.
 3. Open `Clinician Decon.app`.
-4. Wait for first-run setup. This can take several minutes because dependencies and model files are
-   downloaded locally.
-5. When the browser opens, confirm the setup badge says the local model is ready.
-6. Paste only synthetic or approved test text during QA.
+4. If macOS warns because the build is unsigned, right-click the app, choose Open, and confirm.
+5. Wait for the local browser app to open at `http://127.0.0.1:8769/`.
+6. Confirm the setup badge says the local model is ready.
 
-If macOS blocks the unsigned app, use right-click, Open, then confirm. This is expected for the
-unsigned bootstrap DMG. Signing and notarization are required before broad external distribution.
+There should be no dependency setup prompt, model download, or Terminal command on first launch.
+
+## Mac Requirements
+
+Pilot minimum:
+
+- macOS 13 or newer.
+- Apple Silicon for the current `arm64` artifact.
+- At least 8 GB RAM; 16 GB is preferred for comfortable local model execution.
+- At least 6 GB free disk for the app bundle, copied app, and local logs.
+
+For Intel Macs, build on Intel or provide a separate `x86_64` self-contained artifact.
 
 ## Privacy Boundary
 
 - raw pasted text stays on 127.0.0.1.
 - The app does not put prompt text in third-party URLs.
-- Model setup may contact package/model hosts, but decon should use local files after setup.
+- The self-contained app should not contact the network during decon.
 - Logs live in `~/Library/Application Support/Clinician Decon/logs/`.
-- Setup logs should contain install output only, not pasted clinical text.
+- Logs should contain startup/setup events only, not pasted clinical text.
 
 ## Reset Or Uninstall
 
@@ -70,9 +72,9 @@ Quit the app, then remove:
 The app does not install a launch agent, background service, browser extension, or system-wide
 configuration.
 
-## Build The DMG From A Checkout
+## Bootstrap Fallback
 
-From the repository root:
+There is also a smaller bootstrap DMG:
 
 ```bash
 installer/mac/build_dmg.sh
@@ -83,3 +85,12 @@ Expected output:
 ```text
 dist/mac/Clinician-Decon-0.1.0.dmg
 ```
+
+The bootstrap DMG is for development and pilot troubleshooting only. It requires Python 3 with
+`venv` support and downloads dependencies/model files on first launch. Do not treat it as the
+busy-clinician installer.
+
+## Signing And Notarization
+
+The local build can be unsigned or ad-hoc signed for internal testing. Broad external distribution
+requires Developer ID signing and Apple notarization so clinicians do not see trust warnings.

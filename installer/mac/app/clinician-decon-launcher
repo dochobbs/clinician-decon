@@ -2,8 +2,8 @@
 set -euo pipefail
 
 APP_VERSION="0.1.0"
-APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-RESOURCE_DIR="$APP_DIR/Resources"
+CONTENTS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+RESOURCE_DIR="$CONTENTS_DIR/Resources"
 PACKAGE_DIR="$RESOURCE_DIR/package"
 APP_SUPPORT="$HOME/Library/Application Support/Clinician Decon"
 VENV_DIR="$APP_SUPPORT/venv"
@@ -11,6 +11,9 @@ LOG_DIR="$APP_SUPPORT/logs"
 INSTALL_STAMP="$APP_SUPPORT/.installed-version"
 SERVER_URL="http://127.0.0.1:8769"
 PYTHON_BIN="${DECON_PYTHON:-/usr/bin/python3}"
+BUNDLED_PYTHON="$RESOURCE_DIR/python/bin/python"
+BUNDLED_SITE_PACKAGES="$RESOURCE_DIR/python-packages"
+BUNDLED_MODEL_DIR="$PACKAGE_DIR/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1"
 
 mkdir -p "$APP_SUPPORT" "$LOG_DIR"
 SETUP_LOG="$LOG_DIR/setup.log"
@@ -27,6 +30,55 @@ notify() {
 if [[ ! -d "$PACKAGE_DIR" ]]; then
   alert "Clinician Decon is missing its bundled package files. Reinstall from the DMG."
   exit 1
+fi
+
+export PYTHONPATH="$PACKAGE_DIR/src${PYTHONPATH:+:$PYTHONPATH}"
+
+start_local_app() {
+  local python_bin="$1"
+  shift
+
+  if /usr/bin/curl -fsS "$SERVER_URL/api/setup/status" >/dev/null 2>&1; then
+    /usr/bin/open "$SERVER_URL/"
+    exit 0
+  fi
+
+  "$python_bin" -m decon.app_server >> "$SERVER_LOG" 2>&1 &
+  SERVER_PID=$!
+
+  cleanup() {
+    if /bin/kill -0 "$SERVER_PID" >/dev/null 2>&1; then
+      /bin/kill "$SERVER_PID" >/dev/null 2>&1 || true
+    fi
+  }
+  trap cleanup EXIT INT TERM
+
+  for _ in {1..30}; do
+    if /usr/bin/curl -fsS "$SERVER_URL/api/setup/status" >/dev/null 2>&1; then
+      /usr/bin/open "$SERVER_URL/"
+      wait "$SERVER_PID"
+      exit $?
+    fi
+    /bin/sleep 1
+  done
+
+  alert "Clinician Decon did not start on 127.0.0.1. See $SERVER_LOG."
+  exit 1
+}
+
+if [[ -x "$BUNDLED_PYTHON" ]]; then
+  if [[ ! -d "$BUNDLED_MODEL_DIR" ]]; then
+    alert "Clinician Decon is missing its bundled OpenMed model files. Reinstall from the self-contained DMG."
+    exit 1
+  fi
+  if [[ ! -d "$BUNDLED_SITE_PACKAGES" ]]; then
+    alert "Clinician Decon is missing its bundled Python packages. Reinstall from the self-contained DMG."
+    exit 1
+  fi
+  export PYTHONPATH="$PACKAGE_DIR/src:$BUNDLED_SITE_PACKAGES${PYTHONPATH:+:$PYTHONPATH}"
+  export DECON_HOME="$APP_SUPPORT"
+  export DECON_MODEL_DIR="$BUNDLED_MODEL_DIR"
+  start_local_app "$BUNDLED_PYTHON"
 fi
 
 if ! "$PYTHON_BIN" -c "import venv" >/dev/null 2>&1; then
@@ -70,29 +122,5 @@ PY
   fi
 fi
 
-if /usr/bin/curl -fsS "$SERVER_URL/api/setup/status" >/dev/null 2>&1; then
-  /usr/bin/open "$SERVER_URL/"
-  exit 0
-fi
-
-DECON_HOME="$APP_SUPPORT" "$VENV_DIR/bin/python" -m decon.app_server >> "$SERVER_LOG" 2>&1 &
-SERVER_PID=$!
-
-cleanup() {
-  if /bin/kill -0 "$SERVER_PID" >/dev/null 2>&1; then
-    /bin/kill "$SERVER_PID" >/dev/null 2>&1 || true
-  fi
-}
-trap cleanup EXIT INT TERM
-
-for _ in {1..30}; do
-  if /usr/bin/curl -fsS "$SERVER_URL/api/setup/status" >/dev/null 2>&1; then
-    /usr/bin/open "$SERVER_URL/"
-    wait "$SERVER_PID"
-    exit $?
-  fi
-  /bin/sleep 1
-done
-
-alert "Clinician Decon did not start on 127.0.0.1. See $SERVER_LOG."
-exit 1
+export DECON_HOME="$APP_SUPPORT"
+start_local_app "$VENV_DIR/bin/python"
