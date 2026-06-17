@@ -27,6 +27,7 @@ Quality and validation documentation.
 - local-rules and model-backed pipeline audits
 - external baseline comparisons and error samples
 - focused PHI-field and blind-spot red-team reports
+- Mac installer QA
 
 ## `docs/superpowers/`
 
@@ -37,6 +38,20 @@ Planning and design artifacts.
 - Mac installer implementation plan
 - persona trace generator design
 - PHI-field handling review
+
+## `docs/install/`
+
+End-user and pilot-install documentation.
+
+- Mac clean install path
+
+## `installer/mac/`
+
+Repeatable Mac bootstrap packaging assets.
+
+- `build_dmg.sh`: creates `dist/mac/Clinician-Decon-0.1.0.dmg`
+- `app/Info.plist`: app bundle metadata
+- `app/clinician-decon-launcher`: first-run runtime/model setup and local app launcher
 
 ## Historical Fixtures
 
@@ -49,6 +64,8 @@ For a fresh reader, start here:
 
 - `README.md`
 - `package/README.md`
+- `docs/install/mac-clean-install.md`
 - `docs/qa/headless-validation.md`
+- `docs/qa/mac-installer-qa.md`
 - `docs/qa/query-set-registry.md`
 - `package/docs/clinician-decon-tool-brief.md`

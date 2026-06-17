@@ -1,0 +1,98 @@
+#!/bin/zsh
+set -euo pipefail
+
+APP_VERSION="0.1.0"
+APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+RESOURCE_DIR="$APP_DIR/Resources"
+PACKAGE_DIR="$RESOURCE_DIR/package"
+APP_SUPPORT="$HOME/Library/Application Support/Clinician Decon"
+VENV_DIR="$APP_SUPPORT/venv"
+LOG_DIR="$APP_SUPPORT/logs"
+INSTALL_STAMP="$APP_SUPPORT/.installed-version"
+SERVER_URL="http://127.0.0.1:8769"
+PYTHON_BIN="${DECON_PYTHON:-/usr/bin/python3}"
+
+mkdir -p "$APP_SUPPORT" "$LOG_DIR"
+SETUP_LOG="$LOG_DIR/setup.log"
+SERVER_LOG="$LOG_DIR/server.log"
+
+alert() {
+  /usr/bin/osascript -e "display dialog \"$1\" buttons {\"OK\"} default button \"OK\" with title \"Clinician Decon\"" >/dev/null 2>&1 || true
+}
+
+notify() {
+  /usr/bin/osascript -e "display notification \"$1\" with title \"Clinician Decon\"" >/dev/null 2>&1 || true
+}
+
+if [[ ! -d "$PACKAGE_DIR" ]]; then
+  alert "Clinician Decon is missing its bundled package files. Reinstall from the DMG."
+  exit 1
+fi
+
+if ! "$PYTHON_BIN" -c "import venv" >/dev/null 2>&1; then
+  alert "Python 3 with venv support is required for this bootstrap build. Install Python 3, then reopen Clinician Decon."
+  exit 1
+fi
+
+NEEDS_RUNTIME=0
+if [[ ! -x "$VENV_DIR/bin/python" ]]; then
+  NEEDS_RUNTIME=1
+elif [[ ! -f "$INSTALL_STAMP" ]]; then
+  NEEDS_RUNTIME=1
+elif [[ "$(<"$INSTALL_STAMP")" != "$APP_VERSION" ]]; then
+  NEEDS_RUNTIME=1
+fi
+
+if [[ "$NEEDS_RUNTIME" == "1" ]]; then
+  notify "Preparing local runtime. First launch can take several minutes."
+  {
+    echo "== $(date -u '+%Y-%m-%dT%H:%M:%SZ') runtime setup =="
+    "$PYTHON_BIN" -m venv "$VENV_DIR"
+    "$VENV_DIR/bin/python" -m pip install --disable-pip-version-check --upgrade pip setuptools wheel
+    "$VENV_DIR/bin/python" -m pip install --disable-pip-version-check "$PACKAGE_DIR[openmed]"
+    echo "$APP_VERSION" > "$INSTALL_STAMP"
+  } >> "$SETUP_LOG" 2>&1 || {
+    alert "Local runtime setup failed. See $SETUP_LOG."
+    exit 1
+  }
+fi
+
+if [[ "${DECON_SKIP_OPENMED_SETUP:-0}" != "1" ]]; then
+  if ! DECON_HOME="$APP_SUPPORT" "$VENV_DIR/bin/python" - <<'PY' >/dev/null 2>&1
+from decon.model_setup import get_model_status
+raise SystemExit(0 if get_model_status().ner_model_ready else 1)
+PY
+  then
+    notify "Downloading local privacy model. This can take several minutes."
+    if ! DECON_HOME="$APP_SUPPORT" "$VENV_DIR/bin/decon-setup-openmed" >> "$SETUP_LOG" 2>&1; then
+      alert "OpenMed setup did not complete. The app will open, but copy is blocked until model setup succeeds. See $SETUP_LOG."
+    fi
+  fi
+fi
+
+if /usr/bin/curl -fsS "$SERVER_URL/api/setup/status" >/dev/null 2>&1; then
+  /usr/bin/open "$SERVER_URL/"
+  exit 0
+fi
+
+DECON_HOME="$APP_SUPPORT" "$VENV_DIR/bin/python" -m decon.app_server >> "$SERVER_LOG" 2>&1 &
+SERVER_PID=$!
+
+cleanup() {
+  if /bin/kill -0 "$SERVER_PID" >/dev/null 2>&1; then
+    /bin/kill "$SERVER_PID" >/dev/null 2>&1 || true
+  fi
+}
+trap cleanup EXIT INT TERM
+
+for _ in {1..30}; do
+  if /usr/bin/curl -fsS "$SERVER_URL/api/setup/status" >/dev/null 2>&1; then
+    /usr/bin/open "$SERVER_URL/"
+    wait "$SERVER_PID"
+    exit $?
+  fi
+  /bin/sleep 1
+done
+
+alert "Clinician Decon did not start on 127.0.0.1. See $SERVER_LOG."
+exit 1

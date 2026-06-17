@@ -202,6 +202,29 @@ Without OpenMed setup, the user-facing app and CLI still run local rules, but th
 missing model as high risk and block copy by default. Use `--engine local-rules` only for explicit
 rule-development or regression testing.
 
+## Mac Bootstrap DMG
+
+Build the current unsigned Mac bootstrap DMG from a checkout:
+
+```bash
+installer/mac/build_dmg.sh
+```
+
+Expected output:
+
+```text
+dist/mac/Clinician-Decon-0.1.0.dmg
+```
+
+The DMG contains `Clinician Decon.app`. On first launch, the app creates a local runtime under
+`~/Library/Application Support/Clinician Decon`, installs OpenMed runtime dependencies, downloads
+the OpenMed model into the local model cache, starts the server on `127.0.0.1`, and opens the
+browser UI. The model files are not bundled in git or in the DMG.
+
+This is a bootstrap installer for pilot testing. It is not signed or notarized, and it still
+requires Python 3 with `venv` support on the Mac. See [Mac clean install](docs/install/mac-clean-install.md)
+and [Mac installer QA](docs/qa/mac-installer-qa.md).
+
 ## Validation
 
 Run unit tests:
@@ -214,7 +237,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-134 passed
+135 passed
 ```
 
 Run the model-backed headless validation gate:
@@ -248,6 +271,8 @@ python3 package/scripts/run_validation.py --suite validation-blindspot-redteam-r
 - [Decon query set registry](docs/qa/query-set-registry.md)
 - [Synthetic trace generation strategy](docs/qa/synthetic-trace-generation.md)
 - [Synthetic persona library](docs/qa/persona-library.md)
+- [Mac clean install](docs/install/mac-clean-install.md)
+- [Mac installer QA](docs/qa/mac-installer-qa.md)
 - [Local rules and model-backed pipeline audit](docs/qa/2026-06-16-local-rules-openmed-audit.md)
 - [External de-ID baseline head-to-head](docs/qa/2026-06-16-external-deid-baseline-head-to-head.md)
 - [External de-ID baseline error samples](docs/qa/2026-06-16-external-deid-baseline-error-samples.md)

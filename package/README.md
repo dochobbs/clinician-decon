@@ -160,7 +160,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-134 passed
+135 passed
 ```
 
 ## Headless Validation
@@ -223,6 +223,8 @@ See:
 - `../docs/qa/headless-validation.md`
 - `../docs/qa/synthetic-trace-generation.md`
 - `../docs/qa/persona-library.md`
+- `../docs/install/mac-clean-install.md`
+- `../docs/qa/mac-installer-qa.md`
 
 ## Safety Notes
 

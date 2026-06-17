@@ -3,6 +3,8 @@ __pycache__/
 .pytest_cache/
 .venv/
 *.pyc
+build/
+dist/
 package/reports/latest-validation.json
 package/local-models/
 package/.decon-home/
