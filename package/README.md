@@ -3,7 +3,7 @@
 Python package and local web prototype for clinician-facing PHI minimization.
 
 The package can run as a local browser app, CLI, or library. The current app path is fully local:
-deterministic rules plus an optional local PHI-NER model.
+deterministic rules plus an optional OpenMed local PHI-NER model.
 
 ## Decon Vs De-ID
 
@@ -24,8 +24,9 @@ Examples:
 ## What Is Here
 
 - `src/decon/local_rules.py`: deterministic decon, engine routing, and residual risk checks.
-- `src/decon/openmed_ner.py`: optional local PHI-NER span detector.
-- `src/decon/model_setup.py`: repo-local model/runtime readiness checks.
+- `src/decon/openmed_ner.py`: optional OpenMed local PHI-NER span detector.
+- `src/decon/setup_openmed.py`: setup command for local OpenMed model files.
+- `src/decon/model_setup.py`: local model/runtime readiness checks.
 - `src/decon/app_server.py`: standard-library HTTP server for the local prototype.
 - `web/`: static browser interface.
 - `src/decon/destinations.py`: external LLM, external search, and copy-only handoff definitions.
@@ -39,19 +40,23 @@ Examples:
 cd package
 python -m venv .venv
 source .venv/bin/activate
-pip install -e .[dev]
+pip install -e '.[dev]'
 ```
 
 No API key is needed for the local web app.
 
-To run the model-backed engine, the app runtime needs `transformers` and `torch`, and model files
-must exist under:
+To run the model-backed engine, install optional OpenMed dependencies and download the model into
+the local cache:
 
-```text
-local-models/<model-directory>/
+```bash
+pip install -e '.[openmed]'
+decon-setup-openmed
 ```
 
-That directory is intentionally ignored by git.
+The OpenMed model files are not tracked in git. For repository-local development,
+`decon-setup-openmed --repo-local` writes to `local-models/`, which is intentionally ignored by
+git. The model used by this package is
+[OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1](https://huggingface.co/OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1).
 
 ## Run The Local App
 

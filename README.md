@@ -140,11 +140,29 @@ http://127.0.0.1:8769
 
 Current behavior:
 
-- deterministic local rules plus optional local PHI-NER model
+- deterministic local rules plus optional OpenMed local PHI-NER model
 - browser-based paste, decon, review, copy, and open workflow
 - destination options for external LLMs, external search, and copy-only handoff
 - no prompt text embedded in third-party URLs
 - setup/model status endpoint that verifies repo-local model files and Python runtime support
+
+## OpenMed Work Used
+
+The optional model-backed engine uses OpenMed's published PHI/PII token-classification model as a
+second detector after deterministic local rules:
+
+- Model: [OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1](https://huggingface.co/OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1)
+- Publisher page: [OpenMed on Hugging Face](https://huggingface.co/OpenMed)
+- Local integration: [`package/src/decon/openmed_ner.py`](package/src/decon/openmed_ner.py)
+- Setup command: `decon-setup-openmed`
+
+The model files are not tracked in this git repo. Setup downloads or copies them into a local model
+cache, and decontextualization loads them with `local_files_only=True`. For repository-local
+development, `decon-setup-openmed --repo-local` installs the files under `package/local-models/`,
+which is ignored by git.
+
+The OpenMed model page lists the model license as Apache-2.0. That license applies to the model
+asset separately from this project's license.
 
 ## Install For Local Development
 
@@ -152,19 +170,28 @@ Current behavior:
 cd package
 python -m venv .venv
 source .venv/bin/activate
-pip install -e .[dev]
+pip install -e '.[dev]'
 ```
 
 No API key is needed for the local web app.
 
-To run the local PHI-NER engine, install the optional runtime dependencies and place the model
-files under:
+To run the OpenMed-backed local PHI-NER engine, install optional runtime dependencies and download
+the model into the local cache:
 
-```text
-package/local-models/<model-directory>/
+```bash
+pip install -e '.[openmed]'
+decon-setup-openmed
 ```
 
-That directory is ignored by git.
+The default model target is the per-user Decon app-data directory. For repository-local development,
+use:
+
+```bash
+decon-setup-openmed --repo-local
+```
+
+That writes to `package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1/`, which is
+ignored by git.
 
 ## Validation
 
@@ -248,3 +275,8 @@ Use `package/` as the release seed:
 - The user must review the cleaned prompt before copying it into any external tool.
 - Validation suites are synthetic and adversarial; they do not prove universal safety across real
   clinical notes.
+
+## License
+
+This project is licensed under the [Fair License](LICENSE). Third-party model files and other
+external assets remain under their own licenses.

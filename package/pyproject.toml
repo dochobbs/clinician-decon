@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "PHI decontextualization utilities for clinical web search"
 readme = "README.md"
 requires-python = ">=3.9"
+license = { text = "Fair License" }
 dependencies = []
 
 [project.optional-dependencies]
@@ -15,6 +16,7 @@ dev = [
   "pytest>=8.0",
 ]
 openmed = [
+  "huggingface-hub>=0.23",
   "torch>=2.0",
   "transformers>=4.40",
 ]
@@ -27,6 +29,7 @@ cloud = [
 decon = "decon.cli:main"
 decon-app = "decon.app_server:main"
 decon-generate-traces = "decon.persona_trace_generator:main"
+decon-setup-openmed = "decon.setup_openmed:main"
 decon-validate = "decon.validation_cli:main"
 
 [tool.setuptools]
