@@ -65,7 +65,7 @@ SAFE_AGE_PATTERN = "|".join(re.escape(phrase) for phrase in SAFE_AGE_PHRASES)
 LAB_TERMS = r"A1c|HbA1c|INR|TSH|LDH|WBC|platelets?|ferritin|lipase|amylase"
 MONTH_TERMS = (
   r"January|February|March|April|May|June|July|August|September|October|November|"
-  r"December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec"
+  r"December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec|März|Maerz|Marz"
 )
 WEEKDAY_TERMS = r"Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday"
 DOB_LABEL = r"DOB|D\.O\.B\.?|date of birth|birthdate|birthday|born"
@@ -76,7 +76,7 @@ RELATION_TERMS = (
 )
 STREET_TYPES = (
   r"St|Street|Ave|Avenue|Rd|Road|Dr|Drive|Blvd|Boulevard|Ln|Lane|Way|Ct|Court|"
-  r"Pkwy|Parkway"
+  r"Pkwy|Parkway|Calle"
 )
 NAME_TOKEN = (
   r"(?:[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+|[A-ZÀ-ÖØ-Þ])"
@@ -112,6 +112,11 @@ PATIENT_NAME_INTRO_PATTERNS: tuple[re.Pattern[str], ...] = (
   re.compile(rf"\b({NAME_TOKEN})'s\s+(?i:(?:mother|mom|father|parent|caregiver))\b"),
   re.compile(
     rf"\b(?i:(?:mother|mom|father|parent|caregiver)\s+reports)\s+({NAME_TOKEN})\b",
+  ),
+  re.compile(
+    rf"\b(?i:La\s+(?:abuela|abuelo|t[ií]a|t[ií]o|mam[aá]|pap[aá]))"
+    rf"(?:\s+{NAME_TOKEN})?\s+(?i:(?:dice|reporta|cuenta|menciona))"
+    rf"\s+(?i:que\s+)?({NAME_TOKEN})\b",
   ),
   re.compile(
     rf"\b(?i:(?:{CAREGIVER_SUBJECT_TERMS}))(?:\s+{NAME_TOKEN})?\s+"
@@ -156,6 +161,10 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     re.IGNORECASE,
   )),
   ("prompt_injection", re.compile(
+    r"\badmin(?:istrator)?\s+override\b[^.?!]*(?:[.?!]|$)",
+    re.IGNORECASE,
+  )),
+  ("prompt_injection", re.compile(
     r"\b(?:include|return|preserve)\s+(?:all\s+)?patient details\b[^.?!]*(?:[.?!]|$)",
     re.IGNORECASE,
   )),
@@ -165,15 +174,53 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     re.IGNORECASE,
   )),
   ("contextual_identifier", re.compile(r"\bonly case\b", re.IGNORECASE)),
+  ("contextual_identifier", re.compile(r"\bonly\s+(?:[A-Za-z0-9+-]+\s+)?patient\b", re.IGNORECASE)),
+  ("identifier", re.compile(r"\b[A-F0-9]{2}(?::[A-F0-9]{2}){5}\b", re.IGNORECASE)),
+  ("identifier", re.compile(r"\b(?:[A-F0-9]{1,4}:){2,7}[A-F0-9]{0,4}\b", re.IGNORECASE)),
+  ("identifier", re.compile(
+    r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b",
+    re.IGNORECASE,
+  )),
+  ("identifier", re.compile(r"\b(?:\d[ -]?){13,19}\b")),
+  ("identifier", re.compile(
+    r"\b(?:accession|claim|visit|specimen(?:\s+barcode)?|voiceprint\s+ID|passport|"
+    r"military\s+ID|trial\s+ID|court\s+order|workstation|trace\s+ID|portal\s+token|"
+    r"vaccine\s+inventory\s+lot|smartwatch\s+serial|device\s+serial|photo\s+file|"
+    r"uploaded\s+file|QR\s+payload|certificate\s+number)\s*[:#-]?\s*"
+    r"([A-Za-z0-9_=./|:%+-]{4,})",
+    re.IGNORECASE,
+  )),
+  ("identifier", re.compile(
+    r"\b(?:group|routing|extension|ext)\s*[:#-]?\s*([A-Z0-9 -]{3,})\b",
+    re.IGNORECASE,
+  )),
+  ("identifier", re.compile(r"\b(?:GRP|SP|VP|SN|MIL|CERT|WATCH|WS)-[A-Z0-9-]{3,}\b", re.IGNORECASE)),
+  ("identifier", re.compile(r"\bNCT-\d{8}\b", re.IGNORECASE)),
+  ("identifier", re.compile(r"\b(?:AB|LP)\s*\d{3,}\s*\d{3,}\b", re.IGNORECASE)),
+  ("identifier", re.compile(r"^(AB\d{6,})(?=:)")),
+  ("identifier", re.compile(r"\bLP\d{6,}\b", re.IGNORECASE)),
+  ("identifier", re.compile(r"\b[A-Za-z0-9_+-]+\.(?:jpg|jpeg|png|gif|pdf)\b", re.IGNORECASE)),
+  ("identifier", re.compile(r"@[A-Za-z0-9_.-]+\b")),
   ("mrn", re.compile(r"\bMR\s*#\s*[A-Z0-9][A-Z0-9-]{3,}\b", re.IGNORECASE)),
   ("address", re.compile(
     rf"\b\d{{1,6}}\s+(?:[A-Za-z0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?",
     re.IGNORECASE,
   )),
   ("address", re.compile(
+    rf"\b\d{{1,6}}\s+(?:[A-Za-zÀ-ÖØ-öø-ÿ0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?",
+    re.IGNORECASE,
+  )),
+  ("address", re.compile(
     r"(?<!\w)(?:(?:Apt|Apartment|Unit|Suite|Ste)\.?\s+[A-Z0-9-]+|#\s*[A-Z0-9-]+)\b",
     re.IGNORECASE,
   )),
+  ("location", re.compile(r"\b(?:bed|room|unit|floor|stop)\s+[A-Z0-9-]+\b", re.IGNORECASE)),
+  ("location", re.compile(r"\b\d+(?:st|nd|rd|th)\s+floor\s+[A-Za-z0-9-]+\b", re.IGNORECASE)),
+  ("location", re.compile(
+    rf"\bbus\s+route\s+\d+\s+{NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}}\s+stop\s+\d+\b",
+    re.IGNORECASE,
+  )),
+  ("location", re.compile(r"\b(?:bus\s+route)\s+\d+\b", re.IGNORECASE)),
   ("location", re.compile(r"\bRoom\s+[A-Z0-9-]+\b", re.IGNORECASE)),
   ("location", re.compile(
     rf"\b(?i:(?:lives?|resides|located)\s+(?:at|in))\s+"
@@ -182,11 +229,18 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   )),
   ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2},\s*[A-Z]{2}\b")),
   ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?\b")),
+  ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?\s+[A-Z]{2}\s+\d{5}(?:-\d{4})?\b")),
+  ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?\s+[A-Z]{2}\b")),
+  ("location", re.compile(
+    rf"\b(?i:(?:Going|travel(?:ing)?|travelling)\s+to)\s+"
+    rf"((?!Camp\b){NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}})\b",
+  )),
   ("location", re.compile(
     rf"\b(?i:(?:from|near|in|at))\s+({NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}})"
     r"(?=\s*(?:[-,.;:)]|$))",
   )),
   ("zip", re.compile(r"\b(?:ZIP|zip code)\s*[:#]?\s*(\d{5}(?:-\d{4})?)\b", re.IGNORECASE)),
+  ("zip", re.compile(r"\b\d{5}-\d{4}\b")),
   ("email", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
   ("email", re.compile(
     r"\bemail\s+([A-Za-zÀ-ÖØ-öø-ÿ0-9'-]+"
@@ -204,6 +258,10 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("phone", re.compile(r"\b((?:\d\s+){9}\d)\b")),
   ("phone", re.compile(
     rf"\b((?:(?:{NUMBER_WORD})\s+){{9}}(?:{NUMBER_WORD}))\b",
+    re.IGNORECASE,
+  )),
+  ("phone", re.compile(
+    rf"\b((?:(?:{NUMBER_WORD})[-\s]+){{9}}(?:{NUMBER_WORD}))\b",
     re.IGNORECASE,
   )),
   ("phone", re.compile(
@@ -239,7 +297,9 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("mrn", re.compile(r"\bM\s+R\s+N\s+((?:[A-Z0-9]\s+){5,19}[A-Z0-9])\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b(?:MRN|MR\s*#|MR#|medical record(?: number)?)\s*[:#-]?\s*([A-Z0-9][A-Z0-9-]{3,})\b", re.IGNORECASE)),
   ("mrn", re.compile(r"\b[A-Z]{1,5}-\d{3,8}(?:-\d{3,8})?\b")),
+  ("identifier", re.compile(r"\b[A-Z]{2,6}-\d{4,}(?:-[A-Z0-9]+)?\b")),
   ("ip_address", re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")),
+  ("url", re.compile(r"\b(?:GET|POST|PUT|PATCH|DELETE)\s+/\S+", re.IGNORECASE)),
   ("url", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
   ("pharmacy", re.compile(
     rf"\b(?:Walgreens|CVS|Rite Aid|Walmart Pharmacy|Costco Pharmacy|Kroger Pharmacy)"
@@ -254,7 +314,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("practice", re.compile(
     r"\b(?:Lakes\s+Pediatrics|Children['’]s(?:\s+Hospital)?|Mayo\s+Clinic|Cleveland\s+Clinic|"
     r"[A-Z][A-Za-z'’.-]+\s+(?:Pediatrics|Clinic|Hospital|Family Medicine|Medical Group|"
-    r"Health|Urgent Care))\b",
+    r"Health|Urgent Care|Rehab|Institute))\b",
     re.IGNORECASE,
   )),
   ("insurance", re.compile(
@@ -263,11 +323,14 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     re.IGNORECASE,
   )),
   ("date", re.compile(r"\b(?:\d{1,2}[./-]\d{1,2}[./-]\d{2,4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})\b")),
+  ("date", re.compile(r"\b\d{8}\b")),
+  ("date", re.compile(r"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:[+-]\d{2}:\d{2}|Z)?\b")),
   ("date", re.compile(r"\b\d{1,2}\s+\d{1,2}\s+\d{4}\b")),
   ("date", re.compile(
-    r"\b(?:today|yesterday|last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday))\b",
+    r"\b(?:today|yesterday|next\s+month|last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|month))\b",
     re.IGNORECASE,
   )),
+  ("date", re.compile(r"\b(?:at|collected|seen)\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)\b", re.IGNORECASE)),
   ("date", re.compile(
     rf"\b(?:(?:next|this|last)\s+)?(?:{WEEKDAY_TERMS})\b",
     re.IGNORECASE,
@@ -316,11 +379,27 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("name", re.compile(
     rf'"(?i:patient_name)"\s*:\s*"({FULL_NAME})"'
   )),
+  ("name", re.compile(rf'"(?i:first)"\s*:\s*"({NAME_TOKEN})"')),
+  ("name", re.compile(rf'"(?i:last)"\s*:\s*"({NAME_TOKEN})"')),
+  ("name", re.compile(rf"\b(?i:PATIENT)\s*:\s*({NAME_TOKEN}),\s*{NAME_TOKEN}\b")),
+  ("name", re.compile(rf"\b(?i:PATIENT)\s*:\s*{NAME_TOKEN},\s*({NAME_TOKEN})\b")),
+  ("name", re.compile(rf"\|\|({NAME_TOKEN}\^{NAME_TOKEN})\|\|")),
+  ("name", re.compile(rf"\bPAT=({NAME_TOKEN}-{NAME_TOKEN})\b")),
+  ("name", re.compile(
+    rf"^[A-Z0-9]{{4,}}:\s+({NAME_TOKEN})"
+    rf"(?=\s+(?i:{PATIENT_NAME_FOLLOWERS})\b)"
+  )),
   ("name", re.compile(
     rf"\b(?i:legal\s+name)\s*[:#-]?\s*({FULL_NAME}|{NAME_TOKEN}|{LABEL_NAME_VALUE})\b"
   )),
   ("name", re.compile(
     rf"\b(?i:(?:preferred\s+name|patient\s+name|name|alias))\s*[:#-]\s*({FULL_NAME}|{NAME_TOKEN}|{LABEL_NAME_VALUE})\b"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:patient\s+name|nickname|alias))\s+({FULL_NAME}|{NAME_TOKEN})\b"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:patient)\s*:\s*({FULL_NAME})\b"
   )),
   ("name", re.compile(
     rf"\b(?i:chart\s+says)\s+({FULL_NAME})(?=,\s*(?i:(?:DOB|date of birth|D\.O\.B\.?))\b)"
@@ -333,10 +412,16 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     rf"(?=\s+(?i:{PATIENT_NAME_FOLLOWERS})\b)"
   )),
   ("name", re.compile(
+    rf"\b(?i:patient\s+named)\s+({FULL_NAME})\b"
+  )),
+  ("name", re.compile(
     rf"\b(?i:patient\s+goes\s+by)\s+({FULL_NAME}|{NAME_TOKEN}|{LABEL_NAME_VALUE})\b"
   )),
   ("name", re.compile(
     rf"\b(?i:caller)\s+({NAME_TOKEN})(?=\s+at\b)"
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:matched\s+caller|parent))\s+({NAME_TOKEN})\b",
   )),
   ("name", re.compile(
     rf"\b(?i:(?:caller|caregiver|guardian))\s+({NAME_TOKEN})"
@@ -351,9 +436,22 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   )),
   ("name", re.compile(rf"\b(?:Mr|Mrs|Ms|Miss|Dr)\.?\s+({NAME_TOKEN})(?='s\b|\b)")),
   ("name", re.compile(rf"\b(?:Mr|Mrs|Ms|Miss|Dr)\.?\s+({FULL_NAME})\b")),
+  ("name", re.compile(
+    rf"\b(?i:(?:for|belongs\s+to|attached\s+to|linked\s+to|under|identifies|"
+    rf"posted\s+patient|for\s+patient|for\s+pt|on|with))\s+({FULL_NAME})\b"
+    rf"(?=\s*(?:[.,;:]|$|\s+(?:has|with|asks?|adult|child|infant|new|collected|at|scanned|from|shows|returned)))",
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:with|for))\s+({FULL_NAME})'s\b",
+  )),
+  ("name", re.compile(
+    rf"\b(?i:(?:from|to|saw))\s+({FULL_NAME}|{NAME_TOKEN}\s+[A-Z])\b"
+    rf"(?=\s*(?:[.,;:]|$|\s+(?:at|has|shows|says|asks?)))",
+  )),
   ("name", re.compile(rf"\b(?i:(?:{RELATION_TERMS}))\s+({NAME_TOKEN})\b")),
   ("name", re.compile(rf"\b(?i:(?:{RELATION_TERMS}))\s+\(({NAME_TOKEN})\)(?=\W|$)")),
   ("name", re.compile(rf"\b(?i:little)\s+({NAME_TOKEN})\b")),
+  ("name", re.compile(rf"\b(?i:(?:today|same-day))\s+is\s+({NAME_TOKEN})\b")),
   ("name", re.compile(
     rf"\b(?i:(?:SUBJECTIVE|HPI|CC|HISTORY|ASSESSMENT))\s*:\s*({FULL_NAME})"
     r"(?=\s*(?:,|\d))",
@@ -415,7 +513,7 @@ RESIDUAL_HIGH_RISK: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("possible patient URL remains", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
   ("possible prompt injection remains", re.compile(r"\b(?:ignore|disregard|override)\s+(?:previous|prior|above)\s+instructions\b", re.IGNORECASE)),
   ("possible city/state location remains", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2},\s*[A-Z]{2}\b")),
-  ("possible practice or facility remains", re.compile(r"\b[A-Z][A-Za-z'’.-]+\s+(?:Pediatrics|Clinic|Hospital|Medical Group|Health|Urgent Care)\b")),
+  ("possible practice or facility remains", re.compile(r"\b[A-Z][A-Za-z'’.-]+\s+(?:Pediatrics|Clinic|Hospital|Medical Group|Health|Urgent Care|Rehab|Institute)\b")),
 )
 
 RESIDUAL_MEDIUM_RISK: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -590,6 +688,9 @@ def _replacement_for_span(text: str, span: Span, reference_date: date) -> str:
   if span.category == "prompt_injection":
     return ""
   if span.category == "contextual_identifier":
+    disease_marker = re.search(r"\bonly\s+([A-Z]{2,8})\s+patient\b", raw, re.IGNORECASE)
+    if disease_marker:
+      return f"Rare {disease_marker.group(1).upper()} case"
     return "Rare case"
   if span.category == "relation":
     return "sibling contact"
@@ -720,6 +821,7 @@ def _age_band_from_months(months: int) -> str:
 def _parse_date(raw: str) -> date | None:
   normalized = re.sub(r"(\d{1,2})(?:st|nd|rd|th)", r"\1", raw, flags=re.IGNORECASE)
   normalized = re.sub(r"\b([A-Za-z]{3})\.", r"\1", normalized)
+  normalized = re.sub(r"\b(?:März|Maerz|Marz)\b", "March", normalized, flags=re.IGNORECASE)
   for date_format in DATE_FORMATS:
     try:
       return datetime.strptime(normalized, date_format).date()
@@ -923,6 +1025,12 @@ def _safe_query_from_text(source: str, safe_context: str, reference_date: date) 
   pediatric_label = "" if safe_age else "pediatric "
   if re.search(
     r"\b(?:under-immunized|under immunized|catch-up|siblings?|separate shots|adhd)\b",
+    lower_source,
+  ):
+    return _safe_query_from_context(safe_context)
+  if re.search(
+    r"\b(?:travel|typhoid|malaria|prophylaxis|doxycycline|reaction|rash|fever|"
+    r"counseling)\b",
     lower_source,
   ):
     return _safe_query_from_context(safe_context)

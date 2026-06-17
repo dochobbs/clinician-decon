@@ -96,7 +96,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-123 passed
+125 passed
 ```
 
 ## Headless Validation
@@ -119,15 +119,19 @@ Current default gate:
 
 ```text
 Decon validation PASS
-Suites: usability, adversarial
+Suites: usability, adversarial, philter-adversarial-addon
 Destinations: chatgpt, gemini, web_search
 Engine: rules+openmed
-Source cases: 1000
-Outputs: 3000
+Source cases: 1050
+Outputs: 3150
 PHI leaked outputs: 0
 Unsafe copy-allowed leaks: 0
-Clinical labeled outputs: 3000
-Clinically usable outputs: 3000
+Clinical labeled outputs: 3150
+Clinically usable outputs: 3150
+Clinical usability rate: 100.00%
+Handoff usability rate: 100.00%
+Max avg runtime: 100.098 ms
+Max p95 runtime: 123.279 ms
 ```
 
 Run the larger persona-driven regression gate:

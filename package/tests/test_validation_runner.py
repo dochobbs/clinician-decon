@@ -15,9 +15,9 @@ def test_current_validation_suites_pass_with_zero_failures():
     reference_date=date(2026, 6, 15),
   )
 
-  assert result["summary"]["source_cases"] == 1000
-  assert result["summary"]["outputs"] == 3000
-  assert result["summary"]["clinical_labeled_outputs"] == 3000
+  assert result["summary"]["source_cases"] == 1050
+  assert result["summary"]["outputs"] == 3150
+  assert result["summary"]["clinical_labeled_outputs"] == 3150
   assert result["summary"]["phi_leaked_outputs"] == 0
   assert result["summary"]["missing_critical_fact_outputs"] == 0
   assert result["summary"]["clinical_usable_rate"] == 1.0
@@ -36,6 +36,30 @@ def test_phi_field_prose_suite_is_registered_as_current_gate():
   assert CURRENT_SUITES["phi-field-prose"].name == (
     "decon_phi_field_prose_25_2026-06-15.json"
   )
+
+
+def test_philter_adversarial_addon_suite_is_registered():
+  assert "philter-adversarial-addon" in CURRENT_SUITES
+  assert CURRENT_SUITES["philter-adversarial-addon"].name == (
+    "decon_philter_adversarial_addon_50_2026-06-16.json"
+  )
+
+
+def test_philter_adversarial_addon_suite_passes_with_zero_failures():
+  result = run_validation(
+    suites=("philter-adversarial-addon",),
+    destinations=("chatgpt", "gemini", "web_search"),
+    reference_date=date(2026, 6, 16),
+  )
+
+  assert result["summary"]["source_cases"] == 50
+  assert result["summary"]["outputs"] == 150
+  assert result["summary"]["clinical_labeled_outputs"] == 150
+  assert result["summary"]["phi_leaked_outputs"] == 0
+  assert result["summary"]["missing_critical_fact_outputs"] == 0
+  assert result["summary"]["clinical_usable_rate"] == 1.0
+  assert result["summary"]["handoff_usable_rate"] == 1.0
+  assert passes_thresholds(result, fail_on_phi=True, min_clinical_usable=1.0) == []
 
 
 def test_phi_field_prose_validation_suite_passes_with_zero_failures():
@@ -185,6 +209,6 @@ def test_validation_cli_prints_summary_and_returns_success(capsys):
 
   assert exit_code == 0
   assert "Decon validation PASS" in captured.out
-  assert "Source cases: 1000" in captured.out
-  assert "Outputs: 1000" in captured.out
+  assert "Source cases: 1050" in captured.out
+  assert "Outputs: 1050" in captured.out
   assert "PHI leaked outputs: 0" in captured.out

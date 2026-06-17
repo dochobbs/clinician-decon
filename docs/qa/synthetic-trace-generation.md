@@ -195,12 +195,13 @@ Current repo gates:
 - `package/data/archetypes/v1.json`
 - `package/data/decon_usability_500_2026-06-15.json`
 - `package/data/decon_adversarial_500_2026-06-15.json`
+- `package/data/decon_philter_adversarial_addon_50_2026-06-16.json`
 - `package/data/decon_persona_regression_2000_2026-06-15.json`
 
 The default `current` gate provides:
 
-- `1,000` labeled source cases
-- `3,000` destination outputs across ChatGPT, Gemini, and Web Search
+- `1,050` labeled source cases
+- `3,150` destination outputs across ChatGPT, Gemini, and Web Search
 - `0` detected PHI leaks in the current run
 - `0` missing required clinical facts in the current run
 

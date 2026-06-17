@@ -30,6 +30,7 @@ CURRENT_SUITES = {
   "validation-blindspot-redteam-r2": DATA_DIR / "decon_validation_blindspot_redteam_r2_25_2026-06-15.json",
   "clinician-seed-gold": DATA_DIR / "decon_clinician_seed_gold_10_2026-06-16.json",
   "persona-regression": DATA_DIR / "decon_persona_regression_2000_2026-06-15.json",
+  "philter-adversarial-addon": DATA_DIR / "decon_philter_adversarial_addon_50_2026-06-16.json",
 }
 
 LEGACY_PHI_SUITES = {
@@ -129,7 +130,7 @@ def _expand_suite_names(suites: tuple[str, ...]) -> tuple[str, ...]:
   expanded = []
   for suite in suites:
     if suite == "current":
-      expanded.extend(("usability", "adversarial"))
+      expanded.extend(("usability", "adversarial", "philter-adversarial-addon"))
     elif suite == "legacy-phi":
       expanded.extend(("legacy-synth-500", "legacy-synth-500-b", "legacy-amboss-stress"))
     elif suite == "all":

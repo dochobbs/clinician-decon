@@ -21,23 +21,26 @@ Expected current result:
 
 ```text
 Decon validation PASS
-Suites: usability, adversarial
+Suites: usability, adversarial, philter-adversarial-addon
 Destinations: chatgpt, gemini, web_search
 Engine: rules+openmed
-Source cases: 1000
-Outputs: 3000
+Source cases: 1050
+Outputs: 3150
 PHI leaked outputs: 0
 Unsafe copy-allowed leaks: 0
-Clinical labeled outputs: 3000
-Clinically usable outputs: 3000
+Clinical labeled outputs: 3150
+Clinically usable outputs: 3150
 Clinical usability rate: 100.00%
 Handoff usability rate: 100.00%
+Max avg runtime: 100.098 ms
+Max p95 runtime: 123.279 ms
 ```
 
 This command runs the current release gate:
 
 - `package/data/decon_usability_500_2026-06-15.json`
 - `package/data/decon_adversarial_500_2026-06-15.json`
+- `package/data/decon_philter_adversarial_addon_50_2026-06-16.json`
 
 It checks both safety and usefulness:
 
@@ -195,8 +198,8 @@ Important fields:
 
 ## What This Does Not Prove
 
-The current default gate validates the shipped synthetic/adversarial distribution. It does not
-prove universal PHI safety across real clinical notes.
+The current default gate validates the shipped synthetic, adversarial, and Philter-adversarial
+distribution. It does not prove universal PHI safety across real clinical notes.
 
 Use the current gate to prevent regressions. Use clinician-reviewed gold traces to strengthen
 external validation claims.

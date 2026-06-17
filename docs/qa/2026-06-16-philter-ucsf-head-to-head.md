@@ -73,6 +73,8 @@ Two datasets were used:
 2. Current gate:
    - `package/data/decon_usability_500_2026-06-15.json`
    - `package/data/decon_adversarial_500_2026-06-15.json`
+3. Philter-adversarial add-on:
+   - `package/data/decon_philter_adversarial_addon_50_2026-06-16.json`
 
 For Philter, each query was written to a `.txt` file and processed with:
 
@@ -106,14 +108,18 @@ necessary facts.
 | --- | --- | ---: | ---: | ---: | ---: |
 | Seed-gold 10 | Philter-UCSF | `5 / 10` | `5 / 10` | `6 / 10` | `4 / 10` |
 | Seed-gold 10 | Clinician Decon `rules+openmed` | `10 / 10` | `0 / 10` | `10 / 10` | `0 / 10` |
-| Current 1,000 | Philter-UCSF | `759 / 1,000` | `241 / 1,000` | `399 / 1,000` | `601 / 1,000` |
-| Current 1,000 | Clinician Decon `rules+openmed` | `1,000 / 1,000` | `0 / 1,000` | `1,000 / 1,000` | `0 / 1,000` |
+| Original current 1,000 | Philter-UCSF | `759 / 1,000` | `241 / 1,000` | `399 / 1,000` | `601 / 1,000` |
+| Original current 1,000 | Clinician Decon `rules+openmed` | `1,000 / 1,000` | `0 / 1,000` | `1,000 / 1,000` | `0 / 1,000` |
+| Philter-adversarial add-on 50 | Philter-UCSF | `31 / 50` | `19 / 50` | `35 / 50` | `15 / 50` |
+| Philter-adversarial add-on 50 | Clinician Decon `rules+openmed` | `50 / 50` | `0 / 50` | `50 / 50` | `0 / 50` |
 
 Timing notes:
 
-- Philter processed the 1,000 current files in about `6.4 s` wall-clock in one CLI run after setup.
-- Clinician Decon processed the same 1,000 cases through `rules+openmed` in `92.38 s`, about
+- Philter processed the original 1,000 current files in about `6.4 s` wall-clock in one CLI run after setup.
+- Clinician Decon processed the same original 1,000 cases through `rules+openmed` in `92.38 s`, about
   `92.38 ms/case`, including local OpenMed inference.
+- On the 50-case add-on, Philter ran in `0.931 s` and Clinician Decon `rules+openmed` ran in
+  `8.333 s`; see `docs/qa/2026-06-16-philter-adversarial-addon-head-to-head.md`.
 
 ## Representative Philter Failures
 

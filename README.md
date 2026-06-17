@@ -66,7 +66,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-123 passed
+125 passed
 ```
 
 Run the model-backed headless validation gate:
@@ -79,8 +79,8 @@ PYTHONPATH=package/src /path/to/python-with-transformers \
 Current `rules+openmed` validation snapshot with the repo-local OpenMed model:
 
 ```text
-1,000 source cases, 3,000 destination outputs, 0 PHI leaks, 0 missing clinical facts,
-100% handoff usable
+1,050 source cases, 3,150 destination outputs, 0 PHI leaks, 0 missing clinical facts,
+100% handoff usable, max avg runtime 100.098 ms, max p95 runtime 123.279 ms
 ```
 
 Run the 10-case clinician seed-gold gate:
@@ -137,6 +137,7 @@ is unavailable.
 - [Validation blind-spot red-team R2](docs/qa/2026-06-15-validation-blindspot-red-team-r2.md)
 - [Local rules and OpenMed pipeline audit](docs/qa/2026-06-16-local-rules-openmed-audit.md)
 - [Philter-UCSF head-to-head](docs/qa/2026-06-16-philter-ucsf-head-to-head.md)
+- [Philter-adversarial add-on head-to-head](docs/qa/2026-06-16-philter-adversarial-addon-head-to-head.md)
 - [Philter-UCSF representative error samples](docs/qa/2026-06-16-philter-error-samples.md)
 - [Persona trace generator design](docs/superpowers/specs/2026-06-15-persona-trace-generator-design.md)
 - [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)

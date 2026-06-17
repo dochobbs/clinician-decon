@@ -156,12 +156,12 @@ Fresh verification on 2026-06-16:
 
 | Command | Result |
 | --- | --- |
-| `python3 -m pytest package/tests` | `123 passed` |
+| `python3 -m pytest package/tests` | `125 passed` |
 | `package/scripts/run_validation.py --suite clinician-seed-gold --suite phi-field-prose --suite validation-blindspot-redteam --suite validation-blindspot-redteam-r2 --engine rules+openmed` | `231 / 231` outputs safe, clinically usable, and handoff usable; `0` PHI leaks |
-| `package/scripts/run_validation.py --engine rules+openmed` | `3,000 / 3,000` outputs safe, clinically usable, and handoff usable; `0` PHI leaks |
+| `package/scripts/run_validation.py --engine rules+openmed` | `3,150 / 3,150` outputs safe, clinically usable, and handoff usable; `0` PHI leaks |
 
-The full current `rules+openmed` gate reported max average runtime `95.051 ms` and max p95 runtime
-`116.482 ms` after model load.
+The full current `rules+openmed` gate reported max average runtime `100.098 ms` and max p95 runtime
+`123.279 ms` after model load.
 
 ## Remaining Risk
 
