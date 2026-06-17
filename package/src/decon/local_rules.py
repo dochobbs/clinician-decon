@@ -445,6 +445,10 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     rf"\b(?i:(?:with|for))\s+({FULL_NAME})'s\b",
   )),
   ("name", re.compile(
+    rf"\b(?i:for)\s+({NAME_TOKEN})"
+    rf"(?=\s+(?i:(?:before|after|about|regarding|with|because|due|needs|started|stopped|has|had|is|was))\b)",
+  )),
+  ("name", re.compile(
     rf"\b(?i:(?:from|to|saw))\s+({FULL_NAME}|{NAME_TOKEN}\s+[A-Z])\b"
     rf"(?=\s*(?:[.,;:]|$|\s+(?:at|has|shows|says|asks?)))",
   )),

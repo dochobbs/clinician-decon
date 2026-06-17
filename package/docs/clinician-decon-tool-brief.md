@@ -1,170 +1,148 @@
 # Clinician Decon Tool Brief
 
-**Date:** 2026-06-15
-**Branch:** `clinician-decon-tool`
-**Purpose:** Fork the existing decon work into a dead-simple clinician tool for moving
-minimum-necessary, de-identified clinical context from a PHI-protected workflow into a
-general LLM or web search surface when the clinician does not have a BAA with that downstream
-tool.
+**Date:** 2026-06-17
+**Purpose:** Define the product shape for a dead-simple local tool that helps clinicians create
+minimum-necessary, clinically useful prompts without sending raw PHI to external AI or search
+destinations.
 
 ## Product Thesis
 
-Clinicians are already copying chart snippets, patient messages, labs, and visit context into
-LLMs. Many do not know which tools are covered by a BAA, which prompts contain PHI, or how to
-strip enough context without destroying clinical usefulness.
+Clinicians often need help turning chart snippets, patient messages, labs, or visit context into a
+question they can safely use elsewhere. Manual removal is error-prone: it can leave identifiers in
+place, or it can strip so much context that the clinical question becomes useless.
 
-This project should become a "copy-safe clinical context builder":
+Clinician Decon should become a copy-safe clinical context builder:
 
 1. Paste or capture PHI-containing text from a protected source.
 2. Run local PHI minimization before anything leaves the clinician's machine.
-3. Show a clean, paste-ready prompt for Claude, ChatGPT, Gemini, Perplexity, OpenEvidence, or
-   a web search engine.
+3. Show a clean, paste-ready prompt for the intended destination type.
 4. Display what was removed by category, not by value.
 5. Fail closed when the remaining text looks re-identifiable.
 
 The product should be explicit that it is a risk-reduction and minimum-necessary tool, not a
-guarantee of HIPAA de-identification or legal clearance.
+guarantee of legal de-identification.
+
+## Decon Vs De-ID
+
+Classic de-identification is usually document-focused: remove or mask identifiers so a note or
+dataset can be shared more safely.
+
+Decontextualization is prompt-focused: remove identifiers, remove uniqueness context, and preserve
+the clinical facts needed for the next task.
+
+Examples:
+
+- DOB becomes a clinical age band.
+- exact age becomes a broader age band.
+- exact lab values can become clinical signals when exact values are unnecessary.
+- exact weights remain when needed for weight-based dosing.
+- patient names are removed while clinical eponyms stay intact.
+- room, floor, facility, school, camp, date, and "only patient" context is removed or generalized.
 
 ## Recommended Starting Shape
 
-Build a local-first web app before a hosted SaaS product.
+Build local-first before hosted.
 
-- Local web app: `localhost` UI with two panes: "Original clinical context" and "Safe prompt".
-- One primary action: `Decontextualize`.
-- One secondary action: `Copy for Claude`.
-- Mode selector:
-  - `Ask an LLM` maps to `external_general_llm`.
-  - `Search the web` maps to `external_web_search`.
-  - `Export / analytics` maps to `analytics_export`.
+- Local browser app served from loopback.
+- Two-pane workflow: original text and safe prompt.
+- Primary action: `Decontextualize`.
+- Secondary actions: copy/open external destination, copy only, clear.
+- Destination type selector:
+  - external LLM
+  - external search
+  - copy only
 - Risk chip:
   - `Low`: copy allowed.
-  - `Medium`: copy allowed with warning and highlighted risky leftovers.
-  - `High`: copy disabled unless the user explicitly edits or reruns.
+  - `Medium`: copy allowed with warning and review.
+  - `High`: copy blocked until edited or rerun.
 - Audit panel:
-  - Removed categories: name, DOB, MRN, phone, email, URL, exact date, exact age, lab value,
-    practice, relation, location.
-  - Do not log the raw source text.
-
-This maps cleanly to the current package, which already has task-specific minimization modes in
-`src/decon/tasks.py`.
+  - removed categories only, never removed values.
 
 ## Baseline Pipeline
 
-Default path for the clinician tool:
-
 ```text
 paste text
-  -> deterministic regex scrub
-  -> local PII/PHI NER
-  -> risk scoring
-  -> optional local LLM reviewer for hard cases
-  -> safe prompt / safe search query
+  -> deterministic rules
+  -> local PHI-NER model when installed
+  -> residual risk scan
+  -> destination-specific prompt/query shaping
+  -> reviewed safe prompt
 ```
 
-The default should not send raw PHI to a cloud LLM. Cloud rewriting is only acceptable when the
-clinic has the right contractual coverage, or when the user explicitly chooses a non-default
-advanced mode after a warning.
+The default path must not send raw PHI to a cloud model. Any hosted or cloud rewrite mode should be
+explicitly non-default and require the right contractual and policy review.
 
-## Model and Method Lessons
-
-| Approach | Why use it | Local? | Latency evidence | Quality evidence | Main risk |
-|---|---|---:|---:|---|---|
-| Regex pre-filter | Deterministic catch for SSN, phone, email, MRN, date, URL | Yes | Sub-ms in local docs | Fixes known MRN miss class | Brittle on implicit identifiers |
-| OpenMed SuperClinical 434M NER | Local token classifier for names, MRNs, DOBs, contact info | Yes | 804 ms CPU in parity test | 1/18 identifiers leaked before regex fix; 0% canonical synthetic leak in 1000 queries | Misses non-canonical and contextual identifiers |
-| OpenMed multilingual privacy filter | Fallback for Spanish or multilingual snippets | Yes | Not benchmarked here | Helpful for non-English, but local notes say it raised false positives | Larger 1B model; not default |
-| Haiku-style LLM rewrite | Best at semantic decontextualization and implicit references | No, unless local equivalent | 1641 ms API in parity test; older architecture notes cite about 0.8s | 132 adversarial queries, zero real PHI leaks in original work | Raw PHI goes to the LLM unless covered by BAA |
-| Local LLM reviewer | Recover semantic cases without cloud PHI transfer | Yes | Estimated 600 ms to 1.5s in local plan, needs validation | Best candidate for twins, family members, Spanish, SOAP notes, rare cases | Hardware/setup complexity |
-
-## What to Build First
+## What To Build First
 
 ### v0: Demo Worth Showing
 
-- Web UI for paste -> decon -> copy.
-- Use current Python package for model-backed minimization where available.
-- Add a local-only mode backed by the `cds-eval/eval/services/local_cds/decon.py` regex + OpenMed
-  implementation.
-- Include canned examples from the existing PHI stress fixtures.
-- Show before/after plus removed category counts.
+- Web UI for paste -> decon -> review -> copy.
+- Local deterministic rules.
+- Optional local PHI-NER model.
+- Canned examples from checked-in synthetic fixtures.
+- Removed-category counts and risk chip.
 
 Success bar: a clinician can understand and use it in under one minute.
 
 ### v1: Local-First Clinician Utility
 
-- Package as a one-command local app.
-- Add browser-open startup flow.
-- Store settings only locally.
-- Add mode-specific prompts:
-  - "Help me draft a message."
-  - "Help me think through a differential."
-  - "Find current guidelines."
-  - "Summarize this for a referral."
-- Add copy templates for Claude, ChatGPT, Perplexity, and web search.
-- Add test corpus runner from the existing stress tests.
+- One-command local app.
+- First-run setup checks for runtime, RAM, disk, and local model files.
+- Explicit local-rules vs rules-plus-model engine status.
+- Destination-specific prompt templates.
+- Headless validation command for CI and local release checks.
 
-Success bar: no cloud dependency for default decon, and no raw prompt text persisted.
+Success bar: no cloud dependency for default decon and no raw prompt text persisted.
 
-### v2: Browser Extension or Workflow Partner Integration
+### v2: Workflow Integration
 
-- Browser extension side panel or context-menu action: "Sanitize selection".
+- Browser extension or native side panel.
+- Context-menu action: `Sanitize selection`.
 - Optional local native companion for model execution.
-- Integration hook for workflow tools like Tabflows.
-- Policy profiles by destination: Claude, ChatGPT, OpenEvidence, Perplexity, Google, internal EHR.
+- Policy profiles by destination type.
 
-Success bar: the tool reduces risky copy/paste behavior inside the actual clinician workflow.
+Success bar: reduce risky copy/paste behavior inside the actual clinician workflow.
 
 ## UX Principles
 
 - Default to local and fail closed.
-- Avoid legalistic language in the main workflow; put details in a trust panel.
-- Make the user inspect the clean prompt, not hidden automation.
-- Show categories removed, never the removed PHI values.
-- Keep the primary screen dense and utilitarian, not a landing page.
-- Provide "why blocked" messages that are actionable:
-  - "A likely MRN remains."
-  - "A full date remains."
-  - "A patient-specific URL remains."
-  - "This text still includes family relationship identifiers."
+- Make the user inspect the cleaned prompt.
+- Show categories removed, never removed PHI values.
+- Keep the screen dense and utilitarian.
+- Make block reasons actionable:
+  - likely MRN remains
+  - full date remains
+  - patient-specific URL remains
+  - location or uniqueness context remains
+  - no useful clinical question remains
 
 ## Compliance Framing
 
-HHS describes two HIPAA de-identification methods: Expert Determination and Safe Harbor. It also
-notes that de-identified data can retain some residual re-identification risk even when methods
-are properly applied. This product should not claim that every output is legally de-identified.
-
 Recommended language:
 
-> This tool helps minimize PHI before using non-BAA tools. It does not replace legal review,
-> a BAA, or the clinician's responsibility to confirm that the remaining text is appropriate
-> for the intended destination.
+> This tool helps minimize PHI before using external tools. It does not replace legal review,
+> contractual coverage, institutional policy, or the clinician's responsibility to confirm that
+> the remaining text is appropriate for the intended destination.
 
-## Evidence From Existing Work
+Avoid claiming that every output is legally de-identified.
 
-- `docs/PHI_DECONTEXTUALIZATION_TESTING.md`: original Haiku decontextualization report; 132
-  adversarial tests; zero real PHI leaks and one regex false positive.
-- `docs/HAIKU_DECONTEXTUALIZATION_ARCHITECTURE.md`: three-layer defense with LLM rewrite,
-  regex validation, and field separation.
-- `/Users/dochobbs/Downloads/Consult/cds-eval/docs/openmed_vs_haiku_decon_results.md`:
-  OpenMed vs Haiku parity test; OpenMed was faster and local but missed one MRN before the
-  regex pre-filter.
-- `/Users/dochobbs/Downloads/Consult/cds-eval/docs/decon_combined_1132q_findings.md`:
-  1132-query local decon findings; local regex + NER is strong on canonical identifiers and
-  weaker on implicit references, multilingual text, practice names, and contextual identifiers.
+## Evidence Base
 
-## External Sources
+The repo includes:
 
-- HHS HIPAA de-identification guidance:
-  https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html
-- OpenMed SuperClinical model card:
-  https://huggingface.co/OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1
-- OpenMed multilingual privacy filter model card:
-  https://huggingface.co/OpenMed/privacy-filter-multilingual
+- unit tests for local rules, destinations, app server, setup status, and validation runner
+- synthetic usability suites
+- adversarial suites
+- clinician seed-gold cases
+- persona-driven generated traces
+- an external de-ID baseline comparison
+
+The current release gate is documented in `docs/qa/headless-validation.md`.
 
 ## Open Questions
 
-- Is the first artifact a standalone local app, a browser extension, or both?
-- Do we target individual clinicians first, or workflow vendors first?
-- How much clinical detail should remain by default for "Ask an LLM" versus "Search the web"?
-- Should the project support an optional BAA-covered cloud rewrite mode, or keep the first
-  release strictly local?
-- What name should this carry if it leaves the Amboss/decon project?
-
+- Should the first install target be a repo-based bootstrap script, a Mac app, or both?
+- How strict should each destination profile be?
+- Should the app block copying when the safe output is technically de-identified but clinically
+  useless?
+- What level of human-reviewed gold set is enough for the first pilot?

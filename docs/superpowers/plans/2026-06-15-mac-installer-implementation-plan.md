@@ -160,5 +160,5 @@ states local-rules mode. It does need:
 - app opens without terminal
 - local decon server starts and stops with the app
 - current headless validation passes before packaging
-- copy/open handoff works for ChatGPT, Gemini, Web Search, and Copy Only
+- copy/open handoff works for external tool, external tool, Web Search, and Copy Only
 - no raw input or cleaned prompt in logs or URLs

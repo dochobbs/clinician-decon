@@ -21,8 +21,8 @@ Expected current result:
 
 ```text
 Decon validation PASS
-Suites: usability, adversarial, philter-adversarial-addon
-Destinations: chatgpt, gemini, web_search
+Suites: usability, adversarial, external-deid-adversarial-addon
+Destinations: default LLM and search destinations
 Engine: rules+openmed
 Source cases: 1050
 Outputs: 3150
@@ -40,7 +40,7 @@ This command runs the current release gate:
 
 - `package/data/decon_usability_500_2026-06-15.json`
 - `package/data/decon_adversarial_500_2026-06-15.json`
-- `package/data/decon_philter_adversarial_addon_50_2026-06-16.json`
+- `package/data/decon_external_deid_adversarial_addon_50_2026-06-16.json`
 
 It checks both safety and usefulness:
 
@@ -97,7 +97,7 @@ python3 package/scripts/run_validation.py --suite current --engine rules+openmed
 Run one destination:
 
 ```bash
-python3 package/scripts/run_validation.py --suite current --destinations chatgpt --engine rules+openmed
+python3 package/scripts/run_validation.py --suite current --destinations web_search --engine rules+openmed
 ```
 
 Write a JSON report:
@@ -151,7 +151,7 @@ python3 package/scripts/run_validation.py --min-clinical-usable 0.99
 | `legacy-phi` | alias | no | Runs older copied PHI-only suites except the combined duplicate. |
 | `legacy-synth-500` | PHI-only | no | Broad synthetic PHI coverage from prior work. |
 | `legacy-synth-500-b` | PHI-only | no | Second broad synthetic draw from prior work. |
-| `legacy-amboss-stress` | PHI-only | no | Older Amboss stress labels; includes clinical facts labeled as PHI-like. |
+| `legacy-stress` | PHI-only | no | Older stress labels; includes clinical facts labeled as PHI-like. |
 | `legacy-combined-1132` | PHI-only | no | Combined legacy corpus for exploration and trend comparison. |
 | `all` | alias | no | Current gate plus the non-combined legacy PHI suites. |
 
@@ -198,8 +198,8 @@ Important fields:
 
 ## What This Does Not Prove
 
-The current default gate validates the shipped synthetic, adversarial, and Philter-adversarial
-distribution. It does not prove universal PHI safety across real clinical notes.
+The current default gate validates the shipped synthetic, adversarial, and external de-ID
+adversarial distribution. It does not prove universal PHI safety across real clinical notes.
 
 Use the current gate to prevent regressions. Use clinician-reviewed gold traces to strengthen
 external validation claims.

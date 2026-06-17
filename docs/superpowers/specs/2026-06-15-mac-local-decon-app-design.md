@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-15
 **Status:** Draft for review
-**Repo:** `dochobbs/clinician-decon`
+**Repo:** `clinician-decon`
 
 ## Objective
 
@@ -16,8 +16,7 @@ The app must be simple enough for a non-technical clinician:
 3. Let it install the local privacy model automatically.
 4. Paste clinical text.
 5. Click `Decontextualize`.
-6. Click `Copy & Open ChatGPT`, `Copy & Open Gemini`, `Copy & Open Claude`, `Copy & Open
-   OpenEvidence`, `Copy & Open Web Search`, or `Copy Only`.
+6. Click `Copy & Open`, `Copy & Open Web Search`, or `Copy Only`.
 
 ## Product Boundary
 
@@ -53,7 +52,7 @@ review manually.
 
 - Windows installer.
 - Browser extension.
-- Tabflows or other workflow-tool integration.
+- workflow platform or other workflow-tool integration.
 
 ## User-Facing System Requirements
 
@@ -96,7 +95,7 @@ Recommended implementation path:
 - React or equivalent web frontend inside the shell.
 - Local sidecar service for decon execution.
 - Python sidecar for V1 to reuse the existing `package/src/decon` code and the
-  `from-cds-eval/local_cds/decon.py` OpenMed pipeline.
+  `historical-fixtures/local_cds/decon.py` OpenMed pipeline.
 
 Fallback packaging path:
 
@@ -171,10 +170,9 @@ Required controls:
 
 - Source text input.
 - Destination selector:
-  - ChatGPT
-  - Gemini
-  - Claude
-  - OpenEvidence
+  - General LLM
+  - Secondary LLM
+  - Clinical evidence tool
   - Web Search
   - Copy Only
 - Primary button: `Decontextualize`.
@@ -182,31 +180,23 @@ Required controls:
 - Risk indicator: Low, Medium, High.
 - Removed categories panel.
 - Buttons after successful decon:
-  - `Copy & Open ChatGPT`
-  - `Copy & Open Gemini`
-  - `Copy & Open Claude`
-  - `Copy & Open OpenEvidence`
+  - `Copy & Open`
   - `Copy & Open Web Search`
   - `Copy Only`
 
 The destination button shown most prominently should match the selected destination.
 
-## Third-Party Handoff
+## External Handoff
 
-Destination URLs:
-
-- ChatGPT: `https://chatgpt.com/`
-- Gemini: `https://gemini.google.com/`
-- Claude: `https://claude.ai/`
-- OpenEvidence: configurable default, likely `https://www.openevidence.com/`
-- Web Search: configurable default browser search page or search engine home page.
+Destination URLs should be configured locally or by an organization policy file. Public docs should
+describe destination classes, not name individual external companies.
 
 V1 handoff behavior:
 
 1. Copy cleaned prompt to clipboard.
 2. Open destination URL in the user's default browser.
-3. Show local confirmation: `Cleaned prompt copied. Paste it into ChatGPT/Gemini/etc after
-   reviewing.`
+3. Show local confirmation: `Cleaned prompt copied. Review it before pasting into the external
+   destination.`
 
 The app must not:
 
@@ -218,7 +208,7 @@ The app must not:
 
 ## Destination Prompt Templates
 
-ChatGPT, Gemini, and Claude:
+LLM destinations:
 
 ```text
 Use the following de-identified clinical context. Do not assume missing patient identifiers.
@@ -227,7 +217,7 @@ If you need patient-specific details that are absent, say what is missing rather
 [SAFE_CONTEXT]
 ```
 
-OpenEvidence:
+Clinical evidence destination:
 
 ```text
 Find current clinical evidence or guidelines for the following de-identified clinical question:
@@ -342,7 +332,8 @@ Install/setup:
 Core workflow:
 
 - User can paste source text.
-- User can select ChatGPT, Gemini, Claude, OpenEvidence, Web Search, or Copy Only.
+- User can select a configured LLM destination, clinical evidence destination, Web Search, or
+  Copy Only.
 - User can run decon locally.
 - User can see cleaned prompt.
 - User can see removed categories.
@@ -369,38 +360,37 @@ Performance:
 
 ## V1 Demo Script
 
-Demo case 1: ChatGPT
+Demo case 1: configured LLM destination
 
 1. Paste synthetic chart/message snippet with name, DOB, MRN, parent name, and clinical question.
-2. Select ChatGPT.
+2. Select the configured LLM destination.
 3. Run decon.
 4. Show removed categories.
-5. Click `Copy & Open ChatGPT`.
-6. Paste manually into ChatGPT.
+5. Click `Copy & Open`.
+6. Paste manually into the external destination.
 
-Demo case 2: Gemini
+Demo case 2: secondary LLM destination
 
 1. Paste synthetic referral summary with direct identifiers.
-2. Select Gemini.
+2. Select the secondary LLM destination.
 3. Run decon.
-4. Copy/open Gemini.
+4. Copy/open the selected destination.
 
-Demo case 3: OpenEvidence
+Demo case 3: clinical evidence destination
 
 1. Paste synthetic physician evidence question with patient details.
-2. Select OpenEvidence.
+2. Select the clinical evidence destination.
 3. Run decon.
 4. Show concise evidence-query output.
-5. Copy/open OpenEvidence.
+5. Copy/open the selected destination.
 
 ## V2 Candidates
 
 - Windows installer.
 - Browser extension for selected text.
-- Tabflows integration demo.
+- workflow platform integration demo.
 - Local multilingual fallback model.
 - Local LLM reviewer for semantic/contextual identifier detection.
 - Organization policy profiles.
 - Admin-managed destination allowlist.
 - Signed auto-updates.
-

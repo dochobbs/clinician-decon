@@ -17,13 +17,13 @@ Related docs:
   run, failure trace, fixes, and final result.
 - `docs/qa/2026-06-16-local-rules-openmed-audit.md`: model-backed pipeline audit and
   seed-gold verification.
-- `docs/qa/2026-06-16-philter-adversarial-addon-head-to-head.md`: 50-case add-on built to test
-  patterns where Philter-UCSF might plausibly be competitive.
+- `docs/qa/2026-06-16-external-deid-adversarial-addon-head-to-head.md`: 50-case add-on built to test
+  patterns where a broad external de-ID baseline might plausibly be competitive.
 
 ## Current Regression Gates
 
 The default `current` gate runs the 500-case usability suite, the 500-case adversarial suite, and
-the 50-case Philter-adversarial add-on. Production validation should run it with
+the 50-case external de-ID adversarial add-on. Production validation should run it with
 `--engine rules+openmed`, not rules-only `auto`. `clinician-seed-gold` is the high-signal 10-case
 clinician review seed. `persona-regression` is a larger explicit gate that uses the versioned
 persona and archetype libraries.
@@ -36,7 +36,7 @@ persona and archetype libraries.
 | `package/data/decon_validation_blindspot_redteam_17_2026-06-15.json` | 17 | Skeptical validation audit after aggregate gates missed the Marvin live-server leak. | Hardens against evaluator blind spots: caregiver prose verbs, preferred-name labels, `Patient named`, dotted/no-comma/day-month DOBs, policy/license/IP identifiers, and apartment units. | `docs/qa/2026-06-15-validation-blindspot-red-team.md`: first run found 38 / 51 PHI-leaked outputs and 12 / 51 missing-critical-fact outputs; final run 51 / 51 safe, clinically usable, and handoff usable. |
 | `package/data/decon_validation_blindspot_redteam_r2_25_2026-06-15.json` | 25 | Second skeptical clinician-authored pass after R1 fixes. | Hardens against more natural prose: `says that`, `per mom`, name-is/goes-by/alias labels, lowercase name labels, MOC/FOC, space/ISO/period DOBs, `MR #`, chart IDs with spaces, room numbers, hash unit numbers, and word-spelled phone numbers. | `docs/qa/2026-06-15-validation-blindspot-red-team-r2.md`: first run found 56 / 75 PHI-leaked outputs and 12 / 75 missing-critical-fact outputs; final run 75 / 75 safe, clinically usable, and handoff usable. |
 | `package/data/decon_clinician_seed_gold_10_2026-06-16.json` | 10 | Clinician-selected hard cases created after the Marvin miss and OpenMed audit. | Seed-gold gate for patient-name prose, multi-patient sibling notes, legal-name labels, Spanish family phrasing, camp/school/pharmacy/location, and clinical eponym preservation. | `docs/qa/2026-06-16-local-rules-openmed-audit.md`: `rules+openmed` run on 2026-06-16 passed 30 / 30 outputs with 0 PHI leaks and 0 missing clinical facts. |
-| `package/data/decon_philter_adversarial_addon_50_2026-06-16.json` | 50 | Hand-authored Philter-adversarial add-on created from the Philter comparison and local pipeline gaps. | Tests identifiers and formats where a broad de-ID tool might be competitive: accession, specimen, voiceprint, passport, license, military, claim, group, UUID, device IDs, HL7, FHIR, JSON, filenames, QR payloads, portal tokens, Slack handles, Unicode, Spanish prose, facility locations, bus routes, and eponym/name-drug collisions. | `docs/qa/2026-06-16-philter-adversarial-addon-head-to-head.md`: Clinician Decon passed 150 / 150 outputs; Philter-UCSF scored 31 / 50 safe and 35 / 50 clinically usable. |
+| `package/data/decon_external_deid_adversarial_addon_50_2026-06-16.json` | 50 | Hand-authored external de-ID adversarial add-on created from the external baseline comparison and local pipeline gaps. | Tests identifiers and formats where a broad de-ID tool might be competitive: accession, specimen, voiceprint, passport, license, military, claim, group, UUID, device IDs, HL7, FHIR, JSON, filenames, QR payloads, portal tokens, chat-export handles, Unicode, Spanish prose, facility locations, bus routes, and eponym/name-drug collisions. | `docs/qa/2026-06-16-external-deid-adversarial-addon-head-to-head.md`: Clinician Decon passed 150 / 150 outputs; the external baseline scored 31 / 50 safe and 35 / 50 clinically usable. |
 | `package/data/decon_persona_regression_2000_2026-06-15.json` | 2,000 | `package/scripts/generate_traces.py --count 2000 --seed 20260615` using `package/data/personas/v1.json` and `package/data/archetypes/v1.json` | Persona-driven regression suite: combines clinician persona, patient context, source channel, perturbation, and clinical archetype metadata. | `docs/qa/2026-06-15-persona-regression-2000-eval.md`: first run found 2,742 / 6,000 PHI-leaked outputs; final run 6,000 / 6,000 safe, clinically usable, and handoff usable. |
 
 ## 2026-06-16 OpenMed-Backed Current Gate
@@ -82,7 +82,7 @@ Seed and date:
 
 - Seed: none; clinician-selected deterministic cases.
 - Reference date: `2026-06-15`
-- Destinations: `chatgpt`, `gemini`, `web_search`
+- Destinations: default LLM and search destinations
 - Outputs per run: `10 cases x 3 destinations = 30 outputs`
 
 Coverage:
@@ -126,7 +126,7 @@ Seed and date:
 
 - Seed: `20260615`
 - Reference date: `2026-06-15`
-- Destinations: `chatgpt`, `gemini`, `web_search`
+- Destinations: default LLM and search destinations
 - Outputs per run: `2,000 cases x 3 destinations = 6,000 outputs`
 
 Coverage:
@@ -165,7 +165,7 @@ Seed and date:
 
 - Seed: none; clinician-authored deterministic cases.
 - Reference date: `2026-06-15`
-- Destinations: `chatgpt`, `gemini`, `web_search`
+- Destinations: default LLM and search destinations
 - Outputs per run: `25 cases x 3 destinations = 75 outputs`
 
 Coverage:
@@ -198,7 +198,7 @@ Seed and date:
 
 - Seed: none; skeptical clinician-authored cases.
 - Reference date: `2026-06-15`
-- Destinations: `chatgpt`, `gemini`, `web_search`
+- Destinations: default LLM and search destinations
 - Outputs per run: `17 cases x 3 destinations = 51 outputs`
 
 Coverage:
@@ -238,7 +238,7 @@ Seed and date:
 
 - Seed: none; skeptical clinician-authored cases.
 - Reference date: `2026-06-15`
-- Destinations: `chatgpt`, `gemini`, `web_search`
+- Destinations: default LLM and search destinations
 - Outputs per run: `25 cases x 3 destinations = 75 outputs`
 
 Coverage:
@@ -279,7 +279,7 @@ Seed and date:
 
 - Seed: `20260615`
 - Reference date: `2026-06-15`
-- Destinations: `chatgpt`, `gemini`, `web_search`
+- Destinations: default LLM and search destinations
 - Outputs per run: `500 cases x 3 destinations = 1,500 outputs`
 
 Category distribution:
@@ -338,7 +338,7 @@ Seed and date:
 
 - Seed: `20260615`
 - Reference date: `2026-06-15`
-- Destinations: `chatgpt`, `gemini`, `web_search`
+- Destinations: default LLM and search destinations
 - Outputs per run: `500 cases x 3 destinations = 1,500 outputs`
 
 This suite asks whether clinically important facts survive decontextualization. The generated
@@ -365,11 +365,11 @@ regression and research artifacts.
 
 | Query set | Rows | Origin | Purpose |
 | --- | ---: | --- | --- |
-| `from-cds-eval/data/decon_synth_500.json` | 500 | `cds-eval` synthetic generator output | Broad synthetic PHI coverage across names, MRNs, dates, phones, addresses, SSNs, no-PHI guideline queries, dense PHI, and clinical lookalikes. |
-| `from-cds-eval/data/decon_synth_500_b.json` | 500 | `cds-eval` synthetic generator output | Second broad synthetic 500-case draw for distribution diversity. |
-| `from-cds-eval/data/decon_amboss_stress.json` | 132 | Amboss-derived decon stress cases | More adversarial prompt styles from earlier rounds, including name-in-query and other PHI stress categories. |
-| `from-cds-eval/data/decon_combined_1132.json` | 1,132 | Combined `cds-eval` synthetic plus Amboss stress corpus | Larger local-rules batch red-team corpus. See `docs/qa/2026-06-15-local-rules-1132-batch-red-team.md`. |
-| `package/data/phi_stress_test*.json` | varies | Copied Amboss/package fixtures | Historical PHI stress fixtures preserved for continuity with the original package. |
+| `historical-fixtures/workbench/data/decon_synth_500.json` | 500 | Historical synthetic generator output | Broad synthetic PHI coverage across names, MRNs, dates, phones, addresses, SSNs, no-PHI guideline queries, dense PHI, and clinical lookalikes. |
+| `historical-fixtures/workbench/data/decon_synth_500_b.json` | 500 | Historical synthetic generator output | Second broad synthetic 500-case draw for distribution diversity. |
+| `historical-fixtures/workbench/data/decon_legacy_stress.json` | 132 | Historical decon stress cases | More adversarial prompt styles from earlier rounds, including name-in-query and other PHI stress categories. |
+| `historical-fixtures/workbench/data/decon_combined_1132.json` | 1,132 | Combined historical synthetic plus stress corpus | Larger local-rules batch red-team corpus. See `docs/qa/2026-06-15-local-rules-1132-batch-red-team.md`. |
+| `package/data/phi_stress_test*.json` | varies | Copied historical project/package fixtures | Historical PHI stress fixtures preserved for continuity with the original package. |
 
 ## Adding a New Query Set
 

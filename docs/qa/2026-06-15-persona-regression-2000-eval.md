@@ -125,7 +125,7 @@ Final result:
 ```text
 Decon validation PASS
 Suites: persona-regression
-Destinations: chatgpt, gemini, web_search
+Destinations: llm_primary, llm_secondary, web_search
 Source cases: 2000
 Outputs: 6000
 PHI leaked outputs: 0

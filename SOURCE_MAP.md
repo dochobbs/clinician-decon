@@ -1,154 +1,54 @@
-# Source Map
+# Repository Map
 
-This file records what was gathered into `clinician-decon` and where it came from.
+This file is a public-facing map of the current repository. It intentionally omits local machine
+paths, historical source locations, and partner or vendor provenance.
 
-## Copied From `Amboss/decon`
+## `package/`
 
-Destination: `package/`
+Main runnable package.
 
-Source:
+- `src/decon/`: local decontextualization code, app server, CLI entrypoints, validation runner,
+  model setup checks, and destination handoff rendering.
+- `web/`: local browser UI, manifest, service worker, and styles.
+- `tests/`: unit and regression tests.
+- `data/`: checked-in synthetic and adversarial validation suites.
+- `scripts/`: trace generation and validation wrappers.
+- `reports/`: generated validation reports retained for QA history.
+- `docs/`: package-level tool brief and historical implementation notes.
 
-```text
-/Users/dochobbs/Downloads/Consult/Amboss/decon/
-```
+## `docs/qa/`
 
-Copied contents:
+Quality and validation documentation.
 
-- Python package: `src/decon/`
-- tests: `tests/`
-- package config: `pyproject.toml`
-- README: `README.md`
-- stress fixtures: `data/`
-- original architecture/testing docs: `docs/`
-- OpenAI evaluation reports: `reports/`
+- headless validation runbook
+- query-set registry
+- synthetic trace generation strategy
+- persona library notes
+- local-rules and model-backed pipeline audits
+- external baseline comparisons and error samples
+- focused PHI-field and blind-spot red-team reports
 
-Excluded contents:
+## `docs/superpowers/`
 
-- `.git/`
-- `.venv/`
-- `.pytest_cache/`
-- `__pycache__/`
-- `.DS_Store`
+Planning and design artifacts.
 
-Important source branch at copy time:
+- prototype implementation plan
+- local app design
+- Mac installer implementation plan
+- persona trace generator design
+- PHI-field handling review
 
-```text
-clinician-decon-tool
-```
+## Historical Fixtures
 
-Known pre-existing untracked file preserved in the copy:
+Some historical fixtures and reports are retained for regression continuity. They should be treated
+as internal QA material, not as current product documentation.
 
-```text
-reports/openai-gpt-5-mini-phi-suite-rerun.json
-```
+## Public-Ready Starting Points
 
-## Copied From `cds-eval`
+For a fresh reader, start here:
 
-Source:
-
-```text
-/Users/dochobbs/Downloads/Consult/cds-eval/
-```
-
-### Docs
-
-Destination: `from-cds-eval/docs/`
-
-- `docs/openmed_vs_haiku_decon_results.md`
-- `docs/decon_combined_1132q_findings.md`
-- `docs/decon_500q_results.md`
-- `docs/decon_v3_regex_expansion_findings.md`
-- `docs/HAIKU_DECONTEXTUALIZATION_ARCHITECTURE.md`
-- `docs/PHI_DECONTEXTUALIZATION_TESTING.md`
-
-### Data
-
-Destination: `from-cds-eval/data/`
-
-- `data/decon_amboss_stress.json`
-- `data/decon_broad_queries.json`
-- `data/decon_combined_1132.json`
-- `data/decon_synth_500.json`
-- `data/decon_synth_500_b.json`
-
-### Scripts
-
-Destination: `from-cds-eval/scripts/`
-
-- `scripts/decon_broad_smoke.py`
-- `scripts/decon_parity_test.py`
-- `scripts/decon_three_way.py`
-- `scripts/gen_decon_queries.py`
-- `scripts/import_amboss_decon_data.py`
-- `scripts/openmed_vs_haiku_decon.py`
-
-### Local Implementation
-
-Destination: `from-cds-eval/local_cds/`
-
-- `eval/services/local_cds/decon.py`
-- `eval/services/local_cds/__init__.py`
-
-### Results
-
-Destination: `from-cds-eval/results/decon_parity/`
-
-- `results/decon_parity/broad_regex_ner_20260510_091159.json`
-- `results/decon_parity/broad_regex_ner_20260510_091544.json`
-- `results/decon_parity/broad_regex_ner_20260510_092325.json`
-- `results/decon_parity/broad_regex_ner_20260510_092742.json`
-- `results/decon_parity/broad_regex_ner_20260510_095429.json`
-- `results/decon_parity/broad_regex_ner_20260510_111129.json`
-- `results/decon_parity/broad_regex_ner_20260510_121625.json`
-- `results/decon_parity/openmed_vs_haiku_20260510_085527.json`
-- `results/decon_parity/openmed_vs_haiku_20260510_085739.json`
-- `results/decon_parity/three_way_20260510_090447.json`
-
-### Eval Fixtures
-
-Destination: `from-cds-eval/eval/`
-
-- `eval/phi_enriched_queries_20260406_081841.json`
-- `eval/phi_stress_test.json`
-- `eval/phi_stress_test_r2.json`
-- `eval/phi_stress_test_r3.json`
-
-## Copied From `Amboss`
-
-Source:
-
-```text
-/Users/dochobbs/Downloads/Consult/Amboss/
-```
-
-### Eval Fixtures
-
-Destination: `from-amboss/eval/`
-
-- `eval/phi_enriched_queries_20260406_081841.json`
-- `eval/phi_stress_test.json`
-- `eval/phi_stress_test_r2.json`
-- `eval/phi_stress_test_r3.json`
-
-## Copied From `IronsVault`
-
-Source:
-
-```text
-/Users/dochobbs/Downloads/Consult/IronsVault/Projects/decon.md
-```
-
-Destination:
-
-```text
-workspace-notes/decon.md
-```
-
-## Not Gathered Yet
-
-These may still be worth checking later, but were not copied in this first pass:
-
-- Broader `Amboss/docs/` historical reports outside `Amboss/decon/`.
-- Broader `cds-eval/docs/2026-04-12-reports/` summary reports.
-- `cds-eval-lab` presentation assets that describe decon in portfolio/product language.
-- Any web app prototype code, because none exists yet in the decon package.
+- `README.md`
+- `package/README.md`
+- `docs/qa/headless-validation.md`
+- `docs/qa/query-set-registry.md`
+- `package/docs/clinician-decon-tool-brief.md`

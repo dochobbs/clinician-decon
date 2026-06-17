@@ -6,7 +6,7 @@ Scope: current `package/src/decon/local_rules.py` plus destination prompt render
 `package/src/decon/destinations.py`.
 
 Reviewer stance: skeptical physician deciding whether this feels safe, clinically useful, and
-high-quality enough to trust before pasting into ChatGPT, Gemini, Claude, OpenEvidence, or web
+high-quality enough to trust before pasting into external tool, external tool, external tool, external tool, or web
 search.
 
 ## Bottom Line
@@ -21,7 +21,7 @@ context, Spanish names, nickname/relative identifiers, or prompt-injection text.
 
 ## Current Prompt Shape
 
-For ChatGPT, Gemini, and Claude, the app renders:
+For external tool, external tool, and external tool, the app renders:
 
 ```text
 Use the following de-identified clinical context. Do not assume missing patient identifiers.
@@ -32,7 +32,7 @@ If you need patient-specific details that are absent, say what is missing rather
 
 For Web Search, the app renders the local `safe_query`.
 
-For OpenEvidence, the app renders:
+For external tool, the app renders:
 
 ```text
 Find current clinical evidence or guidelines for the following de-identified clinical question:
@@ -47,9 +47,9 @@ Find current clinical evidence or guidelines for the following de-identified cli
 Examples from the red-team run:
 
 - `Maya Thornton`, `Sandra`, and `19F` survived in a Web Search prompt.
-- `Lil D` and `grandma Shirley` survived in a ChatGPT prompt.
-- `Sofia Ramirez` survived in a Spanish-language ChatGPT prompt.
-- `Sarah`, `Marcus`, and `Dana` survived in a multi-sibling ChatGPT prompt.
+- `Lil D` and `grandma Shirley` survived in a external tool prompt.
+- `Sofia Ramirez` survived in a Spanish-language external tool prompt.
+- `Sarah`, `Marcus`, and `Dana` survived in a multi-sibling external tool prompt.
 - `Rosario Delgado` survived in a Web Search prompt.
 
 Why a skeptical physician rejects this: the tool says the output is safe enough to copy, but the
@@ -198,7 +198,7 @@ Minimum bar before a clinician pilot:
 1. Residual PHI scanner catches the red-team leaks above.
 2. Copy/open blocks on residual direct identifiers.
 3. Prompt-injection text is stripped or sandboxed.
-4. Web Search/OpenEvidence get intent-specific query builders beyond vaccines.
+4. Web Search/external tool get intent-specific query builders beyond vaccines.
 5. CLI batch runner replays the 500 and 1,132 case fixtures on every rules change.
 6. UI makes uncertainty explicit: "Needs review", "Exact clinical values retained", "Possible
    residual identifier", and "Search query is generic fallback".

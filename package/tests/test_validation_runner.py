@@ -38,16 +38,16 @@ def test_phi_field_prose_suite_is_registered_as_current_gate():
   )
 
 
-def test_philter_adversarial_addon_suite_is_registered():
-  assert "philter-adversarial-addon" in CURRENT_SUITES
-  assert CURRENT_SUITES["philter-adversarial-addon"].name == (
-    "decon_philter_adversarial_addon_50_2026-06-16.json"
+def test_external_deid_adversarial_addon_suite_is_registered():
+  assert "external-deid-adversarial-addon" in CURRENT_SUITES
+  assert CURRENT_SUITES["external-deid-adversarial-addon"].name == (
+    "decon_external_deid_adversarial_addon_50_2026-06-16.json"
   )
 
 
-def test_philter_adversarial_addon_suite_passes_with_zero_failures():
+def test_external_deid_adversarial_addon_suite_passes_with_zero_failures():
   result = run_validation(
-    suites=("philter-adversarial-addon",),
+    suites=("external-deid-adversarial-addon",),
     destinations=("chatgpt", "gemini", "web_search"),
     reference_date=date(2026, 6, 16),
   )

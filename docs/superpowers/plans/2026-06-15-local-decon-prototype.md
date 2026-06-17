@@ -21,7 +21,7 @@ URLs.
 - Create: `package/src/decon/destinations.py`
 - Test: `package/tests/test_destinations.py`
 
-- [ ] Write tests proving ChatGPT, Gemini, Claude, OpenEvidence, Web Search, and Copy Only render
+- [ ] Write tests proving external tool, external tool, external tool, external tool, Web Search, and Copy Only render
       prompts and never embed prompt text in destination URLs.
 - [ ] Implement `render_prompt(destination_id, safe_context, safe_query=None)`.
 - [ ] Implement `build_handoff(destination_id, prompt)` returning copy text, URL, and action label.

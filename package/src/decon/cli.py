@@ -1,99 +1,102 @@
-"""CLI for standalone decontextualization."""
+"""CLI for local standalone decontextualization."""
 
 from __future__ import annotations
 
 import argparse
+from datetime import date
 import json
-from pathlib import Path
+import sys
+from typing import Sequence
 
-from .eval import build_report, evaluate_cases, list_cases, load_default_suites, summarize_outcomes, write_report
-from .service import build_decontextualizer, decontextualize_query
-from .tasks import TaskMode
+from .destinations import DESTINATIONS
+from .local_rules import AUTO_ENGINE, SUPPORTED_ENGINES, decontextualize_text
+
+
+DESTINATION_ALIASES = {
+  "copy": "copy_only",
+}
 
 
 def build_parser() -> argparse.ArgumentParser:
   parser = argparse.ArgumentParser(
     prog="decon",
-    description="Decontextualize clinician queries into safe web-search prompts.",
-  )
-  parser.add_argument("query", nargs="?", help="Clinician free-text query")
-  parser.add_argument(
-    "--provider",
-    default="anthropic",
-    choices=["anthropic", "openai"],
-    help="Model provider to use",
+    description="Decontextualize clinician text locally into a safer prompt.",
   )
   parser.add_argument(
-    "--model",
-    default="claude-haiku-4-5-20251001",
-    help="Anthropic model to use",
+    "text",
+    nargs="?",
+    help="Clinical text to decontextualize. If omitted, stdin is used.",
   )
   parser.add_argument(
-    "--patient-context",
-    default="{}",
-    help="JSON object used for local PHI validation",
+    "--destination",
+    default="copy",
+    choices=tuple(sorted((*DESTINATIONS.keys(), *DESTINATION_ALIASES.keys()))),
+    help="Prompt destination template. Defaults to copy-only output.",
   )
   parser.add_argument(
-    "--mode",
-    default=TaskMode.EXTERNAL_WEB_SEARCH.value,
-    choices=[item.value for item in TaskMode],
-    help="Task minimization mode",
+    "--engine",
+    choices=tuple(sorted(SUPPORTED_ENGINES)),
+    default=AUTO_ENGINE,
+    help="Local decon engine. Use rules+openmed to require the local model layer.",
   )
   parser.add_argument(
-    "--eval",
+    "--reference-date",
+    default=date.today().isoformat(),
+    help="Reference date for DOB-to-age conversion in YYYY-MM-DD format.",
+  )
+  parser.add_argument(
+    "--json",
     action="store_true",
-    help="Run the bundled fixture suites against the live decontextualizer",
-  )
-  parser.add_argument(
-    "--list-tests",
-    action="store_true",
-    help="Print the bundled fixture inventory and exit",
-  )
-  parser.add_argument(
-    "--report",
-    help="Write eval results to a JSON report file",
+    help="Print a JSON payload instead of only the destination prompt.",
   )
   return parser
 
 
-def main() -> int:
+def main(argv: Sequence[str] | None = None) -> int:
   parser = build_parser()
-  args = parser.parse_args()
-  cases = load_default_suites()
-
-  if args.list_tests:
-    print(json.dumps(list_cases(cases), indent=2))
-    return 0
-
-  if args.eval:
-    runner = build_decontextualizer(provider=args.provider, model=args.model)
-    outcomes = evaluate_cases(cases, decontextualizer=runner)
-    summary = summarize_outcomes(outcomes)
-    print(json.dumps(summary, indent=2))
-    if args.report:
-      report = build_report(outcomes, provider=args.provider, model=args.model)
-      write_report(report, Path(args.report))
-    return 0 if all(item.passed for item in outcomes) else 1
+  args = parser.parse_args(argv)
+  text = args.text if args.text is not None else sys.stdin.read()
+  text = text.strip()
+  if not text:
+    parser.error("text is required, either as an argument or on stdin")
 
   try:
-    patient_context = json.loads(args.patient_context)
-  except json.JSONDecodeError as exc:
-    parser.error(f"invalid --patient-context JSON: {exc}")
+    reference_date = date.fromisoformat(args.reference_date)
+  except ValueError:
+    parser.error("--reference-date must use YYYY-MM-DD format")
 
-  if not args.query:
-    parser.error("query is required unless --eval is used")
-
-  query = decontextualize_query(
-    args.query,
-    provider=args.provider,
-    model=args.model,
-    patient_context=patient_context,
-    mode=TaskMode(args.mode),
-    validate=True,
+  destination_id = DESTINATION_ALIASES.get(args.destination, args.destination)
+  result = decontextualize_text(
+    text,
+    destination=destination_id,
+    reference_date=reference_date,
+    engine=args.engine,
   )
 
-  print(query)
+  if args.json:
+    print(json.dumps(_result_payload(result, requested_destination=args.destination), indent=2))
+  else:
+    print(result.destination_prompt)
   return 0
+
+
+def _result_payload(result, *, requested_destination: str) -> dict[str, object]:
+  return {
+    "destination": requested_destination,
+    "destination_id": result.destination,
+    "engine": result.engine,
+    "engine_requested": result.engine_requested,
+    "engine_fallback_reason": result.engine_fallback_reason,
+    "risk_level": result.risk_level,
+    "risk_reasons": result.risk_reasons,
+    "copy_allowed": result.copy_allowed,
+    "open_url": result.open_url,
+    "action_label": result.action_label,
+    "removed_categories": result.removed_categories,
+    "safe_context": result.safe_context,
+    "safe_query": result.safe_query,
+    "destination_prompt": result.destination_prompt,
+  }
 
 
 if __name__ == "__main__":

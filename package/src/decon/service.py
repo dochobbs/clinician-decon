@@ -11,7 +11,7 @@ from .tasks import TaskMode
 from .validate import PHILeakError, validate_no_phi
 
 DEFAULT_PROVIDER = "anthropic"
-DEFAULT_MODEL = "claude-haiku-4-5-20251001"
+DEFAULT_MODEL = "cloud-rewrite-reference"
 DEFAULT_PROMPT = """You are a HIPAA compliance filter for a clinical decision support search system.
 
 Given a physician's clinical question (which may contain patient-specific details),

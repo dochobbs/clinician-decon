@@ -30,14 +30,14 @@ CURRENT_SUITES = {
   "validation-blindspot-redteam-r2": DATA_DIR / "decon_validation_blindspot_redteam_r2_25_2026-06-15.json",
   "clinician-seed-gold": DATA_DIR / "decon_clinician_seed_gold_10_2026-06-16.json",
   "persona-regression": DATA_DIR / "decon_persona_regression_2000_2026-06-15.json",
-  "philter-adversarial-addon": DATA_DIR / "decon_philter_adversarial_addon_50_2026-06-16.json",
+  "external-deid-adversarial-addon": DATA_DIR / "decon_external_deid_adversarial_addon_50_2026-06-16.json",
 }
 
 LEGACY_PHI_SUITES = {
-  "legacy-synth-500": REPO_ROOT / "from-cds-eval" / "data" / "decon_synth_500.json",
-  "legacy-synth-500-b": REPO_ROOT / "from-cds-eval" / "data" / "decon_synth_500_b.json",
-  "legacy-amboss-stress": REPO_ROOT / "from-cds-eval" / "data" / "decon_amboss_stress.json",
-  "legacy-combined-1132": REPO_ROOT / "from-cds-eval" / "data" / "decon_combined_1132.json",
+  "legacy-synth-500": REPO_ROOT / "historical-fixtures" / "workbench" / "data" / "decon_synth_500.json",
+  "legacy-synth-500-b": REPO_ROOT / "historical-fixtures" / "workbench" / "data" / "decon_synth_500_b.json",
+  "legacy-stress": REPO_ROOT / "historical-fixtures" / "workbench" / "data" / "decon_legacy_stress.json",
+  "legacy-combined-1132": REPO_ROOT / "historical-fixtures" / "workbench" / "data" / "decon_combined_1132.json",
 }
 
 DEFAULT_DESTINATIONS = ("chatgpt", "gemini", "web_search")
@@ -130,16 +130,16 @@ def _expand_suite_names(suites: tuple[str, ...]) -> tuple[str, ...]:
   expanded = []
   for suite in suites:
     if suite == "current":
-      expanded.extend(("usability", "adversarial", "philter-adversarial-addon"))
+      expanded.extend(("usability", "adversarial", "external-deid-adversarial-addon"))
     elif suite == "legacy-phi":
-      expanded.extend(("legacy-synth-500", "legacy-synth-500-b", "legacy-amboss-stress"))
+      expanded.extend(("legacy-synth-500", "legacy-synth-500-b", "legacy-stress"))
     elif suite == "all":
       expanded.extend((
         "usability",
         "adversarial",
         "legacy-synth-500",
         "legacy-synth-500-b",
-        "legacy-amboss-stress",
+        "legacy-stress",
       ))
     else:
       expanded.append(suite)

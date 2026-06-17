@@ -10,7 +10,7 @@ remains useful for an outside LLM or web search.
 - Seed: `20260615`
 - Reference date: `2026-06-15`
 - Cases: `500`
-- Destinations: `chatgpt, gemini, web_search`
+- Destinations: `llm_primary, llm_secondary, web_search`
 - Outputs evaluated: `1500`
 - Average runtime: `0.153 ms`
 - p95 runtime: `0.219 ms`
@@ -36,8 +36,8 @@ Definitions:
 
 | Destination | Outputs | Safe | Clinically usable | Handoff usable | PHI leaked | Missing facts | Unsafe copy |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `chatgpt` | 500 | 500 | 500 | 500 | 0 | 0 | 0 |
-| `gemini` | 500 | 500 | 500 | 500 | 0 | 0 | 0 |
+| `llm_primary` | 500 | 500 | 500 | 500 | 0 | 0 | 0 |
+| `llm_secondary` | 500 | 500 | 500 | 500 | 0 | 0 | 0 |
 | `web_search` | 500 | 500 | 500 | 500 | 0 | 0 | 0 |
 
 ## Category Breakdown

@@ -3,28 +3,40 @@
 Python package and local web prototype for clinician-facing PHI minimization.
 
 The package can run as a local browser app, CLI, or library. The current app path is fully local:
-deterministic rules plus optional local OpenMed PHI-NER. Older model-backed code and evaluation
-fixtures are still present so we can compare local rules, local NER, and cloud or BAA-covered
-rewrite approaches.
+deterministic rules plus an optional local PHI-NER model.
+
+## Decon Vs De-ID
+
+Traditional de-identification removes or masks identifiers from a note. Clinician Decon is more
+task-specific: it removes identifiers and risky context while preserving the clinical facts needed
+for a useful AI or search prompt.
+
+Examples:
+
+| Input contains | Decon output should preserve |
+| --- | --- |
+| `DOB 3/15/2013` | clinical age band, such as `adolescent` |
+| `A1c 8.2` | `elevated A1c` when exact value is not needed |
+| `28 kg, epinephrine autoinjector dose?` | exact weight when needed for dosing |
+| `Addison Brooks has Addison disease` | diagnosis preserved, patient name removed |
+| `Only HLH patient on 7th floor today` | `Rare HLH case`, floor/date removed |
 
 ## What Is Here
 
 - `src/decon/local_rules.py`: deterministic decon, engine routing, and residual risk checks.
-- `src/decon/openmed_ner.py`: optional local OpenMed PHI-NER span detector.
+- `src/decon/openmed_ner.py`: optional local PHI-NER span detector.
 - `src/decon/model_setup.py`: repo-local model/runtime readiness checks.
-- `src/decon/app_server.py`: stdlib HTTP server for the local prototype.
-- `web/`: static PWA-style interface.
-- `src/decon/destinations.py`: ChatGPT, Gemini, Claude, OpenEvidence, Web Search, and Copy Only
-  copy/open handoff definitions.
-- `src/decon/pipeline.py`, `service.py`, `tasks.py`: older task-mode and model-backed pipeline.
-- `tests/`: regression tests for decon rules, destination handoff, setup status, validation, and
-  service behavior.
-- `docs/`: copied research notes, partner notes, and clinician tool brief.
+- `src/decon/app_server.py`: standard-library HTTP server for the local prototype.
+- `web/`: static browser interface.
+- `src/decon/destinations.py`: external LLM, external search, and copy-only handoff definitions.
+- `tests/`: regression tests for rules, destination handoff, setup status, validation, and service
+  behavior.
+- `docs/`: research notes and clinician-facing tool brief.
 
 ## Install
 
 ```bash
-cd /Users/dochobbs/Downloads/Consult/clinician-decon/package
+cd package
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .[dev]
@@ -32,16 +44,16 @@ pip install -e .[dev]
 
 No API key is needed for the local web app.
 
-To run the OpenMed engine, the app runtime needs `transformers` and `torch`, and model files must
-exist under:
+To run the model-backed engine, the app runtime needs `transformers` and `torch`, and model files
+must exist under:
 
 ```text
-local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1/
+local-models/<model-directory>/
 ```
 
 That directory is intentionally ignored by git.
 
-## Run the Local App
+## Run The Local App
 
 ```bash
 PYTHONPATH=src python -m decon.app_server
@@ -54,9 +66,11 @@ http://127.0.0.1:8769
 ```
 
 The app lets a clinician paste PHI-containing text, review the cleaned result, copy the safe
-prompt, and open a third-party destination. Prompt text is never placed in the destination URL.
+prompt, and open an external destination. Prompt text is never placed in the destination URL.
 
-## Example
+## Examples
+
+### Vaccine Question
 
 Input:
 
@@ -65,27 +79,68 @@ Marcus Johnson DOB 3/15/2013 MRN LP-2024-08432 came in today.
 Mom Jennifer called from 512-555-0147 asking what vaccines he needs at this age.
 ```
 
-Web Search output:
-
-```text
-adolescent immunization schedule vaccines current guidelines
-```
-
-Review context:
+Safe review context:
 
 ```text
 [NAME] adolescent [MRN] came in same-day. parent called from [PHONE] asking what vaccines he needs at this age.
 ```
 
-## CLI
+Search prompt:
 
-The package still includes the original CLI:
-
-```bash
-decon "Marcus Johnson, DOB 3/15/2013, needs his 13-year-old vaccines per AAP"
+```text
+adolescent immunization schedule vaccines current guidelines
 ```
 
-Set `ANTHROPIC_API_KEY` only when running the older live model-backed decontextualizer path.
+### Medication Question
+
+Input:
+
+```text
+Patient Lia Chen DOB 9/5/2025 has fever 102.1 and decreased intake.
+Parent asks when an infant needs urgent evaluation.
+```
+
+Safe prompt:
+
+```text
+Patient [NAME] infant 6-11 months has fever 102.1 and decreased intake.
+Parent asks when an infant needs urgent evaluation.
+```
+
+### Eponym Collision
+
+Input:
+
+```text
+Referral for Addison Brooks. Addison disease on fludrocortisone, vomiting; stress-dose steroid?
+```
+
+Safe prompt:
+
+```text
+Referral for [NAME]. Addison disease on fludrocortisone, vomiting; stress-dose steroid?
+```
+
+## CLI
+
+```bash
+decon "Marcus Johnson, DOB 3/15/2013, needs vaccine guidance"
+```
+
+Use a destination template:
+
+```bash
+decon "Marcus Johnson, DOB 3/15/2013, needs vaccine guidance" --destination web_search
+```
+
+Use stdin and JSON output in a pipeline:
+
+```bash
+printf '%s\n' "Mom Jennifer asks about guanfacine for Marvin before camp July 12" | decon --json
+```
+
+The CLI is fully local and useful for quick experiments. The browser app and `decon-validate`
+command are the preferred paths for release validation.
 
 ## Test
 
@@ -96,7 +151,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-125 passed
+127 passed
 ```
 
 ## Headless Validation
@@ -104,7 +159,6 @@ Current local snapshot:
 From a source checkout:
 
 ```bash
-cd /Users/dochobbs/Downloads/Consult/clinician-decon
 PYTHONPATH=package/src /path/to/python-with-transformers \
   package/scripts/run_validation.py --engine rules+openmed
 ```
@@ -115,13 +169,9 @@ After package install:
 decon-validate --engine rules+openmed
 ```
 
-Current default gate:
+Current default gate summary:
 
 ```text
-Decon validation PASS
-Suites: usability, adversarial, philter-adversarial-addon
-Destinations: chatgpt, gemini, web_search
-Engine: rules+openmed
 Source cases: 1050
 Outputs: 3150
 PHI leaked outputs: 0
@@ -159,33 +209,19 @@ python3 package/scripts/run_validation.py \
   --report package/reports/latest-validation.json
 ```
 
-See `../docs/qa/headless-validation.md` for the full runbook,
-`../docs/qa/synthetic-trace-generation.md` for the trace-generation strategy, and
-`../docs/qa/persona-library.md` for the versioned synthetic persona vocabulary.
+See:
 
-Run the local usability suite:
-
-```bash
-python scripts/run_usability_eval.py
-```
-
-This generates `package/data/decon_usability_500_2026-06-15.json`,
-`package/reports/local-usability-500-2026-06-15.json`, and
-`docs/qa/2026-06-15-local-usability-500-eval.md`.
+- `../docs/qa/headless-validation.md`
+- `../docs/qa/synthetic-trace-generation.md`
+- `../docs/qa/persona-library.md`
 
 ## Safety Notes
 
 - The local app processes text on `127.0.0.1`.
-- OpenMed loads with `local_files_only=True`; decon does not download model files or call a
-  network API.
+- The model-backed engine loads local files only during decon.
 - Names, MRNs, phone numbers, email, SSNs, URLs, street addresses, and ZIP-level geography are
   removed or replaced.
-- DOB and exact ages are converted to clinical age bands when parseable, such as
-  `adolescent`, `school-age child`, `older adult 65-74`, or `adult age 90 or older`.
-- Web Search can add task-specific age hints, such as
-  `early adolescent in HPV/Tdap vaccine range`, without restoring exact age.
+- DOB and exact ages are converted to clinical age bands when parseable.
 - Relative/caregiver names are removed while broad relationship context can remain.
-- Clinical values may be generalized when exact values are not necessary, for example `A1c 8.2`
-  to `elevated A1c`; exact weight or severe lab values are preserved when needed for dosing or
-  criteria checks.
+- Clinical values may be generalized when exact values are not necessary.
 - This is a PHI minimization prototype, not a legal or compliance guarantee.

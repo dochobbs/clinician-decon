@@ -11,9 +11,9 @@ legal-name labels, Spanish repeated names, and multi-patient sibling text.
 
 ## Prior Work We Reused
 
-The copied `from-cds-eval` work found:
+The copied `historical-fixtures` work found:
 
-- OpenMed SuperClinical PHI-NER is local, deterministic, and roughly twice as fast as Haiku API
+- OpenMed SuperClinical PHI-NER is local, deterministic, and roughly twice as fast as cloud rewrite model API
   decon in the small parity run.
 - OpenMed alone missed an MRN-like value, so deterministic regex/rule guards are still required.
 - OpenMed plus regex did well on canonical PHI, but previous 1,132-query analysis found recurring
@@ -102,7 +102,7 @@ Current environment note:
 - The model directory is ignored by git because it is approximately 1.6 GB.
 - Default `python3` on this machine does not have `transformers`, so `auto` correctly falls back
   to `local-rules` there.
-- `/Users/dochobbs/Downloads/Consult/cds-eval/.venv/bin/python` has `transformers` and `torch`
+- `[local path removed] evaluation harness/.venv/bin/python` has `transformers` and `torch`
   and can load the copied model locally.
 - Explicit `rules+openmed` requests fail closed when the model files or runtime are unavailable:
   the result reports the fallback reason, marks risk high, and blocks copy.

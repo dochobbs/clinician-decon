@@ -12,7 +12,7 @@ copy-pasted note sections, and contact/date mashups.
 - Seed: `20260615`
 - Reference date: `2026-06-15`
 - Cases: `500`
-- Destinations: `chatgpt, gemini, web_search`
+- Destinations: `llm_primary, llm_secondary, web_search`
 - Outputs evaluated: `1500`
 - Average runtime: `0.234 ms`
 - p95 runtime: `0.315 ms`
@@ -32,8 +32,8 @@ copy-pasted note sections, and contact/date mashups.
 
 | Destination | Outputs | Safe | Clinically usable | Handoff usable | PHI leaked | Missing facts | Unsafe copy |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `chatgpt` | 500 | 500 | 500 | 500 | 0 | 0 | 0 |
-| `gemini` | 500 | 500 | 500 | 500 | 0 | 0 | 0 |
+| `llm_primary` | 500 | 500 | 500 | 500 | 0 | 0 | 0 |
+| `llm_secondary` | 500 | 500 | 500 | 500 | 0 | 0 | 0 |
 | `web_search` | 500 | 500 | 500 | 500 | 0 | 0 | 0 |
 
 ## Category Breakdown

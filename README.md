@@ -1,22 +1,134 @@
 # Clinician Decon
 
-Clinician Decon is a local-first prototype for turning PHI-containing clinical text into a
-reviewable, paste-ready prompt for tools such as ChatGPT, Gemini, Claude, OpenEvidence, or web
-search.
+Clinician Decon is a local-first tool for turning PHI-containing clinical text into a
+reviewable, paste-ready prompt for external AI or search tools.
 
-The goal is simple: let a clinician paste from a PHI-protected workflow, remove or generalize
-identifiers on their own machine, review the cleaned prompt, then copy it into a non-BAA tool
-without sending raw PHI through this app.
+The core workflow is simple:
 
-Created on 2026-06-15 from the existing `Amboss/decon` package and later `cds-eval`
-decontextualization research. The original source locations were copied, not moved.
+1. Paste clinical text from a protected workflow.
+2. Run decontextualization locally on your machine.
+3. Review what was removed or generalized.
+4. Copy the safe prompt, then paste it into the destination yourself.
 
-## Current Prototype
+Raw pasted text is processed on `127.0.0.1`. The app does not put prompt text in third-party URLs.
 
-The runnable app lives in `package/`.
+## Decon Vs De-ID
+
+Traditional de-identification tries to remove or mask identifiers from a document. That is useful
+for releasing notes or datasets, but it can make a prompt less useful because it often replaces
+clinical context with blanks or asterisks.
+
+Decontextualization is stricter about the handoff task: remove direct identifiers and risky
+context, but preserve the clinical facts needed for a useful answer.
+
+Examples:
+
+| Input contains | Traditional de-ID might do | Clinician Decon aims to do |
+| --- | --- | --- |
+| `DOB 3/15/2013` | mask the date | convert to `adolescent` |
+| `A1c 8.2 and BMI 31` | leave exact values or mask them | convert to `elevated A1c` and `obesity-range BMI` when exact values are not needed |
+| `Addison Brooks has Addison disease` | mask both `Addison` terms | remove the patient name, preserve `Addison disease` |
+| `Only HLH patient on 7th floor today` | may leave uniqueness context | convert to `Rare HLH case` and remove floor/date identifiers |
+| `MRN LP-2024-08432` | mask with asterisks | replace with `[MRN]` and record only the removed category |
+
+The goal is not to prove a document is legally de-identified. The goal is to help a clinician
+create a safer, clinically useful prompt before using tools that should not receive raw PHI.
+
+## What It Does
+
+Clinician Decon removes or generalizes common identifiers and risky context:
+
+- names, relatives' names, nicknames, and provider names
+- MRNs, chart IDs, accession IDs, claim IDs, serials, QR payloads, and similar identifiers
+- phone numbers, emails, URLs, IP addresses, and device/network identifiers
+- street addresses, ZIP-level geography, schools, camps, facilities, rooms, units, beds, and floors
+- exact dates, relative dates, exact ages, and birth dates
+- prompt-injection text such as instructions to preserve identifiers
+
+It preserves clinical usefulness where possible:
+
+- DOB and exact ages become clinical age bands.
+- severe or decision-relevant labs can remain when needed for triage or criteria.
+- exact weights can remain when needed for weight-based dosing.
+- broad relationship context can remain, such as `parent reports patient`.
+- clinical eponyms and diagnoses are preserved when they are not patient identifiers.
+
+## Examples
+
+### Vaccine Question
+
+Input:
+
+```text
+Marcus Johnson DOB 3/15/2013 MRN LP-2024-08432 came in today.
+Mom Jennifer called from 512-555-0147 asking what vaccines he needs at this age.
+```
+
+Safe review context:
+
+```text
+[NAME] adolescent [MRN] came in same-day. parent called from [PHONE] asking what vaccines he needs at this age.
+```
+
+Search prompt:
+
+```text
+adolescent immunization schedule vaccines current guidelines
+```
+
+### Medication Side Effect
+
+Input:
+
+```text
+Marvin stopped methylphenidate 2 days ago because anxiety worsened.
+Mother Jennifer asks whether guanfacine 1 mg every morning is reasonable before camp July 12.
+```
+
+Safe prompt:
+
+```text
+Patient stopped methylphenidate 2 days ago because anxiety worsened.
+Parent asks whether guanfacine 1 mg every morning is reasonable before camp [DATE].
+```
+
+### Clinical Eponym Collision
+
+Input:
+
+```text
+Referral for Addison Brooks. Addison disease on fludrocortisone, vomiting; stress-dose steroid?
+```
+
+Safe prompt:
+
+```text
+Referral for [NAME]. Addison disease on fludrocortisone, vomiting; stress-dose steroid?
+```
+
+### Not Enough Clinical Content
+
+Input:
+
+```text
+pt reports saw Dr. Thomas on 4/12/26
+```
+
+Safe review context:
+
+```text
+pt reports saw Dr. [NAME] on [DATE]
+```
+
+This is safe, but it is not a useful clinical question. The reviewer should add a de-identified
+clinical question before sending it anywhere.
+
+## Current App
+
+The runnable package lives in `package/`.
 
 ```bash
-cd /Users/dochobbs/Downloads/Consult/clinician-decon/package
+cd package
 PYTHONPATH=src python -m decon.app_server
 ```
 
@@ -28,45 +140,45 @@ http://127.0.0.1:8769
 
 Current behavior:
 
-- deterministic rules plus optional local OpenMed PHI-NER (`rules+openmed`)
+- deterministic local rules plus optional local PHI-NER model
 - browser-based paste, decon, review, copy, and open workflow
-- destination options for ChatGPT, Gemini, Claude, OpenEvidence, Web Search, and Copy Only
+- destination options for external LLMs, external search, and copy-only handoff
 - no prompt text embedded in third-party URLs
 - setup/model status endpoint that verifies repo-local model files and Python runtime support
-- safe derived fields for common cases, such as DOB/exact age to clinical age band and
-  `A1c 8.2` to `elevated A1c`
 
-## Safety Model
-
-V1 is local-first and fail-closed by default:
-
-- Raw pasted text is processed on `127.0.0.1`.
-- OpenMed model loading uses local model files with `local_files_only=True`; decon does not
-  download model files or call a network API.
-- Removed PHI values are not shown in the audit panel, only categories.
-- Third-party handoff is copy-to-clipboard plus opening the destination home page.
-- Names, MRNs, phone numbers, email, SSNs, URLs, street addresses, ZIP-level geography, and
-  common narrative identifiers such as named pharmacies, schools, and camps are removed or
-  generalized.
-- Clinically useful facts may be preserved in safer form, such as age band, coarse timing,
-  generalized family relationships, or broad lab signals.
-
-This prototype helps minimize PHI before using non-BAA tools. It does not replace legal review,
-institutional policy, or clinician judgment.
-
-## Verification
-
-Run the package tests:
+## Install For Local Development
 
 ```bash
-cd /Users/dochobbs/Downloads/Consult/clinician-decon/package
+cd package
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .[dev]
+```
+
+No API key is needed for the local web app.
+
+To run the local PHI-NER engine, install the optional runtime dependencies and place the model
+files under:
+
+```text
+package/local-models/<model-directory>/
+```
+
+That directory is ignored by git.
+
+## Validation
+
+Run unit tests:
+
+```bash
+cd package
 PYTHONPATH=src python -m pytest
 ```
 
 Current local snapshot:
 
 ```text
-125 passed
+127 passed
 ```
 
 Run the model-backed headless validation gate:
@@ -76,77 +188,36 @@ PYTHONPATH=package/src /path/to/python-with-transformers \
   package/scripts/run_validation.py --engine rules+openmed
 ```
 
-Current `rules+openmed` validation snapshot with the repo-local OpenMed model:
+Current validation snapshot:
 
 ```text
 1,050 source cases, 3,150 destination outputs, 0 PHI leaks, 0 missing clinical facts,
 100% handoff usable, max avg runtime 100.098 ms, max p95 runtime 123.279 ms
 ```
 
-Run the 10-case clinician seed-gold gate:
+Additional useful gates:
 
 ```bash
-PYTHONPATH=package/src /path/to/python-with-transformers \
-  package/scripts/run_validation.py --suite clinician-seed-gold --engine rules+openmed
-```
-
-Run the larger persona-driven regression gate:
-
-```bash
+python3 package/scripts/run_validation.py --suite clinician-seed-gold --engine rules+openmed
 python3 package/scripts/run_validation.py --suite persona-regression --engine rules+openmed
-```
-
-Run the focused prose PHI field gate:
-
-```bash
 python3 package/scripts/run_validation.py --suite phi-field-prose --engine rules+openmed
-```
-
-Run the validation blind-spot red-team gate:
-
-```bash
 python3 package/scripts/run_validation.py --suite validation-blindspot-redteam --engine rules+openmed
 python3 package/scripts/run_validation.py --suite validation-blindspot-redteam-r2 --engine rules+openmed
 ```
 
-The model directory is intentionally ignored by git:
-
-```text
-package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1/
-```
-
-On this development machine it has been copied into the repo and verified locally. Fresh clones
-should use the installer path to populate `package/local-models/` before running
-`--engine rules+openmed`; explicit `rules+openmed` requests fail closed when the model or runtime
-is unavailable.
-
 ## Important Docs
 
-- [Source map](SOURCE_MAP.md)
-- [Mac local app design](docs/superpowers/specs/2026-06-15-mac-local-decon-app-design.md)
-- [PHI field handling review](docs/superpowers/specs/2026-06-15-phi-field-handling-review.md)
-- [Skeptical physician red-team](docs/qa/2026-06-15-skeptical-physician-red-team.md)
-- [Decon query set registry](docs/qa/query-set-registry.md)
+- [Repository map](SOURCE_MAP.md)
 - [Headless validation runbook](docs/qa/headless-validation.md)
+- [Decon query set registry](docs/qa/query-set-registry.md)
 - [Synthetic trace generation strategy](docs/qa/synthetic-trace-generation.md)
 - [Synthetic persona library](docs/qa/persona-library.md)
-- [Persona regression 2,000-case eval](docs/qa/2026-06-15-persona-regression-2000-eval.md)
-- [First-name-only note prose audit](docs/qa/2026-06-15-first-name-note-prose-audit.md)
-- [Other PHI fields prose audit](docs/qa/2026-06-15-other-phi-fields-prose-audit.md)
-- [Validation blind-spot red-team](docs/qa/2026-06-15-validation-blindspot-red-team.md)
-- [Validation blind-spot red-team R2](docs/qa/2026-06-15-validation-blindspot-red-team-r2.md)
-- [Local rules and OpenMed pipeline audit](docs/qa/2026-06-16-local-rules-openmed-audit.md)
-- [Philter-UCSF head-to-head](docs/qa/2026-06-16-philter-ucsf-head-to-head.md)
-- [Philter-adversarial add-on head-to-head](docs/qa/2026-06-16-philter-adversarial-addon-head-to-head.md)
-- [Philter-UCSF representative error samples](docs/qa/2026-06-16-philter-error-samples.md)
-- [Persona trace generator design](docs/superpowers/specs/2026-06-15-persona-trace-generator-design.md)
-- [Local rules 1,132-case batch red-team](docs/qa/2026-06-15-local-rules-1132-batch-red-team.md)
-- [Local 500-case usability eval](docs/qa/2026-06-15-local-usability-500-eval.md)
-- [Local 500-case adversarial eval](docs/qa/2026-06-15-local-adversarial-500-eval.md)
-- [Prototype implementation plan](docs/superpowers/plans/2026-06-15-local-decon-prototype.md)
+- [Local rules and model-backed pipeline audit](docs/qa/2026-06-16-local-rules-openmed-audit.md)
+- [External de-ID baseline head-to-head](docs/qa/2026-06-16-external-deid-baseline-head-to-head.md)
+- [External de-ID baseline error samples](docs/qa/2026-06-16-external-deid-baseline-error-samples.md)
+- [External de-ID adversarial add-on](docs/qa/2026-06-16-external-deid-adversarial-addon-head-to-head.md)
 - [Mac installer implementation plan](docs/superpowers/plans/2026-06-15-mac-installer-implementation-plan.md)
 - [Clinician tool brief](package/docs/clinician-decon-tool-brief.md)
-- [Tabflows partner research](package/docs/tabflows-partner-research.md)
 
 ## Directory Layout
 
@@ -155,45 +226,25 @@ clinician-decon/
   README.md
   SOURCE_MAP.md
   package/
-    Standalone Python package copied from Amboss/decon.
-  from-cds-eval/
-    docs/
-      Later local decon writeups and comparison reports.
-    data/
-      Synthetic and Amboss-derived decon test corpora.
-    scripts/
-      Evaluation and data-generation scripts from cds-eval.
-    local_cds/
-      Local regex + OpenMed NER implementation copied from cds-eval.
-    eval/
-      PHI stress/enriched fixtures copied from cds-eval/eval.
-    results/decon_parity/
-      Benchmark JSON outputs from local/Haiku parity runs.
-  from-amboss/
-    eval/
-      Top-level Amboss PHI stress/enriched fixtures.
-  workspace-notes/
-    Consult workspace project note for decon.
+    Python package, local server, web UI, tests, fixtures, and scripts.
+  docs/
+    QA reports, design notes, installer planning, and validation runbooks.
 ```
-
-## Highest-Value Starting Files
-
-- `package/docs/clinician-decon-tool-brief.md`
-- `package/docs/tabflows-partner-research.md`
-- `package/src/decon/pipeline.py`
-- `package/src/decon/service.py`
-- `package/src/decon/tasks.py`
-- `from-cds-eval/local_cds/decon.py`
-- `from-cds-eval/docs/openmed_vs_haiku_decon_results.md`
-- `from-cds-eval/docs/decon_combined_1132q_findings.md`
-- `workspace-notes/decon.md`
 
 ## Current Recommendation
 
-Use `package/` as the fork seed and promote the best parts of
-`from-cds-eval/local_cds/decon.py` into the package:
+Use `package/` as the release seed:
 
-1. Keep task-specific modes from `package/src/decon/tasks.py`.
-2. Keep local regex + OpenMed NER as the default production path.
-3. Keep cloud LLM rewrite as an optional BAA-covered or explicitly enabled fallback.
-4. Use the `from-cds-eval/data/` and `from-cds-eval/results/` artifacts as regression tests.
+1. Keep deterministic rules as the first pass.
+2. Keep the local PHI-NER model as the second pass when installed.
+3. Keep residual-risk scanning after both layers.
+4. Fail closed when the model-backed engine is explicitly requested but unavailable.
+5. Use the checked-in synthetic and adversarial suites as regression gates before packaging.
+
+## Safety Notes
+
+- This is a PHI-minimization prototype, not a legal or compliance guarantee.
+- Raw pasted text should stay local to the app runtime.
+- The user must review the cleaned prompt before copying it into any external tool.
+- Validation suites are synthetic and adversarial; they do not prove universal safety across real
+  clinical notes.

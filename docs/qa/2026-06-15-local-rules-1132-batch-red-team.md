@@ -2,20 +2,20 @@
 
 Date: 2026-06-15
 
-Scope: current `package/src/decon/local_rules.py`, evaluated against the gathered `cds-eval`
+Scope: current `package/src/decon/local_rules.py`, evaluated against the gathered `historical evaluation harness`
 fixtures copied into this repo.
 
 Fixtures:
 
-- `from-cds-eval/data/decon_synth_500.json`
-- `from-cds-eval/data/decon_synth_500_b.json`
-- `from-cds-eval/data/decon_combined_1132.json`
+- `historical-fixtures/data/decon_synth_500.json`
+- `historical-fixtures/data/decon_synth_500_b.json`
+- `historical-fixtures/data/decon_combined_1132.json`
 
 Reference date: 2026-06-15.
 
 Destinations tested:
 
-- `chatgpt`: copied prompt is `destination_prompt`.
+- `llm_primary`: copied prompt is `destination_prompt`.
 - `web_search`: copied prompt is `safe_query`.
 
 Method:
@@ -33,18 +33,18 @@ OpenMed + regex stack; this is only the app prototype's lightweight deterministi
 
 | Fixture | Destination | Rows | PHI terms | Leaked terms | Leak rows | Low+copy leak rows | Runtime |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `decon_synth_500.json` | `chatgpt` | 500 | 737 | 318 | 162 | 162 | 0.085s |
+| `decon_synth_500.json` | `llm_primary` | 500 | 737 | 318 | 162 | 162 | 0.085s |
 | `decon_synth_500.json` | `web_search` | 500 | 737 | 264 | 135 | 135 | 0.023s |
-| `decon_synth_500_b.json` | `chatgpt` | 500 | 860 | 379 | 194 | 194 | 0.073s |
+| `decon_synth_500_b.json` | `llm_primary` | 500 | 860 | 379 | 194 | 194 | 0.073s |
 | `decon_synth_500_b.json` | `web_search` | 500 | 860 | 317 | 163 | 163 | 0.025s |
-| `decon_combined_1132.json` | `chatgpt` | 1132 | 2526 | 1067 | 482 | 482 | 0.234s |
+| `decon_combined_1132.json` | `llm_primary` | 1132 | 2526 | 1067 | 482 | 482 | 0.234s |
 | `decon_combined_1132.json` | `web_search` | 1132 | 2526 | 915 | 409 | 409 | 0.244s |
 
 ## Post-Patch Delta: Learned Regex Port
 
-After porting the deterministic lessons from `from-cds-eval/local_cds/decon.py` into
+After porting the deterministic lessons from `historical-fixtures/local_cds/decon.py` into
 `package/src/decon/local_rules.py`, the two synthetic 500-query suites are back to zero detected
-fixture leaks for both ChatGPT and Web Search handoffs.
+fixture leaks for both external tool and Web Search handoffs.
 
 Patch coverage added:
 
@@ -61,37 +61,37 @@ Post-patch run, same fixtures and reference date:
 
 | Fixture | Destination | Rows | PHI terms | Leaked terms | Leak rows | Low+copy leak rows | Avg runtime | p95 runtime |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `decon_synth_500.json` | `chatgpt` | 500 | 737 | 0 | 0 | 0 | 0.101 ms | 0.181 ms |
+| `decon_synth_500.json` | `llm_primary` | 500 | 737 | 0 | 0 | 0 | 0.101 ms | 0.181 ms |
 | `decon_synth_500.json` | `web_search` | 500 | 737 | 0 | 0 | 0 | 0.081 ms | 0.169 ms |
-| `decon_synth_500_b.json` | `chatgpt` | 500 | 860 | 0 | 0 | 0 | 0.086 ms | 0.176 ms |
+| `decon_synth_500_b.json` | `llm_primary` | 500 | 860 | 0 | 0 | 0 | 0.086 ms | 0.176 ms |
 | `decon_synth_500_b.json` | `web_search` | 500 | 860 | 0 | 0 | 0 | 0.083 ms | 0.174 ms |
-| `decon_combined_1132.json` | `chatgpt` | 1132 | 2526 | 271 | 101 | 89 | 0.114 ms | 0.367 ms |
+| `decon_combined_1132.json` | `llm_primary` | 1132 | 2526 | 271 | 101 | 89 | 0.114 ms | 0.367 ms |
 | `decon_combined_1132.json` | `web_search` | 1132 | 2526 | 241 | 87 | 75 | 0.114 ms | 0.364 ms |
 
 This is a material recovery from the bad app-local baseline:
 
 | Fixture | Destination | Baseline leaked terms | Post-patch leaked terms | Baseline leak rows | Post-patch leak rows |
 | --- | --- | ---: | ---: | ---: | ---: |
-| `decon_synth_500.json` | `chatgpt` | 318 | 0 | 162 | 0 |
+| `decon_synth_500.json` | `llm_primary` | 318 | 0 | 162 | 0 |
 | `decon_synth_500.json` | `web_search` | 264 | 0 | 135 | 0 |
-| `decon_synth_500_b.json` | `chatgpt` | 379 | 0 | 194 | 0 |
+| `decon_synth_500_b.json` | `llm_primary` | 379 | 0 | 194 | 0 |
 | `decon_synth_500_b.json` | `web_search` | 317 | 0 | 163 | 0 |
-| `decon_combined_1132.json` | `chatgpt` | 1067 | 271 | 482 | 101 |
+| `decon_combined_1132.json` | `llm_primary` | 1067 | 271 | 482 | 101 |
 | `decon_combined_1132.json` | `web_search` | 915 | 241 | 409 | 87 |
 
-Remaining combined-suite leaks are concentrated in Amboss stress rows. The largest residual buckets
-are `amboss_r4_golden` and `amboss_r4_validation`, plus edge cases where the fixture labels exact
+Remaining combined-suite leaks are concentrated in historical project stress rows. The largest residual buckets
+are `legacy_r4_golden` and `legacy_r4_validation`, plus edge cases where the fixture labels exact
 age, medication dose, disease-name collisions, or deeply buried adversarial text as PHI. These are
 the reason the production path still needs the prior OpenMed + regex stack, not rules alone.
 
 Note: the 2026-06-15 usability run intentionally changed the deterministic rules to preserve
 clinically necessary weight and severe lab values for dosing and criteria checks. That slightly
-raises this older PHI-only Amboss count because the Amboss fixture labels some clinically useful
+raises this older PHI-only historical project count because the historical project fixture labels some clinically useful
 values as PHI-like, but it improves usability for weight-based dosing and HLH-style lab criteria.
 
 ## 1,132-Case Summary By Destination
 
-### ChatGPT
+### external tool
 
 - Rows: 1,132
 - Expected PHI terms: 2,526
@@ -117,9 +117,9 @@ Top categories:
 | Category | Rows | PHI terms | Leaked terms | Leak rows |
 | --- | ---: | ---: | ---: | ---: |
 | `name` | 289 | 578 | 484 | 242 |
-| `amboss_r4_golden` | 60 | 514 | 189 | 58 |
+| `legacy_r4_golden` | 60 | 514 | 189 | 58 |
 | `dense_multi_phi` | 99 | 598 | 176 | 77 |
-| `amboss_r4_validation` | 35 | 307 | 106 | 35 |
+| `legacy_r4_validation` | 35 | 307 | 106 | 35 |
 | `ssn` | 37 | 37 | 19 | 19 |
 | `address` | 47 | 77 | 18 | 18 |
 
@@ -149,9 +149,9 @@ Top categories:
 | Category | Rows | PHI terms | Leaked terms | Leak rows |
 | --- | ---: | ---: | ---: | ---: |
 | `name` | 289 | 578 | 422 | 211 |
-| `amboss_r4_golden` | 60 | 514 | 173 | 51 |
+| `legacy_r4_golden` | 60 | 514 | 173 | 51 |
 | `dense_multi_phi` | 99 | 598 | 122 | 50 |
-| `amboss_r4_validation` | 35 | 307 | 98 | 31 |
+| `legacy_r4_validation` | 35 | 307 | 98 | 31 |
 | `ssn` | 37 | 37 | 19 | 19 |
 | `address` | 47 | 77 | 18 | 18 |
 
@@ -288,7 +288,7 @@ because they evaluated the stronger OpenMed + regex stack. The current web app s
 3. Block copy/open when residual expected direct identifier patterns remain.
 4. Add CLI batch runner so this 1,132-case suite runs before every release.
 5. Decide and document the product policy for exact age and medication dose retention, because the
-   Amboss fixture treats some clinically useful values as PHI while the product currently preserves
+   historical project fixture treats some clinically useful values as PHI while the product currently preserves
    exact age when it is useful.
 
 ## Reproduction Command
