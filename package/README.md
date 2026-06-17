@@ -3,7 +3,7 @@
 Python package and local web prototype for clinician-facing PHI minimization.
 
 The package can run as a local browser app, CLI, or library. The current app path is fully local:
-deterministic rules plus an optional OpenMed local PHI-NER model.
+deterministic rules plus OpenMed local PHI-NER as the default user-facing engine.
 
 ## Decon Vs De-ID
 
@@ -57,6 +57,10 @@ The OpenMed model files are not tracked in git. For repository-local development
 `decon-setup-openmed --repo-local` writes to `local-models/`, which is intentionally ignored by
 git. The model used by this package is
 [OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1](https://huggingface.co/OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1).
+
+Without OpenMed setup, the app and CLI report the missing model as high risk and block copy by
+default. Use `--engine local-rules` only for explicit deterministic-rule development or regression
+testing.
 
 ## Run The Local App
 
@@ -156,7 +160,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-127 passed
+134 passed
 ```
 
 ## Headless Validation

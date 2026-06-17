@@ -8,7 +8,7 @@ paths, historical source locations, and partner or vendor provenance.
 Main runnable package.
 
 - `src/decon/`: local decontextualization code, app server, CLI entrypoints, validation runner,
-  model setup checks, and destination handoff rendering.
+  OpenMed setup/status checks, and destination handoff rendering.
 - `web/`: local browser UI, manifest, service worker, and styles.
 - `tests/`: unit and regression tests.
 - `data/`: checked-in synthetic and adversarial validation suites.

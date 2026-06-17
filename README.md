@@ -140,11 +140,12 @@ http://127.0.0.1:8769
 
 Current behavior:
 
-- deterministic local rules plus optional OpenMed local PHI-NER model
+- deterministic local rules plus OpenMed local PHI-NER as the default user-facing engine
 - browser-based paste, decon, review, copy, and open workflow
 - destination options for external LLMs, external search, and copy-only handoff
 - no prompt text embedded in third-party URLs
 - setup/model status endpoint that verifies repo-local model files and Python runtime support
+- copy is blocked when the OpenMed-backed engine is requested but unavailable
 
 ## OpenMed Work Used
 
@@ -160,6 +161,10 @@ The model files are not tracked in this git repo. Setup downloads or copies them
 cache, and decontextualization loads them with `local_files_only=True`. For repository-local
 development, `decon-setup-openmed --repo-local` installs the files under `package/local-models/`,
 which is ignored by git.
+
+The local-rules engine remains available for deterministic regression work, but it is not the
+release safety posture. The web app, CLI, and `decon-validate` command default to `rules+openmed`;
+if OpenMed is missing, they fail closed or block copy instead of reporting a low-risk handoff.
 
 The OpenMed model page lists the model license as Apache-2.0. That license applies to the model
 asset separately from this project's license.
@@ -193,6 +198,10 @@ decon-setup-openmed --repo-local
 That writes to `package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1/`, which is
 ignored by git.
 
+Without OpenMed setup, the user-facing app and CLI still run local rules, but they report the
+missing model as high risk and block copy by default. Use `--engine local-rules` only for explicit
+rule-development or regression testing.
+
 ## Validation
 
 Run unit tests:
@@ -205,7 +214,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-127 passed
+134 passed
 ```
 
 Run the model-backed headless validation gate:

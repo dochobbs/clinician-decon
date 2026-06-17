@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from .local_rules import SUPPORTED_ENGINES, decontextualize_text
+from .local_rules import OPENMED_ENGINE, SUPPORTED_ENGINES, decontextualize_text
 from .model_setup import get_model_status
 
 
@@ -26,7 +26,7 @@ def build_decon_payload(request: dict[str, Any]) -> dict[str, Any]:
   """Build a decon API response without returning raw source text or removed values."""
   text = str(request.get("text", ""))
   destination = str(request.get("destination", "copy_only"))
-  engine = str(request.get("engine", "auto"))
+  engine = str(request.get("engine", OPENMED_ENGINE))
   if not text.strip():
     return {
       "error": "empty_text",

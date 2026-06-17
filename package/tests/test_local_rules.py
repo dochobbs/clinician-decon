@@ -1083,3 +1083,25 @@ def test_decontextualize_text_can_apply_openmed_detector_spans():
   assert result.engine_requested == "rules+openmed"
   assert result.engine == "rules+openmed"
   assert result.engine_fallback_reason == ""
+
+
+def test_local_rules_cover_reviewed_false_negative_examples():
+  examples = [
+    ("Maria Gonzalez-Lopez here for her 2 week checkup.", ("Maria", "Gonzalez-Lopez"), ("name",)),
+    ("RE: Tyler. He has had RSV for a week.", ("Tyler",), ("name",)),
+    ("Pt lives in 90210 area, asthma flare.", ("90210",), ("zip",)),
+    ("Reached patient at +44 20 7946 0958 today.", ("7946", "0958"), ("phone",)),
+    (
+      "sarah underscore lee at gmail dot com needs asthma action plan.",
+      ("sarah", "underscore", "gmail"),
+      ("email",),
+    ),
+  ]
+
+  for source, forbidden_terms, expected_categories in examples:
+    result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+    for term in forbidden_terms:
+      assert term.lower() not in result.safe_context.lower()
+    for category in expected_categories:
+      assert result.removed_categories.get(category, 0) >= 1

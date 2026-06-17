@@ -9,7 +9,7 @@ import sys
 from typing import Sequence
 
 from .destinations import DESTINATIONS
-from .local_rules import AUTO_ENGINE, SUPPORTED_ENGINES, decontextualize_text
+from .local_rules import OPENMED_ENGINE, SUPPORTED_ENGINES, decontextualize_text
 
 
 DESTINATION_ALIASES = {
@@ -36,7 +36,7 @@ def build_parser() -> argparse.ArgumentParser:
   parser.add_argument(
     "--engine",
     choices=tuple(sorted(SUPPORTED_ENGINES)),
-    default=AUTO_ENGINE,
+    default=OPENMED_ENGINE,
     help="Local decon engine. Use rules+openmed to require the local model layer.",
   )
   parser.add_argument(
@@ -75,9 +75,26 @@ def main(argv: Sequence[str] | None = None) -> int:
 
   if args.json:
     print(json.dumps(_result_payload(result, requested_destination=args.destination), indent=2))
-  else:
-    print(result.destination_prompt)
+    if not result.copy_allowed:
+      _print_blocked_warning(result)
+      return 2
+    return 0
+
+  if not result.copy_allowed:
+    _print_blocked_warning(result)
+    return 2
+  if result.risk_level != "low":
+    print(
+      f"Warning: decon risk is {result.risk_level}; review before copying.",
+      file=sys.stderr,
+    )
+  print(result.destination_prompt)
   return 0
+
+
+def _print_blocked_warning(result) -> None:
+  reasons = "; ".join(result.risk_reasons) if result.risk_reasons else "high residual risk"
+  print(f"Copy blocked: decon risk is {result.risk_level}. {reasons}", file=sys.stderr)
 
 
 def _result_payload(result, *, requested_destination: str) -> dict[str, object]:

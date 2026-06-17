@@ -16,7 +16,7 @@ from .validation_runner import (
   run_validation,
   write_report,
 )
-from .local_rules import SUPPORTED_ENGINES
+from .local_rules import OPENMED_ENGINE, SUPPORTED_ENGINES
 
 
 SUITE_CHOICES = (
@@ -53,7 +53,7 @@ def build_parser() -> argparse.ArgumentParser:
   parser.add_argument(
     "--engine",
     choices=tuple(sorted(SUPPORTED_ENGINES)),
-    default="auto",
+    default=OPENMED_ENGINE,
     help="Decon engine to validate. Use rules+openmed to require the local OpenMed layer.",
   )
   parser.add_argument(

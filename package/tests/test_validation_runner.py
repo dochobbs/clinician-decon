@@ -203,6 +203,8 @@ def test_validation_cli_prints_summary_and_returns_success(capsys):
     "chatgpt",
     "--reference-date",
     "2026-06-15",
+    "--engine",
+    "local-rules",
   ])
 
   captured = capsys.readouterr()

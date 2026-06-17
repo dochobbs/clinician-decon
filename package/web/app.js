@@ -96,6 +96,7 @@ async function runDecon() {
       body: JSON.stringify({
         text: sourceText.value,
         destination: destination.value,
+        engine: "rules+openmed",
       }),
     });
     const payload = await response.json();

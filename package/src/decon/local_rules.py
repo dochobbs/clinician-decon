@@ -91,7 +91,7 @@ NAME_PARTICLES = r"van|von|der|den|de|del|da|la|le|di|du|dos|das"
 FULL_NAME = rf"{NAME_TOKEN}(?:\s+(?:(?:{NAME_PARTICLES})\s+)*{NAME_TOKEN}){{1,3}}"
 NAME_CUES = (
   r"DOB|MRN|on|has|with|presents|asks?|needs|due|from|is|came|called|wants|"
-  r"says|lives|peri-menopausal"
+  r"says|lives|here|peri-menopausal"
 )
 CAREGIVER_SUBJECT_TERMS = r"Mom|Mother|Dad|Father|Parent|Caregiver|Guardian|Caller|MOC|FOC"
 CAREGIVER_REPORT_VERBS = (
@@ -241,7 +241,24 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   )),
   ("zip", re.compile(r"\b(?:ZIP|zip code)\s*[:#]?\s*(\d{5}(?:-\d{4})?)\b", re.IGNORECASE)),
   ("zip", re.compile(r"\b\d{5}-\d{4}\b")),
+  ("zip", re.compile(
+    r"\b(?:lives?|resides)\s+(?:in|near|around)\s+(\d{5})(?:-\d{4})?"
+    r"(?=\s+(?:area|zip|region|neighbou?rhood)\b|[,.;]|$)",
+    re.IGNORECASE,
+  )),
+  ("zip", re.compile(
+    r"\b(?:from|near|in)\s+(\d{5})(?:-\d{4})?"
+    r"(?=\s+(?:area|zip|region|neighbou?rhood)\b|[,.;]|$)",
+    re.IGNORECASE,
+  )),
+  ("zip", re.compile(r"\b(\d{5})(?:-\d{4})?(?=\s+area\b)", re.IGNORECASE)),
   ("email", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
+  ("email", re.compile(
+    r"\b([A-Za-zÀ-ÖØ-öø-ÿ0-9'-]+"
+    r"(?:\s+(?:dot|underscore|under\s+score|dash|hyphen)\s+[A-Za-zÀ-ÖØ-öø-ÿ0-9'-]+){1,10}"
+    r"\s+at\s+[A-Za-z0-9]+(?:\s+dot\s+[A-Za-z]{2,})+)\b",
+    re.IGNORECASE,
+  )),
   ("email", re.compile(
     r"\bemail\s+([A-Za-zÀ-ÖØ-öø-ÿ0-9'-]+"
     r"(?:\s+(?:dot\s+)?[A-Za-zÀ-ÖØ-öø-ÿ0-9'-]+){0,10}\s+at\s+"
@@ -255,6 +272,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     re.IGNORECASE,
   )),
   ("phone", re.compile(r"(?:\+1[\s-]?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}\b")),
+  ("phone", re.compile(r"\+\d{1,3}(?:[\s().-]?\d){6,14}\b")),
   ("phone", re.compile(r"\b((?:\d\s+){9}\d)\b")),
   ("phone", re.compile(
     rf"\b((?:(?:{NUMBER_WORD})\s+){{9}}(?:{NUMBER_WORD}))\b",
@@ -480,6 +498,9 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("name", re.compile(
     rf"\b(?i:(?:Pt|Patient|Family of|chart for|for patient|for pt))\s+({FULL_NAME})"
     rf"(?=\s*(?:,|\(|\b(?i:(?:{NAME_CUES}))\b|\d{{1,3}}\s*(?:M|F)\b|\d{{1,3}}\s*(?:{EXPLICIT_AGE_UNITS})\b))",
+  )),
+  ("name", re.compile(
+    rf"\b(?i:re)\s*:\s*({NAME_TOKEN})(?=\s*[.;:,-]\s*(?i:(?:he|she|they|pt|patient))\b)"
   )),
   ("name", re.compile(
     rf"\b({NAME_TOKEN})\s+\(\s*\d{{1,3}}\s*(?:M|F|{EXPLICIT_AGE_UNITS})\s*\)",
