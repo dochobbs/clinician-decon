@@ -17,6 +17,20 @@
         <h1>Decon</h1>
         <p class="subhead">Local clinical prompt decontextualization</p>
       </div>
+      <ol class="quick-guide" aria-label="How Decon works">
+        <li>
+          <span class="guide-step">1</span>
+          <span>Paste text from a PHI-protected source.</span>
+        </li>
+        <li>
+          <span class="guide-step">2</span>
+          <span>Run local decon and review the safe prompt.</span>
+        </li>
+        <li>
+          <span class="guide-step">3</span>
+          <span>Copy it for use in the selected tool.</span>
+        </li>
+      </ol>
       <div id="setupStatus" class="status status-waiting">Checking setup</div>
     </header>
 
@@ -24,19 +38,34 @@
       <section class="pane">
         <div class="pane-header">
           <h2>Source</h2>
-          <select id="destination" aria-label="Destination">
-            <option value="chatgpt">ChatGPT</option>
-            <option value="gemini">Gemini</option>
-            <option value="claude">Claude</option>
-            <option value="openevidence">OpenEvidence</option>
-            <option value="web_search">Web Search</option>
-            <option value="copy_only">Copy Only</option>
-          </select>
+          <label class="field-label">
+            <span>For use in</span>
+            <select id="destination" aria-label="For use in">
+              <option value="chatgpt">ChatGPT</option>
+              <option value="gemini">Gemini</option>
+              <option value="claude">Claude</option>
+              <option value="openevidence">OpenEvidence</option>
+              <option value="web_search">Web Search</option>
+              <option value="copy_only">Copy Only</option>
+            </select>
+          </label>
         </div>
         <textarea id="sourceText" spellcheck="false" placeholder="Paste clinical text here"></textarea>
         <div class="action-row">
           <button id="runButton" class="primary">Decontextualize</button>
-          <button id="sampleButton" class="secondary">Load Sample</button>
+          <label class="field-label sample-field">
+            <span>Example</span>
+            <select id="sampleSelect" aria-label="Example case">
+              <option value="vaccine">Vaccine callback</option>
+              <option value="adhd">ADHD med follow-up</option>
+              <option value="asthma">Asthma action plan</option>
+              <option value="renal">Renal dosing question</option>
+              <option value="pregnancy">Pregnancy medication</option>
+              <option value="sibling">Sibling note</option>
+              <option value="rare">Rare disease search</option>
+            </select>
+          </label>
+          <button id="sampleButton" class="secondary">Load Example</button>
           <button id="clearButton" class="secondary">Clear</button>
         </div>
       </section>
@@ -65,7 +94,7 @@
       </div>
       <div class="trust">
         <h2>Local Boundary</h2>
-        <p>Decon runs on this machine. Review the cleaned prompt before pasting it into any external tool.</p>
+        <p>Intended use: make a local, safer prompt for an external tool when you do not want raw PHI to leave this Mac. It is not a full chart de-identification export.</p>
         <div id="engineStatus" class="engine-status">Engine: not run</div>
         <div class="trust-actions">
           <button id="shutdownButton" class="secondary" type="button">Quit Local App</button>

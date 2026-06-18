@@ -3,6 +3,7 @@ const outputText = document.querySelector("#outputText");
 const destination = document.querySelector("#destination");
 const runButton = document.querySelector("#runButton");
 const sampleButton = document.querySelector("#sampleButton");
+const sampleSelect = document.querySelector("#sampleSelect");
 const clearButton = document.querySelector("#clearButton");
 const copyOpenButton = document.querySelector("#copyOpenButton");
 const copyButton = document.querySelector("#copyButton");
@@ -17,7 +18,15 @@ const shutdownStatus = document.querySelector("#shutdownStatus");
 let lastPayload = null;
 let runProgressTimer = null;
 
-const sampleText = "Marcus Johnson DOB 3/15/2013 MRN LP-2024-08432 came in today. Mom Jennifer called from 512-555-0147 asking what vaccines he needs at this age.";
+const samples = {
+  vaccine: "Marcus Johnson DOB 3/15/2013 MRN LP-2024-08432 came in today. Mom Jennifer called from 512-555-0147 asking what vaccines he needs at this age.",
+  adhd: "Marvin returns for ADHD and anxiety follow-up. Mom says methylphenidate made him tearful and more anxious, so they stopped it 2 days ago. Starting guanfacine 1 mg qAM, may increase every 5 days to max 4 mg. Camp starts July 12; update requested before trip next Wednesday. Pharmacy Walgreens on Vernon.",
+  asthma: "Portal from Alicia Rivera about Noah, DOB 6/2/2016: cough and wheeze after soccer, using albuterol every 4 hours, no fever, SpO2 97% at home. Needs asthma action plan for school nurse at Oak Hill Elementary.",
+  renal: "Mr. Frank Patel, 78, CrCl 28 mL/min, on apixaban and amiodarone. Daughter Priya asks whether nitrofurantoin is safe for UTI after culture from Quest accession QST-492810.",
+  pregnancy: "Samantha Lee is 10 weeks pregnant, called from 415-555-0192 asking if sertraline 50 mg should be continued. Prior postpartum depression; OB visit at Northside next Monday.",
+  sibling: "Twin sibling note: Emma had strep last week, now Liam Chen MRN LC-9921 has sore throat and fever. Parent asks whether sibling exposure changes testing or antibiotics.",
+  rare: "Aiden has recurrent fevers, aphthous ulcers, ferritin 920, ESR 74, and family asks about PFAPA versus periodic fever syndrome. Search current pediatric workup guidance.",
+};
 
 function setRisk(level) {
   riskBadge.className = `risk risk-${level || "idle"}`;
@@ -175,7 +184,7 @@ async function copyPrompt() {
 runButton.addEventListener("click", runDecon);
 
 sampleButton.addEventListener("click", () => {
-  sourceText.value = sampleText;
+  sourceText.value = samples[sampleSelect.value] || samples.vaccine;
 });
 
 clearButton.addEventListener("click", () => {
@@ -215,6 +224,7 @@ shutdownButton.addEventListener("click", async () => {
   } finally {
     setupStatus.textContent = "Stopped";
     setupStatus.className = "status status-waiting";
+    shutdownButton.textContent = "Quit";
     shutdownStatus.textContent = "Local app stopped. Close this tab when finished.";
   }
 });

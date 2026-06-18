@@ -17,6 +17,7 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   demo_readme = REPO_ROOT / "docs" / "install" / "mac-demo-readme.md"
   qa_doc = REPO_ROOT / "docs" / "qa" / "mac-installer-qa.md"
   web_manifest = REPO_ROOT / "package" / "web" / "manifest.json"
+  web_index = REPO_ROOT / "package" / "web" / "index.html"
   web_app = REPO_ROOT / "package" / "web" / "app.js"
   web_worker = REPO_ROOT / "package" / "web" / "sw.js"
   web_favicon = REPO_ROOT / "package" / "web" / "favicon.ico"
@@ -34,6 +35,7 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
     demo_readme,
     qa_doc,
     web_manifest,
+    web_index,
     web_app,
     web_worker,
     web_favicon,
@@ -89,6 +91,7 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "Drag `Clinician Decon.app` to `Applications`" in demo_text
   assert "Right-click `Clinician Decon.app`, choose `Open`" in demo_text
   assert "http://127.0.0.1:8769/" in demo_text
+  assert "Choose `For use in`" in demo_text
   assert "The browser tab is the app window" in demo_text
   assert "Quit Local App" in demo_text
   assert "build_self_contained_dmg.sh" not in demo_text
@@ -102,15 +105,28 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png"} in manifest["icons"]
   assert {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png"} in manifest["icons"]
 
+  web_index_text = web_index.read_text(encoding="utf-8")
+  assert "Paste text from a PHI-protected source" in web_index_text
+  assert "Run local decon and review" in web_index_text
+  assert "For use in" in web_index_text
+  assert "sampleSelect" in web_index_text
+  assert "ADHD med follow-up" in web_index_text
+  assert "Intended use" in web_index_text
+
   web_app_text = web_app.read_text(encoding="utf-8")
   assert "Running local decon" in web_app_text
   assert "Still running" in web_app_text
   assert "Decon did not run." in web_app_text
   assert "AbortController" in web_app_text
+  assert "const samples" in web_app_text
+  assert "guanfacine" in web_app_text
+  assert "PFAPA" in web_app_text
+  assert 'shutdownButton.textContent = "Quit"' in web_app_text
   assert "/api/shutdown" in web_app_text
   assert "Local app stopped" in web_app_text
 
   worker_text = web_worker.read_text(encoding="utf-8")
+  assert "decon-static-v4" in worker_text
   assert "decon-static-v3" in worker_text
   assert "decon-static-v2" in worker_text
   assert "decon-static-v1" in worker_text

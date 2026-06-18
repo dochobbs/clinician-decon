@@ -1,5 +1,5 @@
-const CACHE_NAME = "decon-static-v3";
-const OLD_CACHES = ["decon-static-v1", "decon-static-v2"];
+const CACHE_NAME = "decon-static-v4";
+const OLD_CACHES = ["decon-static-v1", "decon-static-v2", "decon-static-v3"];
 const STATIC_ASSETS = [
   "/",
   "/index.html",

@@ -42,6 +42,23 @@ build script copies them from the repo-local ignored model directory during pack
 
 There should be no dependency setup prompt, model download, or Terminal command on first launch.
 
+## Basic Use
+
+1. Paste clinical text from a PHI-protected source into `Source`.
+2. Choose `For use in` to format the handoff for the destination tool.
+3. Click `Decontextualize`.
+4. Review the safe prompt and removed categories.
+5. Click `Copy & Open` or `Copy Only`.
+
+Use the `Example` menu to load synthetic cases that exercise common workflows.
+
+## Launch Surface
+
+The current demo opens the local app in a browser tab. That keeps the installer simple, but the
+better release path is a small macOS window wrapper around the same local web UI. A wrapper would
+feel like a normal app, while keeping the tested local server, OpenMed runtime, and browser-based
+interface intact.
+
 ## Mac Requirements
 
 Pilot minimum:

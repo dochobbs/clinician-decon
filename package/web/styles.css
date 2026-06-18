@@ -38,9 +38,9 @@ body {
 }
 
 .topbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(210px, 0.8fr) minmax(360px, 1.7fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
   padding: 18px 20px;
   margin-bottom: 16px;
@@ -66,6 +66,38 @@ h2 {
   margin-top: 4px;
   color: var(--muted);
   font-size: 14px;
+}
+
+.quick-guide {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quick-guide li {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: start;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.guide-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #eef6f4;
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .workspace {
@@ -111,6 +143,25 @@ select {
   min-width: 160px;
   padding: 0 10px;
   background: #ffffff;
+}
+
+.field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.field-label span {
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.sample-field select {
+  min-width: 190px;
 }
 
 button {
@@ -164,6 +215,7 @@ button:disabled {
 .status {
   background: #eef6f4;
   color: var(--accent-dark);
+  justify-self: end;
 }
 
 .status-waiting,
@@ -255,6 +307,15 @@ button:disabled {
   .workspace,
   .details {
     display: block;
+  }
+
+  .quick-guide {
+    grid-template-columns: 1fr;
+    margin-top: 12px;
+  }
+
+  .topbar .status {
+    margin-top: 12px;
   }
 
   .pane,

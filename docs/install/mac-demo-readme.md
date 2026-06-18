@@ -17,6 +17,13 @@ http://127.0.0.1:8769/
 The app runs locally. No clinical text is sent during decontextualization unless you copy the
 cleaned prompt into another tool yourself.
 
+## Basic Use
+
+1. Paste clinical text into `Source`.
+2. Choose `For use in`.
+3. Click `Decontextualize`.
+4. Review the safe prompt before copying.
+
 ## Demo Check
 
 Paste this synthetic snippet:
