@@ -145,7 +145,7 @@ decon "Marcus Johnson, DOB 3/15/2013, needs vaccine guidance" --destination web_
 Use stdin and JSON output in a pipeline:
 
 ```bash
-printf '%s\n' "Mom Jennifer asks about guanfacine for Marvin before camp July 12" | decon --json
+printf '%s\n' "Parent asks about guanfacine for Jordan before camp July 12" | decon --json
 ```
 
 The CLI is fully local and useful for quick experiments. The browser app and `decon-validate`

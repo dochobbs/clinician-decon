@@ -46,6 +46,11 @@ End-user and pilot-install documentation.
 - Mac clean install path
 - demo-facing DMG readme
 
+## `docs/decon-vs-deid-explainer.md`
+
+Clinician-facing explainer with side-by-side examples showing how decontextualization differs from
+traditional de-identification.
+
 ## `installer/mac/`
 
 Repeatable Mac bootstrap packaging assets.
@@ -68,6 +73,7 @@ For a fresh reader, start here:
 
 - `README.md`
 - `package/README.md`
+- `docs/decon-vs-deid-explainer.md`
 - `docs/install/mac-clean-install.md`
 - `docs/install/mac-demo-readme.md`
 - `docs/qa/headless-validation.md`

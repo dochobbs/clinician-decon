@@ -81,8 +81,8 @@ adolescent immunization schedule vaccines current guidelines
 Input:
 
 ```text
-Marvin stopped methylphenidate 2 days ago because anxiety worsened.
-Mother Jennifer asks whether guanfacine 1 mg every morning is reasonable before camp July 12.
+Jordan Ellis stopped methylphenidate 2 days ago because anxiety worsened.
+Parent asks whether guanfacine 1 mg every morning is reasonable before camp July 12.
 ```
 
 Safe prompt:
@@ -270,6 +270,7 @@ python3 package/scripts/run_validation.py --suite validation-blindspot-redteam-r
 ## Important Docs
 
 - [Repository map](SOURCE_MAP.md)
+- [Decon vs de-ID explainer](docs/decon-vs-deid-explainer.md)
 - [Headless validation runbook](docs/qa/headless-validation.md)
 - [Decon query set registry](docs/qa/query-set-registry.md)
 - [Synthetic trace generation strategy](docs/qa/synthetic-trace-generation.md)
