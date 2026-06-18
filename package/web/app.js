@@ -213,7 +213,7 @@ shutdownButton.addEventListener("click", async () => {
 
   shutdownButton.disabled = true;
   shutdownButton.textContent = "Quitting...";
-  shutdownStatus.textContent = "Stopping local app. You can close this tab.";
+  shutdownStatus.textContent = "Stopping local app.";
   try {
     await fetch("/api/shutdown", {
       method: "POST",
@@ -225,7 +225,7 @@ shutdownButton.addEventListener("click", async () => {
     setupStatus.textContent = "Stopped";
     setupStatus.className = "status status-waiting";
     shutdownButton.textContent = "Quit";
-    shutdownStatus.textContent = "Local app stopped. Close this tab when finished.";
+    shutdownStatus.textContent = "Stopped. Close this tab.";
   }
 });
 

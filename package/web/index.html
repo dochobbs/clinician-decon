@@ -17,21 +17,34 @@
         <h1>Decon</h1>
         <p class="subhead">Local clinical prompt decontextualization</p>
       </div>
-      <ol class="quick-guide" aria-label="How Decon works">
-        <li>
-          <span class="guide-step">1</span>
-          <span>Paste text from a PHI-protected source.</span>
-        </li>
-        <li>
-          <span class="guide-step">2</span>
-          <span>Run local decon and review the safe prompt.</span>
-        </li>
-        <li>
-          <span class="guide-step">3</span>
-          <span>Copy it for use in the selected tool.</span>
-        </li>
-      </ol>
-      <div id="setupStatus" class="status status-waiting">Checking setup</div>
+      <div class="workflow-guide">
+        <div class="workflow-heading">How to use it</div>
+        <ol class="quick-guide" aria-label="How Decon works">
+          <li>
+            <span class="guide-step">1</span>
+            <span><strong>Paste PHI text</strong><small>Chart note, portal message, callback</small></span>
+          </li>
+          <li>
+            <span class="guide-step">2</span>
+            <span><strong>Pick destination</strong><small>Prompt format changes by target</small></span>
+          </li>
+          <li>
+            <span class="guide-step">3</span>
+            <span><strong>Review locally</strong><small>Check removed categories and risk</small></span>
+          </li>
+          <li>
+            <span class="guide-step">4</span>
+            <span><strong>Copy manually</strong><small>Nothing external gets the source text</small></span>
+          </li>
+        </ol>
+      </div>
+      <div class="app-controls">
+        <div class="app-controls-row">
+          <div id="setupStatus" class="status status-waiting">Checking setup</div>
+          <button id="shutdownButton" class="secondary quit-button" type="button">Quit</button>
+        </div>
+        <div id="shutdownStatus" class="shutdown-status" aria-live="polite"></div>
+      </div>
     </header>
 
     <section class="workspace" aria-label="Decon workspace">
@@ -96,10 +109,6 @@
         <h2>Local Boundary</h2>
         <p>Intended use: make a local, safer prompt for an external tool when you do not want raw PHI to leave this Mac. It is not a full chart de-identification export.</p>
         <div id="engineStatus" class="engine-status">Engine: not run</div>
-        <div class="trust-actions">
-          <button id="shutdownButton" class="secondary" type="button">Quit Local App</button>
-          <div id="shutdownStatus" class="shutdown-status" aria-live="polite"></div>
-        </div>
       </div>
     </section>
   </main>

@@ -84,7 +84,7 @@ Closing the browser tab closes only the visible UI. It does not stop the local s
 
 To fully quit the local app and release memory:
 
-1. Click `Quit Local App` in the Local Boundary section.
+1. Click `Quit` in the top-right app controls.
 2. Wait for the page to say the local app stopped.
 3. Close the browser tab.
 
@@ -92,7 +92,7 @@ After that, reopen `Clinician Decon.app` from Applications when you want to use 
 
 ## Reset Or Uninstall
 
-Click `Quit Local App`, then remove:
+Click `Quit`, then remove:
 
 ```text
 /Applications/Clinician Decon.app

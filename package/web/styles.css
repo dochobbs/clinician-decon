@@ -39,7 +39,7 @@ body {
 
 .topbar {
   display: grid;
-  grid-template-columns: minmax(210px, 0.8fr) minmax(360px, 1.7fr) auto;
+  grid-template-columns: minmax(210px, 0.7fr) minmax(520px, 1.9fr) minmax(190px, auto);
   align-items: center;
   gap: 16px;
   padding: 18px 20px;
@@ -68,10 +68,23 @@ h2 {
   font-size: 14px;
 }
 
+.workflow-guide {
+  min-width: 0;
+}
+
+.workflow-heading {
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .quick-guide {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -79,12 +92,30 @@ h2 {
 
 .quick-guide li {
   display: grid;
-  grid-template-columns: 24px 1fr;
+  grid-template-columns: 22px 1fr;
   align-items: start;
-  gap: 8px;
+  gap: 7px;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.35;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.quick-guide strong,
+.quick-guide small {
+  display: block;
+}
+
+.quick-guide strong {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.quick-guide small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.25;
 }
 
 .guide-step {
@@ -160,8 +191,12 @@ select {
   font-weight: 650;
 }
 
+.sample-field {
+  width: 100%;
+}
+
 .sample-field select {
-  min-width: 190px;
+  min-width: 0;
 }
 
 button {
@@ -200,6 +235,22 @@ button:disabled {
   margin-top: 12px;
 }
 
+.pane:first-child .action-row {
+  display: grid;
+  grid-template-columns: minmax(150px, auto) minmax(230px, 1fr) minmax(126px, auto) minmax(76px, auto);
+  align-items: center;
+}
+
+  .pane:first-child .action-row button,
+  .pane:first-child .action-row select {
+    width: 100%;
+  }
+
+  .pane:first-child .sample-field {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
 .status,
 .risk,
 .chip {
@@ -215,7 +266,6 @@ button:disabled {
 .status {
   background: #eef6f4;
   color: var(--accent-dark);
-  justify-self: end;
 }
 
 .status-waiting,
@@ -284,18 +334,29 @@ button:disabled {
   color: var(--danger);
 }
 
-.trust-actions {
+.app-controls {
+  display: grid;
+  justify-self: end;
+  gap: 6px;
+}
+
+.app-controls-row {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.quit-button {
+  min-width: 72px;
 }
 
 .shutdown-status {
+  min-height: 18px;
   color: var(--muted);
   font-size: 13px;
   line-height: 1.35;
+  text-align: right;
 }
 
 @media (max-width: 860px) {
@@ -318,6 +379,19 @@ button:disabled {
     margin-top: 12px;
   }
 
+  .app-controls {
+    justify-self: start;
+    margin-top: 12px;
+  }
+
+  .app-controls-row {
+    justify-content: flex-start;
+  }
+
+  .shutdown-status {
+    text-align: left;
+  }
+
   .pane,
   .details > div {
     margin-top: 12px;
@@ -325,5 +399,20 @@ button:disabled {
 
   textarea {
     min-height: 280px;
+  }
+
+  .pane:first-child .action-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .pane:first-child .action-row button,
+  .pane:first-child .action-row select {
+    width: auto;
+  }
+
+  .pane:first-child .sample-field {
+    display: inline-flex;
+    width: auto;
   }
 }

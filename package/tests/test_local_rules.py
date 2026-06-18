@@ -129,6 +129,18 @@ def test_decontextualize_text_normalizes_explicit_ages():
   assert "92yo" not in older_result.destination_prompt
 
 
+def test_decontextualize_text_removes_initial_name_but_preserves_spelled_age_context():
+  source = "Sarah O has gilberts disease, how much tylenol can she have, she's fourty six"
+
+  result = decontextualize_text(source, destination="copy_only")
+
+  assert result.destination_prompt == (
+    "[NAME] has gilberts disease, how much tylenol can she have, she's fourty six"
+  )
+  assert result.removed_categories["name"] == 1
+  assert result.copy_allowed is True
+
+
 def test_decontextualize_text_generalizes_clinical_value_without_losing_signal():
   source = "Mrs. Eleanor Rigby has A1c 8.2 and asks about metformin dosing."
 

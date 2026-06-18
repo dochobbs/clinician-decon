@@ -93,7 +93,7 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "http://127.0.0.1:8769/" in demo_text
   assert "Choose `For use in`" in demo_text
   assert "The browser tab is the app window" in demo_text
-  assert "Quit Local App" in demo_text
+  assert "click `Quit` in" in demo_text
   assert "build_self_contained_dmg.sh" not in demo_text
 
   qa_text = qa_doc.read_text(encoding="utf-8")
@@ -106,11 +106,19 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png"} in manifest["icons"]
 
   web_index_text = web_index.read_text(encoding="utf-8")
-  assert "Paste text from a PHI-protected source" in web_index_text
-  assert "Run local decon and review" in web_index_text
+  assert "How to use it" in web_index_text
+  assert "app-controls" in web_index_text
+  assert 'id="shutdownButton"' in web_index_text
+  assert ">Quit</button>" in web_index_text
+  assert "Paste PHI text" in web_index_text
+  assert "Pick destination" in web_index_text
+  assert "Review locally" in web_index_text
+  assert "Copy manually" in web_index_text
   assert "For use in" in web_index_text
   assert "sampleSelect" in web_index_text
   assert "ADHD med follow-up" in web_index_text
+  assert "Gilbert/Tylenol" not in web_index_text
+  assert "Quit Local App" not in web_index_text
   assert "Intended use" in web_index_text
 
   web_app_text = web_app.read_text(encoding="utf-8")
@@ -121,11 +129,13 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "const samples" in web_app_text
   assert "guanfacine" in web_app_text
   assert "PFAPA" in web_app_text
+  assert "Sarah O" not in web_app_text
   assert 'shutdownButton.textContent = "Quit"' in web_app_text
   assert "/api/shutdown" in web_app_text
-  assert "Local app stopped" in web_app_text
+  assert "Stopped. Close this tab." in web_app_text
 
   worker_text = web_worker.read_text(encoding="utf-8")
+  assert "decon-static-v5" in worker_text
   assert "decon-static-v4" in worker_text
   assert "decon-static-v3" in worker_text
   assert "decon-static-v2" in worker_text
