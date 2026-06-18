@@ -33,6 +33,11 @@ Expected output:
 
 The model status should show the local model is ready.
 
+## Quit
+
+Closing the browser tab closes only the visible UI. To fully stop the local app, click
+`Quit Local App` in the Local Boundary section, then close the tab.
+
 ## Notes
 
 - The OpenMed model and Python runtime are bundled in this demo app.

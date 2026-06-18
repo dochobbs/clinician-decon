@@ -61,9 +61,21 @@ For Intel Macs, build on Intel or provide a separate `x86_64` self-contained art
 - Logs live in `~/Library/Application Support/Clinician Decon/logs/`.
 - Logs should contain startup/setup events only, not pasted clinical text.
 
+## Close Or Quit
+
+Closing the browser tab closes only the visible UI. It does not stop the local server.
+
+To fully quit the local app and release memory:
+
+1. Click `Quit Local App` in the Local Boundary section.
+2. Wait for the page to say the local app stopped.
+3. Close the browser tab.
+
+After that, reopen `Clinician Decon.app` from Applications when you want to use it again.
+
 ## Reset Or Uninstall
 
-Quit the app, then remove:
+Click `Quit Local App`, then remove:
 
 ```text
 /Applications/Clinician Decon.app

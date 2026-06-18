@@ -232,6 +232,20 @@ button:disabled {
   color: var(--danger);
 }
 
+.trust-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.shutdown-status {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
 @media (max-width: 860px) {
   .shell {
     padding: 12px;

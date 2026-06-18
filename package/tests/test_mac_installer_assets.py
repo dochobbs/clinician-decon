@@ -90,11 +90,13 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "Right-click `Clinician Decon.app`, choose `Open`" in demo_text
   assert "http://127.0.0.1:8769/" in demo_text
   assert "The browser tab is the app window" in demo_text
+  assert "Quit Local App" in demo_text
   assert "build_self_contained_dmg.sh" not in demo_text
 
   qa_text = qa_doc.read_text(encoding="utf-8")
   assert "No raw PHI appears in logs" in qa_text
   assert "No prompt text appears in third-party URLs" in qa_text
+  assert "Confirm port `8769` is no longer listening" in qa_text
 
   manifest = json.loads(web_manifest.read_text(encoding="utf-8"))
   assert {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png"} in manifest["icons"]
@@ -105,8 +107,11 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "Still running" in web_app_text
   assert "Decon did not run." in web_app_text
   assert "AbortController" in web_app_text
+  assert "/api/shutdown" in web_app_text
+  assert "Local app stopped" in web_app_text
 
   worker_text = web_worker.read_text(encoding="utf-8")
+  assert "decon-static-v3" in worker_text
   assert "decon-static-v2" in worker_text
   assert "decon-static-v1" in worker_text
   assert "self.skipWaiting" in worker_text

@@ -11,6 +11,8 @@ const riskBadge = document.querySelector("#riskBadge");
 const categoryList = document.querySelector("#categoryList");
 const reasonList = document.querySelector("#reasonList");
 const engineStatus = document.querySelector("#engineStatus");
+const shutdownButton = document.querySelector("#shutdownButton");
+const shutdownStatus = document.querySelector("#shutdownStatus");
 
 let lastPayload = null;
 let runProgressTimer = null;
@@ -193,6 +195,27 @@ copyOpenButton.addEventListener("click", async () => {
   const copied = await copyPrompt();
   if (copied && lastPayload.handoff.open_url) {
     window.open(lastPayload.handoff.open_url, "_blank", "noopener,noreferrer");
+  }
+});
+
+shutdownButton.addEventListener("click", async () => {
+  const shouldQuit = window.confirm("Quit Clinician Decon on this Mac?");
+  if (!shouldQuit) return;
+
+  shutdownButton.disabled = true;
+  shutdownButton.textContent = "Quitting...";
+  shutdownStatus.textContent = "Stopping local app. You can close this tab.";
+  try {
+    await fetch("/api/shutdown", {
+      method: "POST",
+      cache: "no-store",
+    });
+  } catch (_) {
+    // The server may close before the browser finishes reading the response.
+  } finally {
+    setupStatus.textContent = "Stopped";
+    setupStatus.className = "status status-waiting";
+    shutdownStatus.textContent = "Local app stopped. Close this tab when finished.";
   }
 });
 

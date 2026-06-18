@@ -57,6 +57,9 @@ http://127.0.0.1:8769/
 
 7. Confirm `ner_model_ready` is `true`.
 8. Confirm the browser tab is usable and the launcher app is not left bouncing in the Dock.
+9. Click `Quit Local App`.
+10. Confirm the page says the local app stopped.
+11. Confirm port `8769` is no longer listening.
 
 ## Synthetic Snippets
 

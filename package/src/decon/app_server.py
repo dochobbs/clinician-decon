@@ -7,6 +7,7 @@ import json
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+import threading
 from typing import Any
 from urllib.parse import urlparse
 
@@ -99,6 +100,13 @@ class DeconRequestHandler(SimpleHTTPRequestHandler):
 
   def do_POST(self) -> None:
     parsed = urlparse(self.path)
+    if parsed.path == "/api/shutdown":
+      self._send_json({
+        "shutdown": True,
+        "message": "Clinician Decon local app is shutting down. You can close this browser tab.",
+      })
+      threading.Thread(target=self.server.shutdown, daemon=True).start()
+      return
     if parsed.path != "/api/decon":
       self.send_error(HTTPStatus.NOT_FOUND)
       return

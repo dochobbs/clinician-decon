@@ -105,3 +105,11 @@ def test_static_ui_responses_are_not_cached():
 
   assert "def end_headers" in server_source
   assert '"Cache-Control", "no-store, max-age=0"' in server_source
+
+
+def test_local_shutdown_endpoint_is_available():
+  server_source = (REPO_ROOT / "package" / "src" / "decon" / "app_server.py").read_text(encoding="utf-8")
+
+  assert 'parsed.path == "/api/shutdown"' in server_source
+  assert "Clinician Decon local app is shutting down" in server_source
+  assert "self.server.shutdown" in server_source
