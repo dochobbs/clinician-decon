@@ -103,7 +103,7 @@ class DeconRequestHandler(SimpleHTTPRequestHandler):
     if parsed.path == "/api/shutdown":
       self._send_json({
         "shutdown": True,
-        "message": "Clinician Decon local app is shutting down. You can close this browser tab.",
+      "message": "Clinician Decon local app is shutting down. You can close this window.",
       })
       threading.Thread(target=self.server.shutdown, daemon=True).start()
       return

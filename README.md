@@ -141,7 +141,7 @@ http://127.0.0.1:8769
 Current behavior:
 
 - deterministic local rules plus OpenMed local PHI-NER as the default user-facing engine
-- browser-based paste, decon, review, copy, and open workflow
+- local paste, decon, review, copy, and open workflow
 - destination options for external LLMs, external search, and copy-only handoff
 - no prompt text embedded in third-party URLs
 - setup/model status endpoint that verifies repo-local model files and Python runtime support
@@ -216,10 +216,10 @@ Expected output:
 dist/mac/Clinician-Decon-0.1.0-self-contained-arm64.dmg
 ```
 
-The DMG contains `Clinician Decon.app`, a bundled Python runtime, OpenMed runtime
-dependencies, the decon package, and the OpenMed model files. On first launch, the app starts the
-server on `127.0.0.1` and opens the browser UI. It should not require Terminal, Python, pip, or a
-model download.
+The DMG contains `Clinician Decon.app`, a native macOS wrapper, a bundled Python runtime, OpenMed
+runtime dependencies, the decon package, and the OpenMed model files. On first launch, the app
+starts the server on `127.0.0.1` and opens the local UI in a native app window. It should not
+require Terminal, Python, pip, or a model download.
 
 Model files are bundled in the generated self-contained DMG, but they are not tracked in git. The
 build script copies them from ignored local model storage.
@@ -240,7 +240,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-139 passed
+140 passed
 ```
 
 Run the model-backed headless validation gate:

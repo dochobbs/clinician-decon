@@ -202,6 +202,7 @@ select {
 button {
   padding: 0 14px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 button:disabled {
@@ -237,11 +238,10 @@ button:disabled {
 
 .pane:first-child .action-row {
   display: grid;
-  grid-template-columns: minmax(150px, auto) minmax(230px, 1fr) minmax(126px, auto) minmax(76px, auto);
+  grid-template-columns: minmax(148px, max-content) minmax(224px, 1fr) minmax(72px, max-content) minmax(72px, max-content);
   align-items: center;
 }
 
-  .pane:first-child .action-row button,
   .pane:first-child .action-row select {
     width: 100%;
   }

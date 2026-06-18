@@ -57,10 +57,12 @@ Repeatable Mac bootstrap packaging assets.
 
 - `build_self_contained_dmg.sh`: creates the doctor-facing all-in-one DMG
 - `build_dmg.sh`: creates the smaller bootstrap pilot DMG
+- `build_native_wrapper.sh`: compiles the native macOS WebKit wrapper
 - `create_icon_assets.py`: generates Finder, browser, and PWA icon assets
 - `assets/ClinicianDecon.icns`: app bundle icon
-- `app/Info.plist`: app bundle metadata
-- `app/clinician-decon-launcher`: first-run runtime/model setup and local app launcher
+- `app/Info.native.plist`: native app bundle metadata
+- `app/clinician-decon-launcher`: first-run runtime/model setup and local server launcher
+- `native/ClinicianDeconApp.swift`: native app window around the local web UI
 
 ## Historical Fixtures
 

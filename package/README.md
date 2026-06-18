@@ -2,8 +2,9 @@
 
 Python package and local web prototype for clinician-facing PHI minimization.
 
-The package can run as a local browser app, CLI, or library. The current app path is fully local:
-deterministic rules plus OpenMed local PHI-NER as the default user-facing engine.
+The package can run as a local web app, CLI, or library. The packaged Mac app wraps the local web
+UI in a native window. The current app path is fully local: deterministic rules plus OpenMed local
+PHI-NER as the default user-facing engine.
 
 ## Decon Vs De-ID
 
@@ -28,7 +29,7 @@ Examples:
 - `src/decon/setup_openmed.py`: setup command for local OpenMed model files.
 - `src/decon/model_setup.py`: local model/runtime readiness checks.
 - `src/decon/app_server.py`: standard-library HTTP server for the local prototype.
-- `web/`: static browser interface.
+- `web/`: static local web interface.
 - `src/decon/destinations.py`: external LLM, external search, and copy-only handoff definitions.
 - `tests/`: regression tests for rules, destination handoff, setup status, validation, and service
   behavior.
@@ -160,7 +161,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-139 passed
+140 passed
 ```
 
 ## Headless Validation

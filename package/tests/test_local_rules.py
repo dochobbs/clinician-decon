@@ -178,6 +178,18 @@ def test_decontextualize_text_removes_street_address_and_zip():
   assert result.removed_categories["location"] >= 1
 
 
+def test_decontextualize_text_removes_contextual_zip_without_zip_label():
+  source = "Patient from 90210 with asthma flare asks if wildfire smoke changes albuterol plan."
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  assert "90210" not in result.destination_prompt
+  assert "asthma flare" in result.destination_prompt
+  assert "wildfire smoke" in result.destination_prompt
+  assert "albuterol plan" in result.destination_prompt
+  assert result.removed_categories["zip"] >= 1
+
+
 def test_decontextualize_text_blocks_copy_when_residual_mrn_remains():
   source = "Please answer for patient record ABCDEFGHIJK with fatigue and bruising."
 

@@ -10,6 +10,7 @@ VENV_DIR="$APP_SUPPORT/venv"
 LOG_DIR="$APP_SUPPORT/logs"
 INSTALL_STAMP="$APP_SUPPORT/.installed-version"
 SERVER_URL="http://127.0.0.1:8769"
+OPEN_BROWSER="${DECON_NO_BROWSER:-0}"
 PYTHON_BIN="${DECON_PYTHON:-/usr/bin/python3}"
 BUNDLED_PYTHON="$RESOURCE_DIR/python/bin/python"
 BUNDLED_SITE_PACKAGES="$RESOURCE_DIR/python-packages"
@@ -28,6 +29,12 @@ notify() {
   /usr/bin/osascript -e "display notification \"$1\" with title \"Clinician Decon\"" >/dev/null 2>&1 || true
 }
 
+open_local_ui() {
+  if [[ "$OPEN_BROWSER" != "1" ]]; then
+    /usr/bin/open "$SERVER_URL/"
+  fi
+}
+
 if [[ ! -d "$PACKAGE_DIR" ]]; then
   alert "Clinician Decon is missing its bundled package files. Reinstall from the DMG."
   exit 1
@@ -40,7 +47,7 @@ start_local_app() {
   local notified=0
 
   if /usr/bin/curl -fsS "$SERVER_URL/api/setup/status" >/dev/null 2>&1; then
-    /usr/bin/open "$SERVER_URL/"
+    open_local_ui
     exit 0
   fi
 
@@ -55,12 +62,12 @@ start_local_app() {
 
   for attempt in {1..45}; do
     if /usr/bin/curl -fsS "$SERVER_URL/api/setup/status" >/dev/null 2>&1; then
-      /usr/bin/open "$SERVER_URL/"
+      open_local_ui
       wait "$SERVER_PID"
       exit $?
     fi
     if [[ "$attempt" -eq 4 && "$notified" == "0" ]]; then
-      notify "Starting the local privacy engine. Your browser will open automatically."
+      notify "Starting the local privacy engine. The app window will open automatically."
       notified=1
     fi
     /bin/sleep 1

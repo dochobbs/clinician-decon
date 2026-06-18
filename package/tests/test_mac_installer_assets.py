@@ -9,8 +9,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 def test_mac_installer_assets_define_local_openmed_setup_path():
   builder = REPO_ROOT / "installer" / "mac" / "build_dmg.sh"
   self_contained_builder = REPO_ROOT / "installer" / "mac" / "build_self_contained_dmg.sh"
+  native_builder = REPO_ROOT / "installer" / "mac" / "build_native_wrapper.sh"
   launcher = REPO_ROOT / "installer" / "mac" / "app" / "clinician-decon-launcher"
-  plist_path = REPO_ROOT / "installer" / "mac" / "app" / "Info.plist"
+  plist_path = REPO_ROOT / "installer" / "mac" / "app" / "Info.native.plist"
+  native_source = REPO_ROOT / "installer" / "mac" / "native" / "ClinicianDeconApp.swift"
   icon_generator = REPO_ROOT / "installer" / "mac" / "create_icon_assets.py"
   app_icon = REPO_ROOT / "installer" / "mac" / "assets" / "ClinicianDecon.icns"
   install_doc = REPO_ROOT / "docs" / "install" / "mac-clean-install.md"
@@ -27,8 +29,10 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   for path in (
     builder,
     self_contained_builder,
+    native_builder,
     launcher,
     plist_path,
+    native_source,
     icon_generator,
     app_icon,
     install_doc,
@@ -57,6 +61,8 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "PYTHONPATH" in launcher_text
   assert "decon-setup-openmed" in launcher_text
   assert "OpenMed setup did not complete" in launcher_text
+  assert "DECON_NO_BROWSER" in launcher_text
+  assert "open_local_ui" in launcher_text
 
   builder_text = builder.read_text(encoding="utf-8")
   assert "package/local-models" in builder_text
@@ -64,6 +70,8 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "Clinician Decon.app" in builder_text
   assert "ClinicianDecon.icns" in builder_text
   assert "mac-demo-readme.md" in builder_text
+  assert "Info.native.plist" in builder_text
+  assert "build_native_wrapper.sh" in builder_text
 
   self_contained_text = self_contained_builder.read_text(encoding="utf-8")
   assert "uv python install" in self_contained_text
@@ -74,12 +82,26 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "self-contained" in self_contained_text
   assert "ClinicianDecon.icns" in self_contained_text
   assert "mac-demo-readme.md" in self_contained_text
+  assert "Info.native.plist" in self_contained_text
+  assert "build_native_wrapper.sh" in self_contained_text
+
+  native_builder_text = native_builder.read_text(encoding="utf-8")
+  assert "swiftc" in native_builder_text
+  assert "-framework WebKit" in native_builder_text
+  assert "ClinicianDeconApp.swift" in native_builder_text
+
+  native_source_text = native_source.read_text(encoding="utf-8")
+  assert "WKWebView" in native_source_text
+  assert "DECON_NO_BROWSER" in native_source_text
+  assert "clinician-decon-launcher" in native_source_text
+  assert "http://127.0.0.1:8769/" in native_source_text
 
   plist = plistlib.loads(plist_path.read_bytes())
   assert plist["CFBundleName"] == "Clinician Decon"
-  assert plist["CFBundleExecutable"] == "clinician-decon-launcher"
+  assert plist["CFBundleExecutable"] == "ClinicianDeconNative"
   assert plist["CFBundleIconFile"] == "ClinicianDecon"
-  assert plist["LSUIElement"] is True
+  assert "LSUIElement" not in plist
+  assert plist["NSAppTransportSecurity"]["NSAllowsLocalNetworking"] is True
 
   install_text = install_doc.read_text(encoding="utf-8")
   assert "self-contained DMG" in install_text
@@ -90,9 +112,9 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   demo_text = demo_readme.read_text(encoding="utf-8")
   assert "Drag `Clinician Decon.app` to `Applications`" in demo_text
   assert "Right-click `Clinician Decon.app`, choose `Open`" in demo_text
-  assert "http://127.0.0.1:8769/" in demo_text
+  assert "`Clinician Decon` app window should open automatically" in demo_text
   assert "Choose `For use in`" in demo_text
-  assert "The browser tab is the app window" in demo_text
+  assert "native window around the local web UI" in demo_text
   assert "click `Quit` in" in demo_text
   assert "build_self_contained_dmg.sh" not in demo_text
 
@@ -118,6 +140,8 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "sampleSelect" in web_index_text
   assert "ADHD med follow-up" in web_index_text
   assert "Gilbert/Tylenol" not in web_index_text
+  assert ">Load</button>" in web_index_text
+  assert "Load Example" not in web_index_text
   assert "Quit Local App" not in web_index_text
   assert "Intended use" in web_index_text
 
@@ -132,9 +156,10 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "Sarah O" not in web_app_text
   assert 'shutdownButton.textContent = "Quit"' in web_app_text
   assert "/api/shutdown" in web_app_text
-  assert "Stopped. Close this tab." in web_app_text
+  assert "Stopped. Close this window." in web_app_text
 
   worker_text = web_worker.read_text(encoding="utf-8")
+  assert "decon-static-v6" in worker_text
   assert "decon-static-v5" in worker_text
   assert "decon-static-v4" in worker_text
   assert "decon-static-v3" in worker_text

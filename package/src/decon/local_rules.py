@@ -251,6 +251,11 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     r"(?=\s+(?:area|zip|region|neighbou?rhood)\b|[,.;]|$)",
     re.IGNORECASE,
   )),
+  ("zip", re.compile(
+    r"\b(?:from|near|in|around)\s+(\d{5})(?:-\d{4})?"
+    r"(?=\s+(?:with|who|has|and|for|asking|area|zip|region|neighbou?rhood)\b|[,.;]|$)",
+    re.IGNORECASE,
+  )),
   ("zip", re.compile(r"\b(\d{5})(?:-\d{4})?(?=\s+area\b)", re.IGNORECASE)),
   ("email", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
   ("email", re.compile(

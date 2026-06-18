@@ -1,7 +1,7 @@
 # Mac Clean Install
 
 This is the clinician-facing Mac install path: download the self-contained DMG, drag the app to
-Applications, open it, and use the local browser app. A busy clinician should not need Terminal,
+Applications, open it, and use the local app window. A busy clinician should not need Terminal,
 Python, pip, or a model download.
 
 ## Primary Artifact
@@ -36,8 +36,7 @@ build script copies them from the repo-local ignored model directory during pack
 2. Drag `Clinician Decon.app` to `Applications`.
 3. Right-click `Clinician Decon.app`, choose Open, and confirm if macOS warns because the demo
    build is unsigned.
-4. Wait for the local browser app to open at `http://127.0.0.1:8769/`.
-   The browser tab is the app window; the Mac app is only the local launcher.
+4. Wait for the `Clinician Decon` window to open.
 5. Confirm the setup badge says the local model is ready.
 
 There should be no dependency setup prompt, model download, or Terminal command on first launch.
@@ -54,10 +53,10 @@ Use the `Example` menu to load synthetic cases that exercise common workflows.
 
 ## Launch Surface
 
-The current demo opens the local app in a browser tab. That keeps the installer simple, but the
-better release path is a small macOS window wrapper around the same local web UI. A wrapper would
-feel like a normal app, while keeping the tested local server, OpenMed runtime, and browser-based
-interface intact.
+The current demo uses a small native macOS window wrapper around the tested local web UI. The
+wrapper starts the local privacy engine, loads the UI in a normal app window, and suppresses the
+old automatic browser-tab launch. External destinations may still open in the default browser after
+the clinician clicks `Copy & Open`.
 
 ## Mac Requirements
 
@@ -80,13 +79,13 @@ For Intel Macs, build on Intel or provide a separate `x86_64` self-contained art
 
 ## Close Or Quit
 
-Closing the browser tab closes only the visible UI. It does not stop the local server.
+Closing the app window quits the native wrapper and stops the local server.
 
 To fully quit the local app and release memory:
 
 1. Click `Quit` in the top-right app controls.
 2. Wait for the page to say the local app stopped.
-3. Close the browser tab.
+3. Close the app window.
 
 After that, reopen `Clinician Decon.app` from Applications when you want to use it again.
 

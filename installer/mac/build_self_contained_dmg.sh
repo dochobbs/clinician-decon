@@ -39,9 +39,10 @@ if [[ ! -f "$ICON_ASSET" ]]; then
   "$ROOT_DIR/installer/mac/create_icon_assets.py"
 fi
 
-cp "$ROOT_DIR/installer/mac/app/Info.plist" "$CONTENTS_DIR/Info.plist"
+cp "$ROOT_DIR/installer/mac/app/Info.native.plist" "$CONTENTS_DIR/Info.plist"
 cp "$ROOT_DIR/installer/mac/app/clinician-decon-launcher" "$MACOS_DIR/clinician-decon-launcher"
 chmod 755 "$MACOS_DIR/clinician-decon-launcher"
+"$ROOT_DIR/installer/mac/build_native_wrapper.sh" "$MACOS_DIR/ClinicianDeconNative"
 cp "$ICON_ASSET" "$RESOURCES_DIR/ClinicianDecon.icns"
 
 rsync -a \

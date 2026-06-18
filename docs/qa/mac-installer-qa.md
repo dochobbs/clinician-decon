@@ -18,8 +18,9 @@ Expected:
 - `Clinician Decon.app` is present inside the mounted DMG,
 - `Read Me First.md` is present at the DMG root and describes how to install/demo the app,
 - `Contents/Resources/ClinicianDecon.icns` exists inside the app bundle,
-- `Contents/Info.plist` declares `LSUIElement=true` so the launcher does not sit in the Dock
-  without a native window,
+- `Contents/Info.plist` declares `ClinicianDeconNative` as the bundle executable,
+- `Contents/MacOS/ClinicianDeconNative` exists inside the app bundle,
+- `Contents/MacOS/clinician-decon-launcher` exists inside the app bundle,
 - `Contents/Resources/python/bin/python` exists inside the app bundle,
 - `Contents/Resources/python-packages/` exists inside the app bundle,
 - `Contents/Resources/package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1/`
@@ -40,11 +41,7 @@ Use a clean macOS user account or a machine without the existing app-support dir
 ~/Library/Application Support/Clinician Decon/logs
 ```
 
-5. Confirm the local browser opens to:
-
-```text
-http://127.0.0.1:8769/
-```
+5. Confirm the native `Clinician Decon` app window opens and shows the local UI.
 
 6. Confirm `/api/setup/status` reports:
 
@@ -56,7 +53,7 @@ http://127.0.0.1:8769/
 ```
 
 7. Confirm `ner_model_ready` is `true`.
-8. Confirm the browser tab is usable and the launcher app is not left bouncing in the Dock.
+8. Confirm no browser tab opens on launch.
 9. Click `Quit` in the top-right app controls.
 10. Confirm the page says the local app stopped.
 11. Confirm port `8769` is no longer listening.

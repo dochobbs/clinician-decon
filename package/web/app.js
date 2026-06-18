@@ -225,7 +225,7 @@ shutdownButton.addEventListener("click", async () => {
     setupStatus.textContent = "Stopped";
     setupStatus.className = "status status-waiting";
     shutdownButton.textContent = "Quit";
-    shutdownStatus.textContent = "Stopped. Close this tab.";
+    shutdownStatus.textContent = "Stopped. Close this window.";
   }
 });
 
