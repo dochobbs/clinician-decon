@@ -13,6 +13,7 @@ const reasonList = document.querySelector("#reasonList");
 const engineStatus = document.querySelector("#engineStatus");
 
 let lastPayload = null;
+let runProgressTimer = null;
 
 const sampleText = "Marcus Johnson DOB 3/15/2013 MRN LP-2024-08432 came in today. Mom Jennifer called from 512-555-0147 asking what vaccines he needs at this age.";
 
@@ -79,6 +80,32 @@ function setButtons(payload) {
   }
 }
 
+function setRunBusy(isBusy) {
+  runButton.disabled = isBusy;
+  runButton.textContent = isBusy ? "Running..." : "Decontextualize";
+  runButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+}
+
+function renderProgress(message) {
+  lastPayload = null;
+  outputText.value = message;
+  setRisk(null);
+  renderCategories({});
+  renderReasons(["Running local privacy engine. Keep this tab open."]);
+  renderEngine(null);
+  setButtons(null);
+}
+
+function renderFailure(message, detail) {
+  lastPayload = null;
+  outputText.value = message;
+  setRisk("high");
+  renderCategories({});
+  renderReasons([detail]);
+  renderEngine(null);
+  setButtons(null);
+}
+
 async function loadSetupStatus() {
   const response = await fetch("/api/setup/status", { cache: "no-store" });
   const payload = await response.json();
@@ -87,18 +114,35 @@ async function loadSetupStatus() {
 }
 
 async function runDecon() {
-  runButton.disabled = true;
-  runButton.textContent = "Running";
+  if (!sourceText.value.trim()) {
+    renderFailure("Paste clinical text before running decon.", "No source text entered.");
+    return;
+  }
+
+  setRunBusy(true);
+  renderProgress("Running local decon...\n\nThe first run after launch can take up to a minute while the local model loads.");
+  runProgressTimer = window.setTimeout(() => {
+    outputText.value = "Still running...\n\nThe first model-backed run can take 30-90 seconds on some Macs. Subsequent runs should be faster.";
+    renderReasons(["Still loading the local OpenMed privacy model. Keep this tab open."]);
+  }, 5000);
+
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 120000);
   try {
     const response = await fetch("/api/decon", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+      signal: controller.signal,
       body: JSON.stringify({
         text: sourceText.value,
         destination: destination.value,
         engine: "rules+openmed",
       }),
     });
+    if (!response.ok) {
+      throw new Error(`Local server returned HTTP ${response.status}`);
+    }
     const payload = await response.json();
     lastPayload = payload;
     outputText.value = payload.destination_prompt || "";
@@ -107,9 +151,16 @@ async function runDecon() {
     renderReasons(payload.risk_reasons);
     renderEngine(payload);
     setButtons(payload);
+  } catch (error) {
+    const detail = error && error.name === "AbortError"
+      ? "The local decon request timed out after 120 seconds. Reopen the app and try a shorter note."
+      : `The local decon request failed. ${error && error.message ? error.message : "Reload the tab and try again."}`;
+    renderFailure("Decon did not run.", detail);
   } finally {
-    runButton.disabled = false;
-    runButton.textContent = "Decontextualize";
+    window.clearTimeout(timeout);
+    window.clearTimeout(runProgressTimer);
+    runProgressTimer = null;
+    setRunBusy(false);
   }
 }
 
@@ -146,7 +197,9 @@ copyOpenButton.addEventListener("click", async () => {
 });
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js").catch(() => {});
+  navigator.serviceWorker.register("/sw.js").then((registration) => {
+    registration.update().catch(() => {});
+  }).catch(() => {});
 }
 
 setRisk(null);

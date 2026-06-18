@@ -13,13 +13,19 @@ MACOS_DIR="$CONTENTS_DIR/MacOS"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
 STAGE_DIR="$BUILD_DIR/dmg-root"
 DMG_PATH="$DIST_DIR/Clinician-Decon-$VERSION.dmg"
+ICON_ASSET="$ROOT_DIR/installer/mac/assets/ClinicianDecon.icns"
 
 rm -rf "$BUILD_DIR"
 mkdir -p "$MACOS_DIR" "$RESOURCES_DIR/package" "$STAGE_DIR" "$DIST_DIR"
 
+if [[ ! -f "$ICON_ASSET" ]]; then
+  "$ROOT_DIR/installer/mac/create_icon_assets.py"
+fi
+
 cp "$ROOT_DIR/installer/mac/app/Info.plist" "$CONTENTS_DIR/Info.plist"
 cp "$ROOT_DIR/installer/mac/app/clinician-decon-launcher" "$MACOS_DIR/clinician-decon-launcher"
 chmod 755 "$MACOS_DIR/clinician-decon-launcher"
+cp "$ICON_ASSET" "$RESOURCES_DIR/ClinicianDecon.icns"
 
 rsync -a \
   --exclude ".DS_Store" \
@@ -32,13 +38,13 @@ rsync -a \
   "$ROOT_DIR/package/" "$RESOURCES_DIR/package/"
 
 cp "$ROOT_DIR/LICENSE" "$RESOURCES_DIR/LICENSE"
-cp "$ROOT_DIR/docs/install/mac-clean-install.md" "$RESOURCES_DIR/README_FIRST.md"
+cp "$ROOT_DIR/docs/install/mac-demo-readme.md" "$RESOURCES_DIR/README_FIRST.md"
 
 plutil -lint "$CONTENTS_DIR/Info.plist" >/dev/null
 
 cp -R "$APP_DIR" "$STAGE_DIR/$APP_NAME.app"
 ln -s /Applications "$STAGE_DIR/Applications"
-cp "$ROOT_DIR/docs/install/mac-clean-install.md" "$STAGE_DIR/Read Me First.md"
+cp "$ROOT_DIR/docs/install/mac-demo-readme.md" "$STAGE_DIR/Read Me First.md"
 
 hdiutil create \
   -volname "$APP_NAME" \

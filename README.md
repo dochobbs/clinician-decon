@@ -240,7 +240,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-136 passed
+137 passed
 ```
 
 Run the model-backed headless validation gate:

@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 build/
 dist/
+installer/mac/assets/ClinicianDecon.iconset/
 package/reports/latest-validation.json
 package/local-models/
 package/.decon-home/

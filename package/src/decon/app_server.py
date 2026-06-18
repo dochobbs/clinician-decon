@@ -84,6 +84,10 @@ class DeconRequestHandler(SimpleHTTPRequestHandler):
   def __init__(self, *args: Any, **kwargs: Any):
     super().__init__(*args, directory=str(WEB_ROOT), **kwargs)
 
+  def end_headers(self) -> None:
+    self.send_header("Cache-Control", "no-store, max-age=0")
+    super().end_headers()
+
   def do_GET(self) -> None:
     parsed = urlparse(self.path)
     if parsed.path == "/api/setup/status":
@@ -112,7 +116,6 @@ class DeconRequestHandler(SimpleHTTPRequestHandler):
     self.send_response(status)
     self.send_header("Content-Type", "application/json; charset=utf-8")
     self.send_header("Content-Length", str(len(body)))
-    self.send_header("Cache-Control", "no-store")
     self.end_headers()
     self.wfile.write(body)
 

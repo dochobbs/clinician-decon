@@ -160,7 +160,7 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-136 passed
+137 passed
 ```
 
 ## Headless Validation

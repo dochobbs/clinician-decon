@@ -16,6 +16,10 @@ Expected:
 - tests pass,
 - `dist/mac/Clinician-Decon-0.1.0-self-contained-arm64.dmg` exists on Apple Silicon,
 - `Clinician Decon.app` is present inside the mounted DMG,
+- `Read Me First.md` is present at the DMG root and describes how to install/demo the app,
+- `Contents/Resources/ClinicianDecon.icns` exists inside the app bundle,
+- `Contents/Info.plist` declares `LSUIElement=true` so the launcher does not sit in the Dock
+  without a native window,
 - `Contents/Resources/python/bin/python` exists inside the app bundle,
 - `Contents/Resources/python-packages/` exists inside the app bundle,
 - `Contents/Resources/package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1/`
@@ -28,7 +32,8 @@ Use a clean macOS user account or a machine without the existing app-support dir
 
 1. Mount `dist/mac/Clinician-Decon-0.1.0-self-contained-arm64.dmg`.
 2. Drag `Clinician Decon.app` to `Applications`.
-3. Open the app.
+3. Right-click the app, choose Open, and confirm if macOS warns because the demo build is
+   unsigned.
 4. Confirm first launch creates:
 
 ```text
@@ -51,6 +56,7 @@ http://127.0.0.1:8769/
 ```
 
 7. Confirm `ner_model_ready` is `true`.
+8. Confirm the browser tab is usable and the launcher app is not left bouncing in the Dock.
 
 ## Synthetic Snippets
 

@@ -17,10 +17,14 @@
   <string>APPL</string>
   <key>CFBundleExecutable</key>
   <string>clinician-decon-launcher</string>
+  <key>CFBundleIconFile</key>
+  <string>ClinicianDecon</string>
   <key>LSMinimumSystemVersion</key>
   <string>13.0</string>
   <key>LSApplicationCategoryType</key>
   <string>public.app-category.medical</string>
+  <key>LSUIElement</key>
+  <true/>
   <key>NSHighResolutionCapable</key>
   <true/>
 </dict>

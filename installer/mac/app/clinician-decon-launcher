@@ -18,6 +18,7 @@ BUNDLED_MODEL_DIR="$PACKAGE_DIR/local-models/OpenMed--OpenMed-PII-SuperClinical-
 mkdir -p "$APP_SUPPORT" "$LOG_DIR"
 SETUP_LOG="$LOG_DIR/setup.log"
 SERVER_LOG="$LOG_DIR/server.log"
+SERVER_PID_FILE="$APP_SUPPORT/server.pid"
 
 alert() {
   /usr/bin/osascript -e "display dialog \"$1\" buttons {\"OK\"} default button \"OK\" with title \"Clinician Decon\"" >/dev/null 2>&1 || true
@@ -36,7 +37,7 @@ export PYTHONPATH="$PACKAGE_DIR/src${PYTHONPATH:+:$PYTHONPATH}"
 
 start_local_app() {
   local python_bin="$1"
-  shift
+  local notified=0
 
   if /usr/bin/curl -fsS "$SERVER_URL/api/setup/status" >/dev/null 2>&1; then
     /usr/bin/open "$SERVER_URL/"
@@ -45,24 +46,28 @@ start_local_app() {
 
   "$python_bin" -m decon.app_server >> "$SERVER_LOG" 2>&1 &
   SERVER_PID=$!
-
+  echo "$SERVER_PID" > "$SERVER_PID_FILE"
   cleanup() {
-    if /bin/kill -0 "$SERVER_PID" >/dev/null 2>&1; then
-      /bin/kill "$SERVER_PID" >/dev/null 2>&1 || true
-    fi
+    /bin/kill "$SERVER_PID" >/dev/null 2>&1 || true
+    /bin/rm -f "$SERVER_PID_FILE" >/dev/null 2>&1 || true
   }
   trap cleanup EXIT INT TERM
 
-  for _ in {1..30}; do
+  for attempt in {1..45}; do
     if /usr/bin/curl -fsS "$SERVER_URL/api/setup/status" >/dev/null 2>&1; then
       /usr/bin/open "$SERVER_URL/"
       wait "$SERVER_PID"
       exit $?
     fi
+    if [[ "$attempt" -eq 4 && "$notified" == "0" ]]; then
+      notify "Starting the local privacy engine. Your browser will open automatically."
+      notified=1
+    fi
     /bin/sleep 1
   done
 
-  alert "Clinician Decon did not start on 127.0.0.1. See $SERVER_LOG."
+  /bin/kill "$SERVER_PID" >/dev/null 2>&1 || true
+  alert "Clinician Decon did not start. Reopen the app once. If this keeps happening, see $SERVER_LOG."
   exit 1
 }
 

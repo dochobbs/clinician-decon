@@ -34,10 +34,11 @@ build script copies them from the repo-local ignored model directory during pack
 
 1. Open `Clinician-Decon-0.1.0-self-contained-arm64.dmg`.
 2. Drag `Clinician Decon.app` to `Applications`.
-3. Open `Clinician Decon.app`.
-4. If macOS warns because the build is unsigned, right-click the app, choose Open, and confirm.
-5. Wait for the local browser app to open at `http://127.0.0.1:8769/`.
-6. Confirm the setup badge says the local model is ready.
+3. Right-click `Clinician Decon.app`, choose Open, and confirm if macOS warns because the demo
+   build is unsigned.
+4. Wait for the local browser app to open at `http://127.0.0.1:8769/`.
+   The browser tab is the app window; the Mac app is only the local launcher.
+5. Confirm the setup badge says the local model is ready.
 
 There should be no dependency setup prompt, model download, or Terminal command on first launch.
 

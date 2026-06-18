@@ -44,6 +44,7 @@ Planning and design artifacts.
 End-user and pilot-install documentation.
 
 - Mac clean install path
+- demo-facing DMG readme
 
 ## `installer/mac/`
 
@@ -51,6 +52,8 @@ Repeatable Mac bootstrap packaging assets.
 
 - `build_self_contained_dmg.sh`: creates the doctor-facing all-in-one DMG
 - `build_dmg.sh`: creates the smaller bootstrap pilot DMG
+- `create_icon_assets.py`: generates Finder, browser, and PWA icon assets
+- `assets/ClinicianDecon.icns`: app bundle icon
 - `app/Info.plist`: app bundle metadata
 - `app/clinician-decon-launcher`: first-run runtime/model setup and local app launcher
 
@@ -66,6 +69,7 @@ For a fresh reader, start here:
 - `README.md`
 - `package/README.md`
 - `docs/install/mac-clean-install.md`
+- `docs/install/mac-demo-readme.md`
 - `docs/qa/headless-validation.md`
 - `docs/qa/mac-installer-qa.md`
 - `docs/qa/query-set-registry.md`

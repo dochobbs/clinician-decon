@@ -1,18 +1,52 @@
+const CACHE_NAME = "decon-static-v2";
+const OLD_CACHES = ["decon-static-v1"];
+const STATIC_ASSETS = [
+  "/",
+  "/index.html",
+  "/styles.css",
+  "/app.js",
+  "/manifest.json",
+  "/favicon.ico",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+];
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open("decon-static-v1").then((cache) => cache.addAll([
-      "/",
-      "/index.html",
-      "/styles.css",
-      "/app.js",
-      "/manifest.json"
-    ]))
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(STATIC_ASSETS))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((names) => Promise.all(
+        names
+          .filter((name) => name !== CACHE_NAME || OLD_CACHES.includes(name))
+          .map((name) => caches.delete(name))
+      ))
+      .then(() => clients.claim())
+      .then(() => clients.matchAll({ type: "window", includeUncontrolled: true }))
+      .then((clientList) => Promise.all(
+        clientList.map((client) => {
+          const url = new URL(client.url);
+          return url.origin === self.location.origin ? client.navigate(client.url) : undefined;
+        })
+      ))
   );
 });
 
 self.addEventListener("fetch", (event) => {
-  if (event.request.url.includes("/api/")) return;
+  if (event.request.method !== "GET" || event.request.url.includes("/api/")) return;
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    fetch(event.request)
+      .then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });

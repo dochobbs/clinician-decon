@@ -1,4 +1,9 @@
+from pathlib import Path
+
 from decon.app_server import build_decon_payload, build_setup_status_payload
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_build_decon_payload_does_not_return_removed_phi_values():
@@ -93,3 +98,10 @@ def test_build_decon_payload_defaults_to_openmed_and_blocks_when_model_missing(t
   assert "OpenMed" in payload["engine_fallback_reason"]
   assert payload["risk_level"] == "high"
   assert payload["copy_allowed"] is False
+
+
+def test_static_ui_responses_are_not_cached():
+  server_source = (REPO_ROOT / "package" / "src" / "decon" / "app_server.py").read_text(encoding="utf-8")
+
+  assert "def end_headers" in server_source
+  assert '"Cache-Control", "no-store, max-age=0"' in server_source
