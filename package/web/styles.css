@@ -230,12 +230,14 @@ h1 {
   }
 }
 
+.open-browser-button,
 .quit-button,
 .btn {
   border-radius: var(--r-sm);
   transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
 }
 
+.open-browser-button,
 .quit-button {
   padding: 0 16px;
   color: var(--ink-soft);
@@ -245,6 +247,11 @@ h1 {
   font-weight: 550;
 }
 
+.open-browser-button {
+  min-height: 34px;
+}
+
+.open-browser-button:hover:not(:disabled),
 .quit-button:hover:not(:disabled) {
   border-color: var(--ink-faint);
 }

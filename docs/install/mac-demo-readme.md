@@ -13,11 +13,14 @@ This DMG is for demoing Clinician Decon on an Apple Silicon Mac.
 The app runs locally. No clinical text is sent during decontextualization unless you copy the
 cleaned prompt into another tool yourself.
 
+For package transparency, open `Package Audit.md` in this DMG. It lists the bundled runtime,
+model files, app resources, local port, and what is not included.
+
 ## Basic Use
 
 1. Paste clinical text into `Source`.
 2. Choose `For use in`.
-3. Click `Decontextualize`.
+3. Click `Reduce`.
 4. Review the safe prompt before copying.
 
 ## Demo Check
@@ -45,6 +48,7 @@ window. Closing the app window also stops the local server.
 
 - The OpenMed model and Python runtime are bundled in this demo app.
 - The Mac app uses a native window around the local web UI.
-- External destinations open in the default browser only after you click `Copy & Open`.
+- Click `Open Browser` if you prefer to use the same local app in your default browser.
+- External destinations open in the default browser only after you click `Copy across`.
 - If launch takes more than a few seconds, macOS should show a startup notification.
 - Signing and notarization are still required before broad distribution.

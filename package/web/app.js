@@ -20,6 +20,7 @@ const categoryList = document.querySelector("#categoryList");
 const categoryLegend = document.querySelector("#categoryLegend");
 const reasonList = document.querySelector("#reasonList");
 const engineStatus = document.querySelector("#engineStatus");
+const openBrowserButton = document.querySelector("#openBrowserButton");
 const shutdownButton = document.querySelector("#shutdownButton");
 const shutdownStatus = document.querySelector("#shutdownStatus");
 const stage = document.querySelector(".stage");
@@ -407,12 +408,25 @@ copyOpenButton.addEventListener("click", () => {
   copyPrompt({ openExternal: true });
 });
 
-function requestNativeQuit() {
+function requestNativeAction(action) {
   const nativeHandler = window.webkit?.messageHandlers?.deconNative;
   if (!nativeHandler) return false;
-  nativeHandler.postMessage({ action: "quit" });
+  nativeHandler.postMessage({ action });
   return true;
 }
+
+function requestNativeQuit() {
+  return requestNativeAction("quit");
+}
+
+openBrowserButton.addEventListener("click", () => {
+  if (requestNativeAction("openBrowser")) {
+    shutdownStatus.textContent = "Opened in your default browser.";
+    return;
+  }
+  window.open(window.location.href, "_blank", "noopener,noreferrer");
+  shutdownStatus.textContent = "Opened another local browser tab.";
+});
 
 shutdownButton.addEventListener("click", async () => {
   const shouldQuit = window.confirm("Quit Decon on this Mac?");

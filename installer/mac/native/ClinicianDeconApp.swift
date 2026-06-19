@@ -46,6 +46,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
 
     let appMenu = NSMenu()
     appMenu.addItem(NSMenuItem(
+      title: "Open in Browser",
+      action: #selector(openInBrowser(_:)),
+      keyEquivalent: "b"
+    ))
+    appMenu.addItem(.separator())
+    appMenu.addItem(NSMenuItem(
       title: "Quit Clinician Decon",
       action: #selector(NSApplication.terminate(_:)),
       keyEquivalent: "q"
@@ -256,6 +262,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }.resume()
   }
 
+  @objc private func openInBrowser(_ sender: Any?) {
+    logNative("opening local app in browser")
+    NSWorkspace.shared.open(serverURL)
+  }
+
   private func logNative(_ message: String) {
     let line = "\(ISO8601DateFormatter().string(from: Date())) \(message)\n"
     guard let data = line.data(using: .utf8) else { return }
@@ -272,10 +283,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
   func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
     guard message.name == "deconNative" else { return }
     if let body = message.body as? [String: Any],
-       let action = body["action"] as? String,
-       action == "quit" {
-      logNative("received web quit message")
-      NSApp.terminate(nil)
+       let action = body["action"] as? String {
+      switch action {
+      case "quit":
+        logNative("received web quit message")
+        NSApp.terminate(nil)
+      case "openBrowser":
+        openInBrowser(nil)
+      default:
+        logNative("ignored web message action: \(action)")
+      }
     }
   }
 

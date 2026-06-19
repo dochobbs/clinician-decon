@@ -19,6 +19,8 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   app_icon = REPO_ROOT / "installer" / "mac" / "assets" / "ClinicianDecon.icns"
   install_doc = REPO_ROOT / "docs" / "install" / "mac-clean-install.md"
   demo_readme = REPO_ROOT / "docs" / "install" / "mac-demo-readme.md"
+  package_audit = REPO_ROOT / "docs" / "install" / "mac-package-audit.md"
+  aws_web_options = REPO_ROOT / "docs" / "deployment" / "aws-web-options.md"
   qa_doc = REPO_ROOT / "docs" / "qa" / "mac-installer-qa.md"
   web_manifest = REPO_ROOT / "package" / "web" / "manifest.json"
   web_index = REPO_ROOT / "package" / "web" / "index.html"
@@ -43,6 +45,8 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
     app_icon,
     install_doc,
     demo_readme,
+    package_audit,
+    aws_web_options,
     qa_doc,
     web_manifest,
     web_index,
@@ -78,6 +82,9 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "Clinician Decon.app" in builder_text
   assert "ClinicianDecon.icns" in builder_text
   assert "mac-demo-readme.md" in builder_text
+  assert "mac-package-audit.md" in builder_text
+  assert "Package Audit.md" in builder_text
+  assert "PACKAGE_AUDIT.md" in builder_text
   assert "Info.native.plist" in builder_text
   assert "build_native_wrapper.sh" in builder_text
 
@@ -90,6 +97,9 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "self-contained" in self_contained_text
   assert "ClinicianDecon.icns" in self_contained_text
   assert "mac-demo-readme.md" in self_contained_text
+  assert "mac-package-audit.md" in self_contained_text
+  assert "Package Audit.md" in self_contained_text
+  assert "PACKAGE_AUDIT.md" in self_contained_text
   assert "Info.native.plist" in self_contained_text
   assert "build_native_wrapper.sh" in self_contained_text
 
@@ -115,11 +125,14 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "WKWebView" in native_source_text
   assert "WKScriptMessageHandler" in native_source_text
   assert 'configuration.userContentController.add(self, name: "deconNative")' in native_source_text
-  assert 'action == "quit"' in native_source_text
+  assert 'case "quit"' in native_source_text
   assert "NSApp.terminate(nil)" in native_source_text
   assert "serverMonitorTimer" in native_source_text
   assert "checkServerStillRunning" in native_source_text
   assert "local server stopped; terminating native app" in native_source_text
+  assert "Open in Browser" in native_source_text
+  assert "openInBrowser" in native_source_text
+  assert 'case "openBrowser"' in native_source_text
   assert "DECON_NO_BROWSER" in native_source_text
   assert "clinician-decon-launcher" in native_source_text
   assert "http://127.0.0.1:8769/" in native_source_text
@@ -146,6 +159,20 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "click `Quit` in" in demo_text
   assert "build_self_contained_dmg.sh" not in demo_text
 
+  audit_text = package_audit.read_text(encoding="utf-8")
+  assert "What The App Contains" in audit_text
+  assert "Contents/Resources/package/local-models" in audit_text
+  assert "127.0.0.1:8769" in audit_text
+  assert "No cloud API keys" in audit_text
+  assert "No telemetry endpoint" in audit_text
+
+  aws_text = aws_web_options.read_text(encoding="utf-8")
+  assert "Static Trust And Download Site" in aws_text
+  assert "Browser-Only Local Decon" in aws_text
+  assert "Hosted Decon API" in aws_text
+  assert "Do not ship this as the default product path." in aws_text
+  assert "https://aws.amazon.com/cloudfront/pricing/" in aws_text
+
   qa_text = qa_doc.read_text(encoding="utf-8")
   assert "No raw PHI appears in logs" in qa_text
   assert "No prompt text appears in third-party URLs" in qa_text
@@ -164,6 +191,8 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "Scrubbed draft" in web_index_text
   assert "your review before it leaves" in web_index_text
   assert "app-controls" in web_index_text
+  assert 'id="openBrowserButton"' in web_index_text
+  assert ">Open Browser</button>" in web_index_text
   assert 'id="shutdownButton"' in web_index_text
   assert ">Quit</button>" in web_index_text
   assert "Running on this Mac" in web_index_text
@@ -187,9 +216,12 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "AbortController" in web_app_text
   assert "const samples" in web_app_text
   assert "removed_spans" in web_app_text
+  assert "openBrowserButton" in web_app_text
+  assert "requestNativeAction" in web_app_text
+  assert 'requestNativeAction("openBrowser")' in web_app_text
   assert "requestNativeQuit" in web_app_text
   assert "window.webkit?.messageHandlers?.deconNative" in web_app_text
-  assert 'nativeHandler.postMessage({ action: "quit" })' in web_app_text
+  assert "nativeHandler.postMessage({ action })" in web_app_text
   assert "Closing app window." in web_app_text
   assert "Initials, nicknames, and single first names" in web_app_text
   assert "A relationship can identify a patient" in web_app_text
@@ -208,6 +240,7 @@ def test_mac_installer_assets_define_local_openmed_setup_path():
   assert "var(--ground-out) 50%" in web_styles_text
   assert ".seam-tag" in web_styles_text
   assert ".courier.fly" in web_styles_text
+  assert ".open-browser-button" in web_styles_text
   assert "container-type: inline-size" in web_styles_text
   assert "@container (max-width: 500px)" in web_styles_text
   assert "@media (max-width: 840px)" in web_styles_text

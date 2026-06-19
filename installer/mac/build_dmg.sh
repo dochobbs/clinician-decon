@@ -40,12 +40,14 @@ rsync -a \
 
 cp "$ROOT_DIR/LICENSE" "$RESOURCES_DIR/LICENSE"
 cp "$ROOT_DIR/docs/install/mac-demo-readme.md" "$RESOURCES_DIR/README_FIRST.md"
+cp "$ROOT_DIR/docs/install/mac-package-audit.md" "$RESOURCES_DIR/PACKAGE_AUDIT.md"
 
 plutil -lint "$CONTENTS_DIR/Info.plist" >/dev/null
 
 cp -R "$APP_DIR" "$STAGE_DIR/$APP_NAME.app"
 ln -s /Applications "$STAGE_DIR/Applications"
 cp "$ROOT_DIR/docs/install/mac-demo-readme.md" "$STAGE_DIR/Read Me First.md"
+cp "$ROOT_DIR/docs/install/mac-package-audit.md" "$STAGE_DIR/Package Audit.md"
 
 hdiutil create \
   -volname "$APP_NAME" \

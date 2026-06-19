@@ -45,6 +45,13 @@ End-user and pilot-install documentation.
 
 - Mac clean install path
 - demo-facing DMG readme
+- package audit manifest included in the DMG
+
+## `docs/deployment/`
+
+Deployment notes.
+
+- AWS web deployment options and rough cost model
 
 ## `docs/decon-vs-deid-explainer.md`
 
