@@ -31,6 +31,7 @@ CURRENT_SUITES = {
   "clinician-seed-gold": DATA_DIR / "decon_clinician_seed_gold_10_2026-06-16.json",
   "persona-regression": DATA_DIR / "decon_persona_regression_2000_2026-06-15.json",
   "external-deid-adversarial-addon": DATA_DIR / "decon_external_deid_adversarial_addon_50_2026-06-16.json",
+  "realworld-adversarial": DATA_DIR / "decon_realworld_adversarial_24_2026-06-19.json",
 }
 
 LEGACY_PHI_SUITES = {

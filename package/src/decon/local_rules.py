@@ -361,7 +361,7 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("date", re.compile(r"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:[+-]\d{2}:\d{2}|Z)?\b")),
   ("date", re.compile(r"\b\d{1,2}\s+\d{1,2}\s+\d{4}\b")),
   ("date", re.compile(
-    r"\b(?:today|yesterday|next\s+month|last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|month))\b",
+    r"\b(?:today|tomorrow|yesterday|next\s+month|last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|month))\b",
     re.IGNORECASE,
   )),
   ("date", re.compile(r"\b(?:at|collected|seen)\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)\b", re.IGNORECASE)),
@@ -785,6 +785,8 @@ def _replacement_for_span(text: str, span: Span, reference_date: date) -> str:
 
 def _normalize_safe_context(text: str) -> str:
   safe = text
+  safe = _normalize_hl7_context(safe)
+  safe = _strip_ehr_wrapper_noise(safe)
   safe = re.sub(r"\[NAME\]'s\b", "patient's", safe)
   safe = re.sub(r"\bBoth\s+\[NAME\]\s+and\s+(?:his|her|their)\s+mother\b", "Both patient and mother", safe, flags=re.IGNORECASE)
   safe = re.sub(
@@ -806,6 +808,80 @@ def _normalize_safe_context(text: str) -> str:
   for pattern, replacement in RELATION_REPLACEMENTS:
     safe = pattern.sub(replacement, safe)
   safe = re.sub(r"\s+([,.;:])", r"\1", safe)
+  return safe
+
+
+def _normalize_hl7_context(text: str) -> str:
+  if not re.search(r"(?m)^(?:MSH|PID|OBX)\|", text):
+    return text
+
+  sex = None
+  lab_summaries: list[str] = []
+  non_hl7_lines: list[str] = []
+  for line in text.splitlines():
+    stripped = line.strip()
+    if not stripped:
+      continue
+    segment = stripped.split("|", 1)[0]
+    if segment == "PID":
+      fields = stripped.split("|")
+      if len(fields) > 8:
+        sex_code = fields[8].strip().upper()
+        if sex_code == "F":
+          sex = "female"
+        elif sex_code == "M":
+          sex = "male"
+      continue
+    if segment == "OBX":
+      fields = stripped.split("|")
+      if len(fields) > 5:
+        label = fields[3].split("^", 1)[0].strip()
+        value = fields[5].strip()
+        if label and value and re.fullmatch(LAB_TERMS, label, flags=re.IGNORECASE):
+          lab_summaries.append(_generalize_clinical_value(f"{label} {value}"))
+      continue
+    if segment in {"MSH", "OBR", "ORC", "PV1", "DG1"}:
+      continue
+    non_hl7_lines.append(stripped)
+
+  clinical_parts = []
+  if sex:
+    clinical_parts.append(f"{sex} patient")
+  clinical_parts.extend(summary for summary in lab_summaries if summary not in clinical_parts)
+  clinical_parts.extend(non_hl7_lines)
+  if not clinical_parts:
+    return text
+  return ". ".join(clinical_parts)
+
+
+def _strip_ehr_wrapper_noise(text: str) -> str:
+  safe = text
+  safe = re.sub(
+    r"\b(?:ELATION|EHR|EMR)\s+(?:NOTE|SUMMARY|EXPORT|MESSAGE)\b\s*:?",
+    " ",
+    safe,
+    flags=re.IGNORECASE,
+  )
+  safe = re.sub(r"\bNOTE\s+CONTENT\b\s*:?", " ", safe, flags=re.IGNORECASE)
+  safe = re.sub(r"\b(?:Patient|Pt)\s*:\s*\[NAME\]\s*:?", " ", safe, flags=re.IGNORECASE)
+  safe = re.sub(
+    r"\b(?:MRN|MR#|medical record(?: number)?)\s*:\s*\[(?:MRN|IDENTIFIER)\]\s*",
+    " ",
+    safe,
+    flags=re.IGNORECASE,
+  )
+  safe = re.sub(
+    r"\b(?:Serviced at|Service date|Encounter date|Visit date)\s*:\s*\[DATE\]\s*",
+    " ",
+    safe,
+    flags=re.IGNORECASE,
+  )
+  safe = re.sub(
+    r"\bSex\s*:\s*(Male|Female)\b",
+    lambda match: match.group(1).lower(),
+    safe,
+    flags=re.IGNORECASE,
+  )
   return safe
 
 
@@ -978,6 +1054,8 @@ def _generalize_date(raw: str) -> str:
   lowered = raw.lower()
   if lowered == "today":
     return "same-day"
+  if lowered == "tomorrow":
+    return "next day"
   if lowered == "yesterday":
     return "1 day prior"
   if lowered.startswith("last "):

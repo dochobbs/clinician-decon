@@ -1151,11 +1151,77 @@ def test_decontextualize_text_removes_legal_name_label():
 
   for leaked in ("Blue", "Rowan", "Smith", "TXQ-993812"):
     assert leaked not in result.destination_prompt
+  assert "tomorrow" not in result.destination_prompt
+  assert "next day" in result.destination_prompt
   assert "adolescent" in result.destination_prompt
   assert "transmasc" in result.destination_prompt
   assert "fluoxetine" in result.destination_prompt
   assert "suicidal thoughts" in result.destination_prompt
   assert "denies plan" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_ehr_wrapper_noise_without_losing_clinical_context():
+  source = (
+    "EHR NOTE\n"
+    "Patient: Manning Jax Kvasnik\n"
+    "DOB: 2014-04-16\n"
+    "Sex: Male\n"
+    "MRN: 1007443372670977\n"
+    "Serviced at: 2026-01-16T13:45:00+00:00\n\n"
+    "NOTE CONTENT\n"
+    "Plan for meningococcal, tetanus, HPV, and influenza same-day. "
+    "ADHD concerns (Manning, 6th grade): appetite suppression on Vyvanse 30 mg."
+  )
+
+  result = decontextualize_text(
+    source,
+    destination="copy_only",
+    reference_date=date(2026, 6, 19),
+  )
+
+  for leaked in (
+    "Manning",
+    "Jax",
+    "Kvasnik",
+    "2014-04-16",
+    "1007443372670977",
+    "2026-01-16T13:45:00+00:00",
+    "EHR NOTE",
+    "NOTE CONTENT",
+    "Patient:",
+    "MRN:",
+    "Serviced at:",
+    "Sex:",
+  ):
+    assert leaked not in result.destination_prompt
+  assert "early adolescent" in result.destination_prompt
+  assert "male" in result.destination_prompt
+  assert "meningococcal" in result.destination_prompt
+  assert "HPV" in result.destination_prompt
+  assert "influenza" in result.destination_prompt
+  assert "Vyvanse 30 mg" in result.destination_prompt
+  assert "appetite suppression" in result.destination_prompt
+
+
+def test_decontextualize_text_summarizes_hl7_without_leaking_identifiers():
+  source = (
+    "MSH|^~\\&|EHR|Lakes|LAB|Quest|202606191315||ORU^R01|MSG-771923|P|2.5\n"
+    "PID|||LP-2024-77721||Rivera^Sofia||20140202|F\n"
+    "OBX|1|NM|TSH||18.1|uIU/mL|0.4-4.5|H|||F\n"
+    "Question: hypothyroid treatment?"
+  )
+
+  result = decontextualize_text(
+    source,
+    destination="copy_only",
+    reference_date=date(2026, 6, 19),
+  )
+
+  for leaked in ("MSG-771923", "LP-2024-77721", "Rivera", "Sofia", "20140202", "MSH|", "PID|||"):
+    assert leaked not in result.destination_prompt
+  assert "female patient" in result.destination_prompt
+  assert "elevated TSH" in result.destination_prompt
+  assert "hypothyroid treatment" in result.destination_prompt
 
 
 def test_decontextualize_text_can_apply_openmed_detector_spans():

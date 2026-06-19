@@ -19,6 +19,8 @@ Related docs:
   seed-gold verification.
 - `docs/qa/2026-06-16-external-deid-adversarial-addon-head-to-head.md`: 50-case add-on built to test
   patterns where a broad external de-ID baseline might plausibly be competitive.
+- `docs/qa/2026-06-19-realworld-adversarial-hardening.md`: real-world copied-note,
+  EHR-wrapper, HL7, relative-date, and clinical-usability hardening trace.
 
 ## Current Regression Gates
 
@@ -37,7 +39,42 @@ persona and archetype libraries.
 | `package/data/decon_validation_blindspot_redteam_r2_25_2026-06-15.json` | 25 | Second skeptical clinician-authored pass after R1 fixes. | Hardens against more natural prose: `says that`, `per mom`, name-is/goes-by/alias labels, lowercase name labels, MOC/FOC, space/ISO/period DOBs, `MR #`, chart IDs with spaces, room numbers, hash unit numbers, and word-spelled phone numbers. | `docs/qa/2026-06-15-validation-blindspot-red-team-r2.md`: first run found 56 / 75 PHI-leaked outputs and 12 / 75 missing-critical-fact outputs; final run 75 / 75 safe, clinically usable, and handoff usable. |
 | `package/data/decon_clinician_seed_gold_10_2026-06-16.json` | 10 | Clinician-selected hard cases created after the Marvin miss and OpenMed audit. | Seed-gold gate for patient-name prose, multi-patient sibling notes, legal-name labels, Spanish family phrasing, camp/school/pharmacy/location, and clinical eponym preservation. | `docs/qa/2026-06-16-local-rules-openmed-audit.md`: `rules+openmed` run on 2026-06-16 passed 30 / 30 outputs with 0 PHI leaks and 0 missing clinical facts. |
 | `package/data/decon_external_deid_adversarial_addon_50_2026-06-16.json` | 50 | Hand-authored external de-ID adversarial add-on created from the external baseline comparison and local pipeline gaps. | Tests identifiers and formats where a broad de-ID tool might be competitive: accession, specimen, voiceprint, passport, license, military, claim, group, UUID, device IDs, HL7, FHIR, JSON, filenames, QR payloads, portal tokens, chat-export handles, Unicode, Spanish prose, facility locations, bus routes, and eponym/name-drug collisions. | `docs/qa/2026-06-16-external-deid-adversarial-addon-head-to-head.md`: Clinician Decon passed 150 / 150 outputs; the external baseline scored 31 / 50 safe and 35 / 50 clinically usable. |
+| `package/data/decon_realworld_adversarial_24_2026-06-19.json` | 24 | Hand-authored real-world adversarial set created from manually reviewed copied EHR notes, portal snippets, and report/message formats. | Tests EHR wrapper labels, section-label names, PT false positives, exact clinical values, HL7, JSON, spoken contact info, location/practice/school context, prompt injection, and no-PHI controls. | `docs/qa/2026-06-19-realworld-adversarial-hardening.md`: initial run found EHR-wrapper noise, HL7 usability loss, and `tomorrow` specificity; final `rules+openmed` run passed 72 / 72 outputs with 0 PHI leaks and 0 missing clinical facts. |
 | `package/data/decon_persona_regression_2000_2026-06-15.json` | 2,000 | `package/scripts/generate_traces.py --count 2000 --seed 20260615` using `package/data/personas/v1.json` and `package/data/archetypes/v1.json` | Persona-driven regression suite: combines clinician persona, patient context, source channel, perturbation, and clinical archetype metadata. | `docs/qa/2026-06-15-persona-regression-2000-eval.md`: first run found 2,742 / 6,000 PHI-leaked outputs; final run 6,000 / 6,000 safe, clinically usable, and handoff usable. |
+
+## 2026-06-19 Regression Plus Real-World Gate
+
+Validation:
+
+```bash
+DECON_HOME="$PWD/build/live-decon-home" \
+DECON_MODEL_DIR="$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1" \
+PYTHONPATH="$PWD/package/src:$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/python-packages" \
+"$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/python/bin/python" \
+  -m decon.validation_cli \
+  --suite current \
+  --suite phi-field-prose \
+  --suite validation-blindspot-redteam \
+  --suite validation-blindspot-redteam-r2 \
+  --suite clinician-seed-gold \
+  --suite realworld-adversarial \
+  --destinations chatgpt,gemini,web_search \
+  --reference-date 2026-06-19 \
+  --engine rules+openmed \
+  --report package/reports/regression-plus-realworld-2026-06-19-openmed.json
+```
+
+Result:
+
+- Source cases: `1,151`
+- Destination outputs: `3,453`
+- PHI-leaked outputs: `0 / 3,453`
+- Unsafe copy-allowed leaks: `0 / 3,453`
+- Missing-critical-fact outputs: `0 / 3,453`
+- Clinically usable outputs: `3,453 / 3,453`
+- Handoff usable outputs: `3,453 / 3,453`
+- Max average runtime: `94.573 ms`
+- Max p95 runtime: `114.391 ms`
 
 ## 2026-06-16 OpenMed-Backed Current Gate
 
