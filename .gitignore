@@ -9,5 +9,7 @@ build/
 dist/
 installer/mac/assets/ClinicianDecon.iconset/
 package/reports/latest-validation.json
+package/reports/*.json
 package/local-models/
 package/.decon-home/
+historical-fixtures/**/results/**/*.json

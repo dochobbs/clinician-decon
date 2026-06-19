@@ -5,7 +5,8 @@
 **OpenMed model:** `OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1` (CPU)
 **cloud rewrite model model:** `cloud-rewrite-reference` (API)
 **N:** 10 synthetic-PHI clinical queries
-**Result file:** `results/decon_parity/local_model_decon_20260510_085527.json`
+**Raw result file:** generated locally under `results/decon_parity/`; raw JSON outputs are not
+tracked in git.
 
 ---
 

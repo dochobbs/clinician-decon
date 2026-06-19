@@ -3,7 +3,7 @@
 Date: 2026-06-15
 
 This registry traces the decontextualization query sets in this repo: where they came from,
-what they are meant to test, how to reproduce generated sets, and which report currently
+what they are meant to test, how to reproduce generated sets, and which QA summary currently
 records the latest local result.
 
 Related docs:
@@ -415,6 +415,7 @@ For each new generated or clinician-authored set:
 1. Save the case JSON under `package/data/` or the appropriate copied-source folder.
 2. Include stable IDs, a category, the source query, expected PHI, and required critical facts.
 3. Record generator function, seed, reference date, and row count in this registry.
-4. Run the appropriate eval script and save a machine-readable report under `package/reports/`.
+4. Run the appropriate eval script and save a machine-readable report under `package/reports/` or
+   `/private/tmp`; JSON reports are generated artifacts and are ignored by git.
 5. Save a reader-facing report under `docs/qa/`.
 6. Keep first-run failure summaries when they drove code changes.

@@ -219,6 +219,9 @@ python3 package/scripts/run_validation.py \
   --report package/reports/latest-validation.json
 ```
 
+JSON files under `package/reports/` are local generated artifacts and are ignored by git.
+Commit durable reader-facing findings under `docs/qa/` instead.
+
 See:
 
 - `../docs/qa/headless-validation.md`
