@@ -565,6 +565,35 @@ def test_decontextualize_text_uses_learned_rules_for_parenthetical_family_and_ch
   assert result.removed_categories["name"] >= 2
 
 
+def test_decontextualize_text_removes_elation_parenthetical_note_label_names():
+  source = (
+    "ADHD concerns (Manning, 6th grade): Parent notes spacey and forgetful. "
+    "Sleep/snoring (Spencer): Snores and appears not well-rested most days."
+  )
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  assert "Manning" not in result.destination_prompt
+  assert "Spencer" not in result.destination_prompt
+  assert "ADHD concerns" in result.destination_prompt
+  assert "6th grade" in result.destination_prompt
+  assert "Snores" in result.destination_prompt
+  assert result.removed_categories["name"] >= 2
+
+
+def test_decontextualize_text_preserves_clinical_parenthetical_abbreviations():
+  source = (
+    "Immunizations administered: Pentacel (DTaP-IPV-Hib). "
+    "Acetaminophen (Tylenol) used for fever."
+  )
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  assert "Pentacel (DTaP-IPV-Hib)" in result.destination_prompt
+  assert "Acetaminophen (Tylenol)" in result.destination_prompt
+  assert "name" not in result.removed_categories
+
+
 def test_decontextualize_text_uses_learned_rules_for_comma_and_k_lab_values():
   source = (
     "Ferritin came back at 48,000, WBC 1.2, platelets 45k, LDH 2800 - "

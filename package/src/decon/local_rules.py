@@ -100,6 +100,10 @@ NAME_CUES = (
   r"DOB|MRN|on|has|with|presents|asks?|needs|due|from|is|came|called|wants|"
   r"says|lives|here|peri-menopausal"
 )
+PARENTHETICAL_NAME_EXCLUSIONS = (
+  r"Tylenol|Acetaminophen|Ibuprofen|Motrin|Advil|Tums|Pentacel|Prevnar|"
+  r"Rotavirus|Dupixent|Magnesium|Vitamin|DTaP|IPV|Hib|HepB|PCV|MMRV"
+)
 CAREGIVER_SUBJECT_TERMS = r"Mom|Mother|Dad|Father|Parent|Caregiver|Guardian|Caller|MOC|FOC"
 CAREGIVER_REPORT_VERBS = (
   r"reports?|reported|says|said|states?|stated|notes?|noted|mentions?|mentioned|"
@@ -413,6 +417,16 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("name", re.compile(rf'"(?i:last)"\s*:\s*"({NAME_TOKEN})"')),
   ("name", re.compile(rf"\b(?i:PATIENT)\s*:\s*({NAME_TOKEN}),\s*{NAME_TOKEN}\b")),
   ("name", re.compile(rf"\b(?i:PATIENT)\s*:\s*{NAME_TOKEN},\s*({NAME_TOKEN})\b")),
+  ("name", re.compile(
+    rf"\b[A-Za-z][A-Za-z/ &-]{{2,80}}\s+\("
+    rf"((?!(?:{PARENTHETICAL_NAME_EXCLUSIONS})\b){NAME_TOKEN})"
+    rf"(?:,\s*\d{{1,2}}(?:st|nd|rd|th)\s+grade)?\)(?=\s*:)"
+  )),
+  ("name", re.compile(
+    rf"\("
+    rf"((?!(?:{PARENTHETICAL_NAME_EXCLUSIONS})\b){NAME_TOKEN})"
+    rf",\s*\d{{1,2}}(?:st|nd|rd|th)\s+grade\)"
+  )),
   ("name", re.compile(rf"\|\|({NAME_TOKEN}\^{NAME_TOKEN})\|\|")),
   ("name", re.compile(rf"\bPAT=({NAME_TOKEN}-{NAME_TOKEN})\b")),
   ("name", re.compile(
