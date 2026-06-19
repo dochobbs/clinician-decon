@@ -190,6 +190,48 @@ def test_decontextualize_text_removes_contextual_zip_without_zip_label():
   assert result.removed_categories["zip"] >= 1
 
 
+def test_decontextualize_text_keeps_physical_therapy_abbreviation():
+  source = (
+    "The PT order form is awaiting your signature for this week's upcoming evaluation. "
+    "Please sign at your earliest convenience."
+  )
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  assert "PT order form" in result.destination_prompt
+  assert "[LOCATION] order form" not in result.destination_prompt
+  assert "location" not in result.removed_categories
+
+
+def test_decontextualize_text_removes_us_territory_location():
+  source = (
+    "La abuela Marta dice que Diego vive cerca de 12 Calle Roble, San Juan PR. "
+    "Tos, wheeze, albuterol cada 2 horas; necesita ED?"
+  )
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  for leaked in ("Marta", "Diego", "12 Calle Roble", "San Juan", "PR"):
+    assert leaked not in result.destination_prompt
+  assert "albuterol cada 2 horas" in result.destination_prompt
+  assert result.removed_categories["location"] >= 1
+
+
+def test_decontextualize_text_removes_signature_block_name():
+  source = (
+    "Signature block: Sarah Patel, RN, callback 512-555-3010. "
+    "Question: toddler 12-23 months with MMR rash, fever 101; vaccine reaction counseling?"
+  )
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  assert "Sarah" not in result.destination_prompt
+  assert "Patel" not in result.destination_prompt
+  assert "512-555-3010" not in result.destination_prompt
+  assert "toddler 12-23 months" in result.destination_prompt
+  assert "MMR rash" in result.destination_prompt
+
+
 def test_decontextualize_text_blocks_copy_when_residual_mrn_remains():
   source = "Please answer for patient record ABCDEFGHIJK with fatigue and bruising."
 

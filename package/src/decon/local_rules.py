@@ -80,6 +80,11 @@ STREET_TYPES = (
   r"St|Street|Ave|Avenue|Rd|Road|Dr|Drive|Blvd|Boulevard|Ln|Lane|Way|Ct|Court|"
   r"Pkwy|Parkway|Calle"
 )
+US_STATE_ABBR = (
+  r"AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|IA|ID|IL|IN|KS|KY|LA|MA|MD|ME|MI|MN|"
+  r"MO|MS|MT|NC|ND|NE|NH|NJ|NM|NV|NY|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VA|VT|"
+  r"WA|WI|WV|WY|DC|AS|GU|MP|PR|VI"
+)
 NAME_TOKEN = (
   r"(?:[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+|[A-ZÀ-ÖØ-Þ])"
   r"(?:[-'][A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+)?"
@@ -229,10 +234,10 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     rf"\d{{1,6}}\s+(?:[A-Za-z0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?,\s*"
     rf"({NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}})\b",
   )),
-  ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2},\s*[A-Z]{2}\b")),
-  ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?\b")),
-  ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?\s+[A-Z]{2}\s+\d{5}(?:-\d{4})?\b")),
-  ("location", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?\s+[A-Z]{2}\b")),
+  ("location", re.compile(rf"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){{0,2}},\s*(?:{US_STATE_ABBR})\b")),
+  ("location", re.compile(rf"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*(?:{US_STATE_ABBR})\s+\d{{5}}(?:-\d{{4}})?\b")),
+  ("location", re.compile(rf"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?\s+(?:{US_STATE_ABBR})\s+\d{{5}}(?:-\d{{4}})?\b")),
+  ("location", re.compile(rf"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?\s+(?:{US_STATE_ABBR})\b")),
   ("location", re.compile(
     rf"\b(?i:(?:Going|travel(?:ing)?|travelling)\s+to)\s+"
     rf"((?!Camp\b){NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}})\b",
@@ -411,6 +416,10 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("name", re.compile(rf"\|\|({NAME_TOKEN}\^{NAME_TOKEN})\|\|")),
   ("name", re.compile(rf"\bPAT=({NAME_TOKEN}-{NAME_TOKEN})\b")),
   ("name", re.compile(
+    rf"\b(?i:(?:signature\s+block|signed\s+by|electronically\s+signed\s+by))\s*:\s*"
+    rf"({FULL_NAME})(?=,\s*(?:MD|DO|NP|PA|PA-C|RN|LPN|LVN|PharmD)\b)"
+  )),
+  ("name", re.compile(
     rf"^[A-Z0-9]{{4,}}:\s+({NAME_TOKEN})"
     rf"(?=\s+(?i:{PATIENT_NAME_FOLLOWERS})\b)"
   )),
@@ -544,7 +553,9 @@ RESIDUAL_HIGH_RISK: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("possible SSN remains", re.compile(r"\b\d{3}-\d{2}-\d{4}\b")),
   ("possible patient URL remains", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
   ("possible prompt injection remains", re.compile(r"\b(?:ignore|disregard|override)\s+(?:previous|prior|above)\s+instructions\b", re.IGNORECASE)),
-  ("possible city/state location remains", re.compile(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2},\s*[A-Z]{2}\b")),
+  ("possible city/state location remains", re.compile(
+    rf"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){{0,2}},\s*(?:{US_STATE_ABBR})\b"
+  )),
   ("possible practice or facility remains", re.compile(r"\b[A-Z][A-Za-z'’.-]+\s+(?:Pediatrics|Clinic|Hospital|Medical Group|Health|Urgent Care|Rehab|Institute)\b")),
 )
 
