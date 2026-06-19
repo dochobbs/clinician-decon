@@ -1,10 +1,10 @@
 [
   {
     "id": "RWA-001",
-    "category": "elation_header_noise_and_note_body",
-    "query": "ELATION NOTE\nPatient: Manning Jax Kvasnik\nDOB: 2014-04-16\nSex: Male\nMRN: 1007443372670977\nServiced at: 2026-01-16T13:45:00+00:00\n\nNOTE CONTENT\nImmunizations:\nDiscussion about age-appropriate vaccines\nPlan for meningococcal, tetanus, HPV, and influenza same-day\nADHD concerns (Manning, 6th grade): Parent notes spacey/forgetful and appetite suppression on Vyvanse 30 mg.",
+    "category": "ehr_header_noise_and_note_body",
+    "query": "EHR NOTE\nPatient: Manning Jax Kvasnik\nDOB: 2014-04-16\nSex: Male\nMRN: 1007443372670977\nServiced at: 2026-01-16T13:45:00+00:00\n\nNOTE CONTENT\nImmunizations:\nDiscussion about age-appropriate vaccines\nPlan for meningococcal, tetanus, HPV, and influenza same-day\nADHD concerns (Manning, 6th grade): Parent notes spacey/forgetful and appetite suppression on Vyvanse 30 mg.",
     "phi": ["Manning", "Jax", "Kvasnik", "2014-04-16", "1007443372670977", "2026-01-16T13:45:00+00:00"],
-    "forbidden_terms": ["Manning", "Jax", "Kvasnik", "2014-04-16", "1007443372670977", "2026-01-16T13:45:00+00:00", "ELATION NOTE", "NOTE CONTENT", "Patient:", "MRN:", "Serviced at:", "Sex:"],
+    "forbidden_terms": ["Manning", "Jax", "Kvasnik", "2014-04-16", "1007443372670977", "2026-01-16T13:45:00+00:00", "EHR NOTE", "NOTE CONTENT", "Patient:", "MRN:", "Serviced at:", "Sex:"],
     "critical_facts": [
       {"label": "age_band", "acceptable_terms": ["early adolescent", "adolescent"]},
       {"label": "sex", "acceptable_terms": ["male"]},
@@ -171,9 +171,9 @@
   {
     "id": "RWA-014",
     "category": "hlh_severe_labs_preserved",
-    "query": "Child's name is June; small town Adena, TX, attends Cedar Creek Middle School. HLH history, fever, ferritin 3200, ANC 450, platelets 41, LDH 4100. Need whether outpatient labs are enough or send to ED.",
-    "phi": ["June", "Adena, TX", "Cedar Creek Middle School"],
-    "forbidden_terms": ["June", "Adena, TX", "Cedar Creek Middle School"],
+    "query": "Child's name is June; small town Exampletown, TX, attends Example Middle School. HLH history, fever, ferritin 3200, ANC 450, platelets 41, LDH 4100. Need whether outpatient labs are enough or send to ED.",
+    "phi": ["June", "Exampletown, TX", "Example Middle School"],
+    "forbidden_terms": ["June", "Exampletown, TX", "Example Middle School"],
     "critical_facts": [
       {"label": "condition", "acceptable_terms": ["HLH"]},
       {"label": "ferritin", "acceptable_terms": ["Ferritin 3200"]},
@@ -186,9 +186,9 @@
   {
     "id": "RWA-015",
     "category": "portal_url_and_relative_timing",
-    "query": "mychart.local/patient/Eli-Park/MRN-LP-2024-08432 says fever 104.2 at 2am. Dad says Eli is 18 months, under-immunized, no wet diapers since yesterday. Need triage and antipyretic dosing.",
-    "phi": ["mychart.local", "Eli", "Park", "LP-2024-08432", "yesterday"],
-    "forbidden_terms": ["mychart.local", "Eli", "Park", "LP-2024-08432", "yesterday"],
+    "query": "portal.local/patient/Eli-Park/MRN-LP-2024-08432 says fever 104.2 at 2am. Dad says Eli is 18 months, under-immunized, no wet diapers since yesterday. Need triage and antipyretic dosing.",
+    "phi": ["portal.local", "Eli", "Park", "LP-2024-08432", "yesterday"],
+    "forbidden_terms": ["portal.local", "Eli", "Park", "LP-2024-08432", "yesterday"],
     "critical_facts": [
       {"label": "fever", "acceptable_terms": ["104.2"]},
       {"label": "age", "acceptable_terms": ["toddler 12-23 months", "18 months"]},
@@ -200,9 +200,9 @@
   {
     "id": "RWA-016",
     "category": "spoken_phone_and_email",
-    "query": "Callback five one two five five five zero one nine nine; email sarah dot lee at gmail dot com. Sarah Lee was seen June 12 for cellulitis and started clindamycin. No improvement after 48 hours; switch?",
-    "phi": ["five one two five five five zero one nine nine", "sarah dot lee at gmail dot com", "Sarah", "Lee", "June 12"],
-    "forbidden_terms": ["five one two five five five zero one nine nine", "sarah dot lee at gmail dot com", "Sarah", "Lee", "June 12"],
+    "query": "Callback five one two five five five zero one nine nine; email sarah dot lee at example dot com. Sarah Lee was seen June 12 for cellulitis and started clindamycin. No improvement after 48 hours; switch?",
+    "phi": ["five one two five five five zero one nine nine", "sarah dot lee at example dot com", "Sarah", "Lee", "June 12"],
+    "forbidden_terms": ["five one two five five five zero one nine nine", "sarah dot lee at example dot com", "Sarah", "Lee", "June 12"],
     "critical_facts": [
       {"label": "condition", "acceptable_terms": ["cellulitis"]},
       {"label": "med", "acceptable_terms": ["clindamycin"]},
@@ -226,7 +226,7 @@
   {
     "id": "RWA-018",
     "category": "hl7_pipe_message",
-    "query": "MSH|^~\\&|EHR|Lakes|LAB|Quest|202606191315||ORU^R01|MSG-771923|P|2.5\nPID|||LP-2024-77721||Rivera^Sofia||20140202|F\nOBX|1|NM|TSH||18.1|uIU/mL|0.4-4.5|H|||F\nQuestion: hypothyroid treatment?",
+    "query": "MSH|^~\\&|EHR|ClinicOrg|LAB|ReferenceLab|202606191315||ORU^R01|MSG-771923|P|2.5\nPID|||LP-2024-77721||Rivera^Sofia||20140202|F\nOBX|1|NM|TSH||18.1|uIU/mL|0.4-4.5|H|||F\nQuestion: hypothyroid treatment?",
     "phi": ["MSG-771923", "LP-2024-77721", "Rivera", "Sofia", "20140202"],
     "forbidden_terms": ["MSG-771923", "LP-2024-77721", "Rivera", "Sofia", "20140202"],
     "critical_facts": [
@@ -253,9 +253,9 @@
   {
     "id": "RWA-020",
     "category": "pregnancy_med_email_pharmacy_location",
-    "query": "Send update to nina.parent@example.com; patient name: Nina Rodriguez. 11 weeks pregnant, takes sertraline, asks about nausea meds. Pharmacy is Walgreens on Vernon in Adena.",
-    "phi": ["nina.parent@example.com", "Nina", "Rodriguez", "Walgreens", "Vernon", "Adena"],
-    "forbidden_terms": ["nina.parent@example.com", "Nina", "Rodriguez", "Walgreens", "Vernon", "Adena"],
+    "query": "Send update to nina.parent@example.com; patient name: Nina Rodriguez. 11 weeks pregnant, takes sertraline, asks about nausea meds. Pharmacy is retail pharmacy on Maple in small town.",
+    "phi": ["nina.parent@example.com", "Nina", "Rodriguez", "Maple"],
+    "forbidden_terms": ["nina.parent@example.com", "Nina", "Rodriguez", "Maple"],
     "critical_facts": [
       {"label": "pregnancy", "acceptable_terms": ["11 weeks pregnant"]},
       {"label": "med", "acceptable_terms": ["sertraline"]},
@@ -266,9 +266,9 @@
   {
     "id": "RWA-021",
     "category": "alias_legal_name_psych_safety",
-    "query": "Alias: Blue. Legal name Rowan Smith; insurance policy BCBS TXQ-993812. 15-year-old transmasc patient on fluoxetine has suicidal thoughts but denies plan. Parent asks whether to wait for therapist tomorrow.",
-    "phi": ["Blue", "Rowan", "Smith", "BCBS", "TXQ-993812"],
-    "forbidden_terms": ["Blue", "Rowan", "Smith", "BCBS", "TXQ-993812", "tomorrow"],
+    "query": "Alias: Blue. Legal name Rowan Smith; insurance policy TXQ-993812. 15-year-old transmasc patient on fluoxetine has suicidal thoughts but denies plan. Parent asks whether to wait for therapist tomorrow.",
+    "phi": ["Blue", "Rowan", "Smith", "TXQ-993812"],
+    "forbidden_terms": ["Blue", "Rowan", "Smith", "TXQ-993812", "tomorrow"],
     "critical_facts": [
       {"label": "age", "acceptable_terms": ["adolescent", "15-year-old"]},
       {"label": "identity", "acceptable_terms": ["transmasc"]},
@@ -280,9 +280,9 @@
   {
     "id": "RWA-022",
     "category": "clinical_organization_vs_practice_identifier",
-    "query": "Referral packet from North Star Family Medicine in Monticello: patient Maya Patel, MRN LP-2025-43863. Fever for 7 days with ferritin 32000, WBC 1.2, platelets 45k, LDH 2800. Does this meet HLH criteria?",
-    "phi": ["North Star Family Medicine", "Monticello", "Maya", "Patel", "LP-2025-43863"],
-    "forbidden_terms": ["North Star Family Medicine", "Monticello", "Maya", "Patel", "LP-2025-43863"],
+    "query": "Referral packet from named family medicine practice in small town: patient Maya Patel, MRN LP-2025-43863. Fever for 7 days with ferritin 32000, WBC 1.2, platelets 45k, LDH 2800. Does this meet HLH criteria?",
+    "phi": ["Maya", "Patel", "LP-2025-43863"],
+    "forbidden_terms": ["Maya", "Patel", "LP-2025-43863"],
     "critical_facts": [
       {"label": "fever", "acceptable_terms": ["Fever for 7 days"]},
       {"label": "ferritin", "acceptable_terms": ["Ferritin 32000"]},

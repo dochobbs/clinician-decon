@@ -335,8 +335,18 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("ip_address", re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")),
   ("url", re.compile(r"\b(?:GET|POST|PUT|PATCH|DELETE)\s+/\S+", re.IGNORECASE)),
   ("url", re.compile(r"\b(?:https?://|mychart\.)\S+\b", re.IGNORECASE)),
+  ("url", re.compile(
+    r"\b(?:portal|patient|ehr|emr)\.(?:local|test|example|invalid|internal)(?:/\S*)?\b",
+    re.IGNORECASE,
+  )),
   ("pharmacy", re.compile(
     rf"\b(?:Walgreens|CVS|Rite Aid|Walmart Pharmacy|Costco Pharmacy|Kroger Pharmacy)"
+    rf"\s+(?:on|at|in)\s+{NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}}"
+    rf"(?:\s+in\s+{NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}})?\b",
+    re.IGNORECASE,
+  )),
+  ("pharmacy", re.compile(
+    rf"\b(?:pharmacy|retail\s+pharmacy)\s+(?:is\s+)?(?:a\s+)?(?:retail\s+)?pharmacy"
     rf"\s+(?:on|at|in)\s+{NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}}"
     rf"(?:\s+in\s+{NAME_TOKEN}(?:\s+{NAME_TOKEN}){{0,2}})?\b",
     re.IGNORECASE,

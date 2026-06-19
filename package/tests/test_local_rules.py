@@ -190,6 +190,40 @@ def test_decontextualize_text_removes_contextual_zip_without_zip_label():
   assert result.removed_categories["zip"] >= 1
 
 
+def test_decontextualize_text_removes_bare_local_portal_url():
+  source = (
+    "portal.local/patient/Eli-Park/MRN-LP-2024-08432 says fever 104.2. "
+    "Dad says toddler 12-23 months has no wet diapers since yesterday."
+  )
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  assert "portal.local" not in result.destination_prompt
+  assert "Eli" not in result.destination_prompt
+  assert "Park" not in result.destination_prompt
+  assert "LP-2024-08432" not in result.destination_prompt
+  assert "fever 104.2" in result.destination_prompt
+  assert "toddler 12-23 months" in result.destination_prompt
+  assert "1 day prior" in result.destination_prompt
+
+
+def test_decontextualize_text_removes_generic_named_pharmacy_location():
+  source = (
+    "Patient name: Nina Rodriguez. 11 weeks pregnant, takes sertraline, asks about "
+    "nausea meds. Pharmacy is retail pharmacy on Maple in small town."
+  )
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  assert "Nina" not in result.destination_prompt
+  assert "Rodriguez" not in result.destination_prompt
+  assert "Maple" not in result.destination_prompt
+  assert "pharmacy" in result.destination_prompt
+  assert "11 weeks pregnant" in result.destination_prompt
+  assert "sertraline" in result.destination_prompt
+  assert "nausea" in result.destination_prompt
+
+
 def test_decontextualize_text_keeps_physical_therapy_abbreviation():
   source = (
     "The PT order form is awaiting your signature for this week's upcoming evaluation. "

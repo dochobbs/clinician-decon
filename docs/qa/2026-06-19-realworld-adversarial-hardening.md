@@ -2,20 +2,15 @@
 
 Date: 2026-06-19
 
-Scope: `rules+openmed` decontextualization using the bundled local OpenMed model plus
+Scope: model-backed decontextualization using the bundled local NER model plus
 deterministic regex/post-processing rules.
 
 Primary suite:
 
 - `package/data/decon_realworld_adversarial_24_2026-06-19.json`
 
-Primary report:
-
-- `package/reports/realworld-adversarial-24-2026-06-19-openmed.json`
-
-Expanded regression report:
-
-- `package/reports/regression-plus-realworld-2026-06-19-openmed.json`
+Raw JSON reports were generated locally for audit but are not committed here. The durable audit
+record is this summary plus the synthetic suite file.
 
 ## Why This Suite Exists
 
@@ -51,7 +46,7 @@ The first model-backed run found real gaps:
 
 | Issue | Outputs Affected | General Problem |
 | --- | ---: | --- |
-| EHR wrapper noise | 6 | `ELATION NOTE`, `Patient:`, `MRN:`, `Serviced at:`, and `Sex:` survived |
+| EHR wrapper noise | 6 | `EHR NOTE`, `Patient:`, `MRN:`, `Serviced at:`, and `Sex:` survived |
 | Missing critical facts | 3 | HL7 output did not express `female` or `elevated TSH` in readable form |
 | Relative date specificity | 3 | `tomorrow` survived in a copied prompt |
 
@@ -62,6 +57,8 @@ These were fixed as rule families, not literal case exceptions.
 Generalized engine changes:
 
 - Added relative-date handling for `tomorrow`, rendered as `next day`.
+- Added generic bare local portal URL handling, without relying on a product-specific portal name.
+- Added generic named-pharmacy-location handling, without relying on a pharmacy chain name.
 - Added EHR wrapper cleanup for common exported-note labels and deidentified header fields.
 - Preserved broad sex context by converting `Sex: Male/Female` to `male` or `female`.
 - Added HL7-style pipe message normalization:
@@ -73,6 +70,8 @@ Generalized engine changes:
 Regression tests added:
 
 - EHR wrapper cleanup preserves age, sex, vaccines, medication, and side-effect context.
+- Bare local portal URL cleanup preserves clinical acuity and age context.
+- Generic named-pharmacy-location cleanup preserves pharmacy context and medication/pregnancy facts.
 - HL7 normalization removes identifiers and preserves `female patient`, `elevated TSH`, and the
   clinical question.
 - Legal/preferred-name psych safety test now requires `tomorrow` to become `next day`.
@@ -89,22 +88,22 @@ Focused model-backed adversarial suite:
 
 ```bash
 DECON_HOME="$PWD/build/live-decon-home" \
-DECON_MODEL_DIR="$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1" \
+DECON_MODEL_DIR="$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/package/local-models/<local-model-dir>" \
 PYTHONPATH="$PWD/package/src:$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/python-packages" \
 "$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/python/bin/python" \
   -m decon.validation_cli \
   --suite realworld-adversarial \
-  --destinations chatgpt,gemini,web_search \
+  --destinations <configured-destinations> \
   --reference-date 2026-06-19 \
-  --engine rules+openmed \
-  --report package/reports/realworld-adversarial-24-2026-06-19-openmed.json
+  --engine <model-backed-engine> \
+  --report /private/tmp/realworld-adversarial-24-2026-06-19-model.json
 ```
 
 Expanded model-backed regression:
 
 ```bash
 DECON_HOME="$PWD/build/live-decon-home" \
-DECON_MODEL_DIR="$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/package/local-models/OpenMed--OpenMed-PII-SuperClinical-Large-434M-v1" \
+DECON_MODEL_DIR="$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/package/local-models/<local-model-dir>" \
 PYTHONPATH="$PWD/package/src:$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/python-packages" \
 "$PWD/build/mac-self-contained/Clinician Decon.app/Contents/Resources/python/bin/python" \
   -m decon.validation_cli \
@@ -114,10 +113,10 @@ PYTHONPATH="$PWD/package/src:$PWD/build/mac-self-contained/Clinician Decon.app/C
   --suite validation-blindspot-redteam-r2 \
   --suite clinician-seed-gold \
   --suite realworld-adversarial \
-  --destinations chatgpt,gemini,web_search \
+  --destinations <configured-destinations> \
   --reference-date 2026-06-19 \
-  --engine rules+openmed \
-  --report package/reports/regression-plus-realworld-2026-06-19-openmed.json
+  --engine <model-backed-engine> \
+  --report /private/tmp/regression-plus-realworld-2026-06-19-model.json
 ```
 
 Full package test:
@@ -139,8 +138,8 @@ Focused real-world adversarial suite:
 | Missing critical fact outputs | 0 |
 | Clinical usability rate | 100.00% |
 | Handoff usability rate | 100.00% |
-| Max avg runtime | 129.788 ms |
-| Max p95 runtime | 125.989 ms |
+| Max avg runtime | 123.5 ms |
+| Max p95 runtime | 122.255 ms |
 
 Expanded regression plus real-world suite:
 
@@ -153,19 +152,19 @@ Expanded regression plus real-world suite:
 | Missing critical fact outputs | 0 |
 | Clinical usability rate | 100.00% |
 | Handoff usability rate | 100.00% |
-| Max avg runtime | 94.573 ms |
-| Max p95 runtime | 114.391 ms |
+| Max avg runtime | 306.361 ms |
+| Max p95 runtime | 651.176 ms |
 
 Package tests:
 
 | Command | Result |
 | --- | --- |
-| `python3 -m pytest package/tests/test_local_rules.py -q` | 74 passed |
-| `python3 -m pytest package/tests -q` | 147 passed |
+| `python3 -m pytest package/tests/test_local_rules.py -q` | 76 passed |
+| `python3 -m pytest package/tests -q` | 149 passed |
 
 ## Remaining Caution
 
 This is still synthetic and labeled validation. It is useful for regression hardening, but it does
 not replace clinician review of real-world examples. The model-backed path must continue to fail
-closed when OpenMed is requested but unavailable, and release claims should stay scoped to the
-tested `rules+openmed` pipeline and documented suites.
+closed when the local model-backed engine is requested but unavailable, and release claims should
+stay scoped to the tested model-backed pipeline and documented suites.
