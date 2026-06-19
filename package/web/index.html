@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0f766e">
+  <meta name="theme-color" content="#1c6b58">
   <title>Decon</title>
-  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icons/decon-mark.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="/styles.css">
@@ -13,60 +14,60 @@
 <body>
   <main class="shell">
     <header class="topbar">
-      <div>
-        <h1>Decon</h1>
-        <p class="subhead">Local clinical prompt decontextualization</p>
+      <div class="brand">
+        <div class="wordmark">
+          <img class="brand-mark" src="/icons/decon-mark.svg" alt="" aria-hidden="true">
+          <h1>Decon</h1>
+        </div>
+        <p class="tagline">Strip identifiers <strong>before</strong> you paste into an outside tool &mdash; on this Mac, then you check it.</p>
       </div>
-      <div class="workflow-guide">
-        <div class="workflow-heading">How to use it</div>
-        <ol class="quick-guide" aria-label="How Decon works">
-          <li>
-            <span class="guide-step">1</span>
-            <span><strong>Paste PHI text</strong><small>Chart note, portal message, callback</small></span>
-          </li>
-          <li>
-            <span class="guide-step">2</span>
-            <span><strong>Pick destination</strong><small>Prompt format changes by target</small></span>
-          </li>
-          <li>
-            <span class="guide-step">3</span>
-            <span><strong>Review locally</strong><small>Check removed categories and risk</small></span>
-          </li>
-          <li>
-            <span class="guide-step">4</span>
-            <span><strong>Copy manually</strong><small>Nothing external gets the source text</small></span>
-          </li>
-        </ol>
-      </div>
+
       <div class="app-controls">
         <div class="app-controls-row">
-          <div id="setupStatus" class="status status-waiting">Checking setup</div>
-          <button id="shutdownButton" class="secondary quit-button" type="button">Quit</button>
+          <div id="setupStatus" class="local-pill" aria-live="polite">
+            <span class="local-dot" aria-hidden="true"></span>
+            <span id="setupStatusText">Running on this Mac</span>
+          </div>
+          <button id="shutdownButton" class="quit-button" type="button">Quit</button>
         </div>
         <div id="shutdownStatus" class="shutdown-status" aria-live="polite"></div>
       </div>
     </header>
 
-    <section class="workspace" aria-label="Decon workspace">
-      <section class="pane">
-        <div class="pane-header">
-          <h2>Source</h2>
-          <label class="field-label">
+    <section class="boundary" aria-label="Local privacy boundary">
+      <img class="boundary-mark" src="/icons/decon-mark.svg" alt="" aria-hidden="true">
+      <p><strong>The original text stays on this Mac.</strong> Only what you copy crosses the line &mdash; and only after you've read it.</p>
+    </section>
+
+    <section class="stage" aria-label="Decon workspace">
+      <section class="panel source" aria-label="Source text">
+        <div class="panel-head">
+          <div class="panel-title">
+            <h2>Source</h2>
+            <p>chart note &middot; portal message &middot; callback</p>
+          </div>
+          <label class="target field-label">
             <span>For use in</span>
             <select id="destination" aria-label="For use in">
               <option value="chatgpt">ChatGPT</option>
-              <option value="gemini">Gemini</option>
               <option value="claude">Claude</option>
+              <option value="gemini">Gemini</option>
               <option value="openevidence">OpenEvidence</option>
               <option value="web_search">Web Search</option>
               <option value="copy_only">Copy Only</option>
             </select>
           </label>
         </div>
-        <textarea id="sourceText" spellcheck="false" placeholder="Paste clinical text here"></textarea>
-        <div class="action-row">
-          <button id="runButton" class="primary">Decontextualize</button>
-          <label class="field-label sample-field">
+
+        <textarea id="sourceText" class="payload" spellcheck="false" placeholder="Paste the source text here&hellip;"></textarea>
+        <div id="sourceMarkedWrap" class="marked-wrap" hidden>
+          <div id="sourceMarked" class="marked-source" aria-label="Source text with pulled spans highlighted"></div>
+          <button id="editSourceButton" class="edit-link" type="button">&larr; Edit source</button>
+        </div>
+
+        <div class="actions source-actions">
+          <button id="runButton" class="btn btn-primary" type="button">Reduce</button>
+          <label class="example-field field-label">
             <span>Example</span>
             <select id="sampleSelect" aria-label="Example case">
               <option value="vaccine">Vaccine callback</option>
@@ -78,37 +79,60 @@
               <option value="rare">Rare disease search</option>
             </select>
           </label>
-          <button id="sampleButton" class="secondary">Load</button>
-          <button id="clearButton" class="secondary">Clear</button>
+          <button id="sampleButton" class="btn btn-ghost" type="button">Load</button>
+          <span class="spacer" aria-hidden="true"></span>
+          <button id="clearButton" class="btn btn-ghost" type="button">Clear</button>
         </div>
       </section>
 
-      <section class="pane">
-        <div class="pane-header">
-          <h2>Safe Prompt</h2>
-          <div id="riskBadge" class="risk risk-idle">Not run</div>
+      <div class="seam" aria-hidden="true">
+        <span class="seam-tag">on this mac &rarr; leaves this mac</span>
+      </div>
+      <div id="courier" class="courier" aria-hidden="true">scrubbed draft &rarr;</div>
+
+      <section class="panel draft" aria-label="Scrubbed draft">
+        <div class="panel-head">
+          <div class="panel-title">
+            <h2>Scrubbed draft</h2>
+            <p>your review before it leaves</p>
+          </div>
+          <div id="riskBadge" class="state-pill" data-state="idle">
+            <span class="state-dot" aria-hidden="true"></span>
+            <span id="stateText">Nothing sent yet</span>
+          </div>
         </div>
-        <textarea id="outputText" spellcheck="false" readonly></textarea>
-        <div class="action-row">
-          <button id="copyOpenButton" class="primary" disabled>Copy & Open</button>
-          <button id="copyButton" class="secondary" disabled>Copy Only</button>
+
+        <div id="draftEmpty" class="draft-empty">
+          <p>Your scrubbed draft will appear here for review.</p>
+        </div>
+        <textarea id="outputText" class="payload draft-output" spellcheck="false" hidden></textarea>
+
+        <div class="actions">
+          <button id="copyOpenButton" class="btn btn-primary" type="button" disabled>Copy across &rarr;</button>
+          <button id="copyButton" class="btn btn-ghost" type="button" disabled>Copy only</button>
         </div>
       </section>
     </section>
 
-    <section class="details" aria-label="Decon details">
-      <div>
-        <h2>Removed Categories</h2>
-        <div id="categoryList" class="chips"></div>
+    <section class="ledger" aria-label="Decon review ledger">
+      <div class="ledger-col">
+        <h2>What was pulled</h2>
+        <div id="categoryList" class="chips"><span class="empty-note">Nothing yet.</span></div>
+        <div id="categoryLegend" class="legend" hidden>
+          <span><span class="legend-swatch confident" aria-hidden="true"></span>confident</span>
+          <span><span class="legend-swatch review" aria-hidden="true"></span>worth a look</span>
+        </div>
       </div>
-      <div>
-        <h2>Risk Reasons</h2>
-        <div id="reasonList" class="reasons"></div>
+      <div class="ledger-col">
+        <h2>What to double-check</h2>
+        <ul id="reasonList" class="checks">
+          <li class="muted-check">Run a reduction to see review prompts.</li>
+        </ul>
       </div>
-      <div class="trust">
-        <h2>Local Boundary</h2>
-        <p>Intended use: make a local, safer prompt for an external tool when you do not want raw PHI to leave this Mac. It is not a full chart de-identification export.</p>
-        <div id="engineStatus" class="engine-status">Engine: not run</div>
+      <div class="ledger-col">
+        <h2>Local boundary</h2>
+        <p>A <strong>local, safer</strong> prompt for an outside tool when you don't want raw PHI to leave this Mac. <strong>Not</strong> a full chart de-identification export &mdash; you are the last check.</p>
+        <div id="engineStatus" class="engine-status">Engine &middot; idle</div>
       </div>
     </section>
   </main>

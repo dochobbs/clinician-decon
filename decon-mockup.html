@@ -1,0 +1,546 @@
+<!--
+  Decon — local clinical prompt reduction
+  Interactive mockup. The "engine" here is illustrative client-side regex,
+  NOT the real local model. It exists so the states, seam motion, and review
+  panel feel real while you react to the design. All in-memory, no storage.
+-->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --ink:#15211d;
+    --ink-soft:#46554f;
+    --ink-faint:#6e7d77;
+    --ground-in:#fbfaf6;   /* warm: "this Mac" */
+    --ground-out:#eef2f2;  /* cool: "outside-facing" */
+    --surface:#ffffff;
+    --line:#e4e3db;
+    --line-cool:#d9e1e0;
+    --teal:#1c6b58;
+    --teal-deep:#13503e;
+    --teal-tint:#e6f0ec;
+    --teal-tint-2:#d6e7e0;
+    --amber:#a8631a;
+    --amber-tint:#f7eede;
+    --amber-line:#ecd9b8;
+    --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+    --r:14px;
+    --r-sm:9px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    background:
+      linear-gradient(90deg, var(--ground-in) 0%, var(--ground-in) 50%, var(--ground-out) 50%, var(--ground-out) 100%);
+    -webkit-font-smoothing:antialiased;
+    padding:26px;
+    min-height:100vh;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+
+  /* ---------- header ---------- */
+  .top{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:2px 4px 18px;}
+  .brand{display:flex;align-items:baseline;gap:14px;}
+  .logo{
+    font-weight:700;font-size:30px;letter-spacing:-0.02em;color:var(--ink);
+    display:flex;align-items:center;gap:11px;
+  }
+  .glyph{
+    width:26px;height:26px;border-radius:7px;position:relative;flex:none;
+    background:var(--teal);overflow:hidden;
+    box-shadow:0 1px 0 rgba(0,0,0,.04);
+  }
+  .glyph::before{ /* the seam, echoed in the mark */
+    content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;
+    background:rgba(255,255,255,.85);transform:translateX(-50%);
+  }
+  .glyph::after{
+    content:"";position:absolute;width:7px;height:7px;border-radius:50%;
+    background:#fff;top:50%;left:32%;transform:translate(-50%,-50%);
+  }
+  .tagline{font-size:13.5px;color:var(--ink-faint);max-width:260px;line-height:1.45;}
+  .tagline b{color:var(--ink-soft);font-weight:600;}
+
+  .status-rail{display:flex;align-items:center;gap:10px;}
+  .local-pill{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12.5px;font-weight:600;color:var(--teal-deep);
+    background:var(--teal-tint);border:1px solid var(--teal-tint-2);
+    padding:7px 12px;border-radius:999px;
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);position:relative;}
+  .dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--teal);opacity:.35;
+    animation:pulse 2.6s ease-out infinite;}
+  @keyframes pulse{0%{transform:scale(.6);opacity:.5}100%{transform:scale(1.7);opacity:0}}
+  .quit{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink-soft);
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 16px;cursor:pointer;}
+  .quit:hover{border-color:var(--ink-faint);}
+
+  /* ---------- boundary banner ---------- */
+  .boundary{
+    display:flex;align-items:center;gap:13px;
+    background:var(--surface);border:1px solid var(--line-cool);
+    border-radius:var(--r);padding:13px 18px;margin-bottom:16px;
+    font-size:13.5px;color:var(--ink-soft);line-height:1.45;
+  }
+  .boundary .lock{
+    width:30px;height:30px;border-radius:8px;flex:none;display:grid;place-items:center;
+    background:var(--teal-tint);color:var(--teal-deep);
+  }
+  .boundary b{color:var(--ink);font-weight:600;}
+
+  /* ---------- workspace ---------- */
+  .stage{
+    display:grid;grid-template-columns:1fr 0px 1fr;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    overflow:hidden;position:relative;
+  }
+  .panel{padding:20px 22px 18px;min-width:0;display:flex;flex-direction:column;}
+  .panel.source{background:linear-gradient(180deg,#fffefb, #fdfcf8);}
+  .panel.draft{background:linear-gradient(180deg,#fbfdfd,#f6fafa);}
+
+  /* the seam — the signature */
+  .seam{position:relative;width:0;}
+  .seam::before{
+    content:"";position:absolute;top:14px;bottom:14px;left:50%;width:1px;
+    background:linear-gradient(180deg,transparent,var(--teal-tint-2) 12%,var(--teal-tint-2) 88%,transparent);
+    transform:translateX(-50%);
+  }
+  .seam-tag{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(90deg);
+    transform-origin:center;white-space:nowrap;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-faint);background:var(--surface);padding:5px 8px;border-radius:6px;
+    border:1px solid var(--line);
+  }
+  /* the flying sliver that crosses the seam on copy */
+  .courier{
+    position:absolute;top:50%;left:0;z-index:30;pointer-events:none;
+    font-family:var(--mono);font-size:11px;color:var(--teal-deep);
+    background:var(--teal-tint);border:1px solid var(--teal-tint-2);
+    padding:3px 9px;border-radius:6px;opacity:0;white-space:nowrap;
+    box-shadow:0 6px 18px rgba(20,80,62,.18);
+  }
+  .courier.fly{animation:cross 900ms cubic-bezier(.5,.05,.2,1) forwards;}
+  @keyframes cross{
+    0%{opacity:0;transform:translate(0,-50%) scale(.96);}
+    18%{opacity:1;}
+    82%{opacity:1;}
+    100%{opacity:0;transform:translate(var(--cross-dist),-50%) scale(.98);}
+  }
+
+  .panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;min-height:30px;}
+  .panel-title{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);}
+  .panel-title .sub{display:block;text-transform:none;letter-spacing:0;font-weight:400;font-size:12px;color:var(--ink-faint);margin-top:2px;}
+
+  .target{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-faint);}
+  select{
+    font-family:var(--sans);font-size:13px;color:var(--ink);
+    border:1px solid var(--line);border-radius:8px;padding:6px 28px 6px 10px;background:var(--surface);
+    appearance:none;cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236e7d77' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 10px center;
+  }
+
+  /* status pill (right panel) */
+  .state-pill{
+    font-family:var(--mono);font-size:11px;letter-spacing:.02em;
+    padding:6px 11px;border-radius:999px;border:1px solid var(--line);color:var(--ink-faint);
+    background:var(--surface);display:inline-flex;align-items:center;gap:7px;transition:.25s;
+  }
+  .state-pill .sdot{width:6px;height:6px;border-radius:50%;background:var(--ink-faint);}
+  .state-pill[data-s="reading"]{color:var(--amber);border-color:var(--amber-line);background:var(--amber-tint);}
+  .state-pill[data-s="reading"] .sdot{background:var(--amber);animation:blink 1s steps(2) infinite;}
+  .state-pill[data-s="ready"]{color:var(--teal-deep);border-color:var(--teal-tint-2);background:var(--teal-tint);}
+  .state-pill[data-s="ready"] .sdot{background:var(--teal);}
+  .state-pill[data-s="copied"]{color:var(--teal-deep);border-color:var(--teal-tint-2);background:var(--teal-tint);}
+  .state-pill[data-s="copied"] .sdot{background:var(--teal);}
+  @keyframes blink{50%{opacity:.25}}
+
+  /* text payloads */
+  .payload{
+    flex:1;min-height:320px;border:1px solid var(--line);border-radius:10px;
+    background:var(--surface);font-family:var(--mono);font-size:13px;line-height:1.62;color:var(--ink);
+    padding:15px 16px;resize:none;width:100%;outline:none;
+  }
+  .source .payload{border-color:var(--line);}
+  .draft .payload{border-color:var(--line-cool);}
+  .payload::placeholder{color:#b3bdb8;}
+  .payload:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-tint);}
+
+  /* highlighted read-only source after a run */
+  .marked{
+    flex:1;min-height:320px;border:1px solid var(--line);border-radius:10px;background:var(--surface);
+    font-family:var(--mono);font-size:13px;line-height:1.7;color:var(--ink);
+    padding:15px 16px;overflow:auto;white-space:pre-wrap;word-break:break-word;
+  }
+  mark{border-radius:4px;padding:1px 3px;font-style:normal;}
+  mark.c1{background:var(--teal-tint);box-shadow:inset 0 0 0 1px var(--teal-tint-2);color:var(--teal-deep);}
+  mark.c0{background:var(--amber-tint);box-shadow:inset 0 0 0 1px var(--amber-line);color:var(--amber);}
+  .edit-link{margin-top:9px;font-size:12px;color:var(--teal);background:none;border:none;cursor:pointer;padding:0;font-family:var(--sans);}
+  .edit-link:hover{text-decoration:underline;}
+
+  .draft-empty{
+    flex:1;min-height:320px;border:1px dashed var(--line-cool);border-radius:10px;background:#fdfefe;
+    display:grid;place-items:center;text-align:center;padding:28px;
+  }
+  .draft-empty p{font-size:13.5px;color:var(--ink-faint);max-width:230px;line-height:1.5;margin:0;}
+  .draft-empty .di{width:34px;height:34px;border-radius:9px;background:var(--ground-out);display:grid;place-items:center;margin:0 auto 12px;color:var(--ink-faint);}
+
+  /* action rows */
+  .actions{display:flex;align-items:center;gap:11px;margin-top:14px;flex-wrap:wrap;}
+  .btn{font-family:var(--sans);font-size:13.5px;font-weight:600;border-radius:var(--r-sm);padding:10px 18px;cursor:pointer;border:1px solid transparent;transition:.16s;}
+  .btn-primary{background:var(--teal);color:#fff;}
+  .btn-primary:hover{background:var(--teal-deep);}
+  .btn-primary:disabled{background:#aebfb9;cursor:default;}
+  .btn-ghost{background:var(--surface);border-color:var(--line);color:var(--ink-soft);font-weight:500;}
+  .btn-ghost:hover:not(:disabled){border-color:var(--ink-faint);}
+  .btn-ghost:disabled{color:#b6c0bb;cursor:default;}
+  .spacer{flex:1;}
+  .ex{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-faint);}
+
+  /* ---------- ledger ---------- */
+  .ledger{
+    display:grid;grid-template-columns:1fr 1.15fr 0.95fr;gap:0;margin-top:16px;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  }
+  .col{padding:18px 22px;}
+  .col + .col{border-left:1px solid var(--line);}
+  .col h4{margin:0 0 11px;font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;}
+  .chip{font-family:var(--mono);font-size:11.5px;padding:5px 9px;border-radius:7px;background:var(--teal-tint);color:var(--teal-deep);border:1px solid var(--teal-tint-2);}
+  .chip.low{background:var(--amber-tint);color:var(--amber);border-color:var(--amber-line);}
+  .empty-note{font-size:13px;color:var(--ink-faint);}
+  .checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
+  .checks li{font-size:12.7px;line-height:1.45;color:var(--ink-soft);padding-left:18px;position:relative;}
+  .checks li::before{content:"";position:absolute;left:0;top:6px;width:7px;height:7px;border-radius:2px;background:var(--amber);opacity:.8;}
+  .lb{font-size:12.7px;line-height:1.5;color:var(--ink-soft);}
+  .lb b{color:var(--ink);font-weight:600;}
+  .engine{margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--teal-deep);}
+
+  .legend{display:flex;gap:16px;margin-top:9px;flex-wrap:wrap;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-faint);}
+  .sw{width:11px;height:11px;border-radius:3px;}
+  .sw.c1{background:var(--teal-tint);box-shadow:inset 0 0 0 1px var(--teal-tint-2);}
+  .sw.c0{background:var(--amber-tint);box-shadow:inset 0 0 0 1px var(--amber-line);}
+
+  .mocknote{margin-top:18px;text-align:center;font-size:11.5px;color:#9aa6a0;}
+
+  @media (max-width:840px){
+    body{background:var(--ground-in);padding:16px;}
+    .stage{grid-template-columns:1fr;}
+    .seam{display:none;}
+    .panel.draft{border-top:1px solid var(--line);}
+    .ledger{grid-template-columns:1fr;}
+    .col + .col{border-left:none;border-top:1px solid var(--line);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .courier.fly{animation:none;}
+    .dot::after{animation:none;}
+  }
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="logo"><span class="glyph"></span>Decon</div>
+      <div class="tagline">Strip identifiers <b>before</b> you paste into an outside tool — on this Mac, then you check it.</div>
+    </div>
+    <div class="status-rail">
+      <span class="local-pill"><span class="dot"></span>Running on this Mac</span>
+      <button class="quit">Quit</button>
+    </div>
+  </div>
+
+  <div class="boundary">
+    <span class="lock" aria-hidden="true">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 10V8a6 6 0 1112 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4" y="10" width="16" height="10" rx="2.4" fill="currentColor"/></svg>
+    </span>
+    <div><b>The original text stays on this Mac.</b> Only what you copy crosses the line — and only after you’ve read it.</div>
+  </div>
+
+  <div class="stage">
+    <!-- SOURCE -->
+    <div class="panel source">
+      <div class="panel-head">
+        <div class="panel-title">Source<span class="sub">chart note · portal message · callback</span></div>
+        <div class="target">For use in
+          <select id="target">
+            <option>ChatGPT</option>
+            <option>Claude</option>
+            <option>Gemini</option>
+            <option>Copilot</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <textarea id="src" class="payload" placeholder="Paste the source text here…"></textarea>
+      <div id="srcMarked" style="display:none;flex:1;flex-direction:column;">
+        <div id="marked" class="marked"></div>
+        <button class="edit-link" id="editBack">← Edit source</button>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="reduce">Reduce</button>
+        <div class="ex">
+          <span>Example</span>
+          <select id="example">
+            <option value="vaccine">Vaccine callback</option>
+            <option value="portal">Portal message</option>
+            <option value="refill">Med refill callback</option>
+          </select>
+          <button class="btn btn-ghost" id="load">Load</button>
+        </div>
+        <span class="spacer"></span>
+        <button class="btn btn-ghost" id="clear">Clear</button>
+      </div>
+    </div>
+
+    <div class="seam"><span class="seam-tag">on this mac → leaves this mac</span></div>
+    <div class="courier" id="courier">scrubbed draft →</div>
+
+    <!-- DRAFT -->
+    <div class="panel draft">
+      <div class="panel-head">
+        <div class="panel-title">Scrubbed draft<span class="sub">your review before it leaves</span></div>
+        <span class="state-pill" id="pill" data-s="idle"><span class="sdot"></span>Nothing sent yet</span>
+      </div>
+
+      <div id="draftEmpty" class="draft-empty">
+        <div>
+          <div class="di"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <p>Your scrubbed draft will appear here for review.</p>
+        </div>
+      </div>
+      <textarea id="out" class="payload" style="display:none;" spellcheck="false"></textarea>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="copyAcross" disabled>Copy across →</button>
+        <button class="btn btn-ghost" id="copyOnly" disabled>Copy only</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEDGER -->
+  <div class="ledger">
+    <div class="col">
+      <h4>What was pulled</h4>
+      <div id="pulled" class="chips"><span class="empty-note">Nothing yet.</span></div>
+      <div class="legend" id="legend" style="display:none;">
+        <span><span class="sw c1"></span>confident</span>
+        <span><span class="sw c0"></span>worth a look</span>
+      </div>
+    </div>
+    <div class="col">
+      <h4>What to double-check</h4>
+      <ul class="checks" id="checks"><li style="padding-left:0;color:var(--ink-faint)">Run a reduction to see review prompts.</li></ul>
+    </div>
+    <div class="col">
+      <h4>Local boundary</h4>
+      <div class="lb">A <b>local, safer</b> prompt for an outside tool when you don’t want raw PHI to leave this Mac. <b>Not</b> a full chart de-identification export — you are the last check.</div>
+      <div class="engine" id="engine">Engine · idle</div>
+    </div>
+  </div>
+
+  <div class="mocknote">Interactive mockup — the reducer here is illustrative pattern-matching, not the real local model.</div>
+</div>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const src=$("#src"), out=$("#out"), draftEmpty=$("#draftEmpty"),
+        srcMarked=$("#srcMarked"), marked=$("#marked"),
+        pill=$("#pill"), pulled=$("#pulled"), checks=$("#checks"),
+        engine=$("#engine"), legend=$("#legend"),
+        copyAcross=$("#copyAcross"), copyOnly=$("#copyOnly"),
+        courier=$("#courier");
+
+  const EXAMPLES = {
+    vaccine:`Callback: Jordan Whitfield is overdue for MMR #2. Called mom Marcy Whitfield at 612-555-0148, left message.
+DOB 03/14/2021. MRN 0048213. Last seen 06/15 at the Edina office.
+Sibling Theo also overdue for the 4-year shots. Mom works as a nurse in our building, easiest to reach after 3pm.`,
+    portal:`Portal message from Daniela Ortiz re: her son Mateo (DOB 9/2/2019).
+"He's had a fever of 103 since Tuesday and now a rash on his trunk. We were at urgent care 6/16, MRN 0091877. Should we come in?"
+Callback number 651-555-0207. Dad coaches at Hopkins High if that matters.`,
+    refill:`Refill callback: patient Aamir Khan, MRN 0033410, DOB 11/30/2014.
+Mother Sana requested refill on the ADHD med (methylphenidate ER 20mg). Pharmacy is the Walgreens on France Ave.
+Reached at 612-555-0193. Note: family asked we not mention the diagnosis in front of grandparents.`
+  };
+
+  // rules: order matters (more specific first). conf: 1 confident, 0 worth-a-look
+  const RULES = [
+    {re:/MRN[:\s]?0*\d{3,}/gi, label:"MRN", conf:1, repl:"[MRN]"},
+    {re:/DOB[:\s]?\d{1,2}\/\d{1,2}\/\d{2,4}/gi, label:"date of birth", conf:1, repl:"[DOB]"},
+    {re:/\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b/g, label:"phone", conf:1, repl:"[phone]"},
+    {re:/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g, label:"name", conf:1, repl:"[name]"},
+    {re:/\b\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\b/g, label:"date", conf:0, repl:"[date]"},
+  ];
+
+  // location-ish words we flag as worth-a-look (single tokens, low confidence)
+  const PLACES = /\b(Edina|Hopkins|France Ave|Walgreens|Minneapolis|St\.?\s?Louis Park)\b/g;
+
+  function reduce(text){
+    const spans=[]; // {start,end,label,conf}
+    const taken=()=> spans.some.bind(spans);
+    function claim(start,end){ return !spans.some(s => start < s.end && end > s.start); }
+
+    RULES.forEach(rule=>{
+      rule.re.lastIndex=0; let m;
+      while((m=rule.re.exec(text))){
+        const start=m.index, end=start+m[0].length;
+        // skip pure label words mis-captured as names (e.g., "Last seen")
+        if(rule.label==="name" && /^(Last Seen|Med Refill|Portal Message|Should We|Reached At)$/i.test(m[0])) continue;
+        if(claim(start,end)) spans.push({start,end,label:rule.label,conf:rule.conf,text:m[0]});
+      }
+    });
+    // places
+    PLACES.lastIndex=0; let p;
+    while((p=PLACES.exec(text))){
+      const start=p.index,end=start+p[0].length;
+      if(claim(start,end)) spans.push({start,end,label:"location",conf:0,text:p[0]});
+    }
+
+    spans.sort((a,b)=>a.start-b.start);
+
+    // build draft + highlighted html
+    let draft="", html="", cursor=0;
+    const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    spans.forEach(s=>{
+      draft+=text.slice(cursor,s.start);
+      html+=esc(text.slice(cursor,s.start));
+      const replacement = RULES.find(r=>r.label===s.label)?.repl || "["+s.label+"]";
+      draft+=replacement;
+      html+=`<mark class="c${s.conf}" title="${s.label}${s.conf?'':' · worth a look'}">${esc(s.text)}</mark>`;
+      cursor=s.end;
+    });
+    draft+=text.slice(cursor); html+=esc(text.slice(cursor));
+
+    // category summary
+    const cats={};
+    spans.forEach(s=>{ if(!cats[s.label] || s.conf<cats[s.label]) cats[s.label]=s.conf; });
+
+    return {draft,html,cats,hasLowDate:spans.some(s=>s.label==="date"),hasPlace:spans.some(s=>s.label==="location")};
+  }
+
+  function targetPreamble(){
+    const t=$("#target").value;
+    return `Context for ${t} (no PHI — identifiers removed locally):\n\n`;
+  }
+
+  function buildChecks(r){
+    const out=[
+      "Initials, nicknames, and single first names often slip past automatic scrubbing — reread for them.",
+      "A relationship can identify a patient with no name attached (“mom is a nurse here,” “dad coaches at the high school”). Reread for these."
+    ];
+    if(r.hasLowDate) out.unshift("Loose dates near a small practice can re-identify even after names are gone — confirm each one in amber.");
+    if(r.hasPlace) out.push("Specific places (clinic site, pharmacy, school) narrow the field fast in a small community.");
+    return out;
+  }
+
+  function setState(s){
+    const map={
+      idle:["idle","Nothing sent yet"],
+      reading:["reading","Reading on this Mac…"],
+      ready:["ready","Draft ready · your review"],
+      copied:["copied","Copied across"]
+    };
+    pill.dataset.s=map[s][0];
+    pill.innerHTML=`<span class="sdot"></span>${map[s][1]}`;
+  }
+
+  let lastDraft="";
+
+  function run(){
+    const text=src.value.trim();
+    if(!text){ src.focus(); return; }
+    setState("reading");
+    engine.textContent="Engine · reading locally…";
+    $("#reduce").disabled=true;
+
+    setTimeout(()=>{
+      const r=reduce(text);
+      lastDraft=targetPreamble()+r.draft;
+
+      // swap source -> highlighted view
+      marked.innerHTML=r.html;
+      src.style.display="none";
+      srcMarked.style.display="flex";
+
+      // draft
+      draftEmpty.style.display="none";
+      out.style.display="block";
+      out.value=lastDraft;
+
+      // ledger
+      const entries=Object.entries(r.cats);
+      pulled.innerHTML = entries.length
+        ? entries.map(([k,conf])=>`<span class="chip${conf? '':' low'}">${k}</span>`).join("")
+        : `<span class="empty-note">Nothing matched — read carefully before sending.</span>`;
+      legend.style.display = entries.length ? "flex" : "none";
+      checks.innerHTML = buildChecks(r).map(c=>`<li>${c}</li>`).join("");
+      engine.textContent="Engine · reduced locally · "+entries.length+" categories";
+
+      copyAcross.disabled=false; copyOnly.disabled=false;
+      $("#reduce").disabled=false;
+      setState("ready");
+    }, 720);
+  }
+
+  function flyCourier(){
+    const stage=document.querySelector(".stage").getBoundingClientRect();
+    const seam=document.querySelector(".seam").getBoundingClientRect();
+    // start a bit left of seam, travel to right edge of draft panel
+    const startX = seam.left - stage.left - 120;
+    const dist = (stage.right - stage.left) - startX - 150;
+    courier.style.left = startX+"px";
+    courier.style.setProperty("--cross-dist", dist+"px");
+    courier.classList.remove("fly"); void courier.offsetWidth; courier.classList.add("fly");
+  }
+
+  // wiring
+  $("#load").onclick=()=>{ src.value=EXAMPLES[$("#example").value]; backToEdit(); src.focus(); };
+  $("#reduce").onclick=run;
+  $("#clear").onclick=()=>{ src.value=""; resetAll(); src.focus(); };
+  $("#editBack").onclick=backToEdit;
+  $("#target").onchange=()=>{ if(out.style.display!=="none"){ run(); } };
+
+  copyAcross.onclick=()=>{
+    navigator.clipboard && navigator.clipboard.writeText(out.value).catch(()=>{});
+    flyCourier();
+    setState("copied");
+    engine.textContent="Engine · copied to clipboard · original never left";
+    copyAcross.textContent="Copied ✓";
+    setTimeout(()=>copyAcross.textContent="Copy across →",1600);
+  };
+  copyOnly.onclick=()=>{
+    navigator.clipboard && navigator.clipboard.writeText(out.value).catch(()=>{});
+    copyOnly.textContent="Copied ✓";
+    setTimeout(()=>copyOnly.textContent="Copy only",1400);
+  };
+
+  function backToEdit(){
+    srcMarked.style.display="none";
+    src.style.display="block";
+  }
+  function resetAll(){
+    backToEdit();
+    out.style.display="none"; out.value="";
+    draftEmpty.style.display="grid";
+    pulled.innerHTML=`<span class="empty-note">Nothing yet.</span>`;
+    legend.style.display="none";
+    checks.innerHTML=`<li style="padding-left:0;color:var(--ink-faint)">Run a reduction to see review prompts.</li>`;
+    engine.textContent="Engine · idle";
+    copyAcross.disabled=true; copyOnly.disabled=true;
+    setState("idle");
+  }
+})();
+</script>

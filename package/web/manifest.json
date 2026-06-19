@@ -3,10 +3,15 @@
   "short_name": "Decon",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f6f8f7",
-  "theme_color": "#0f766e",
-  "description": "Local clinical prompt decontextualization",
+  "background_color": "#fbfaf6",
+  "theme_color": "#1c6b58",
+  "description": "Strip identifiers before you paste into an outside tool on this Mac.",
   "icons": [
+    {
+      "src": "/icons/decon-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",

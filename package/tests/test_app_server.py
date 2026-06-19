@@ -16,6 +16,9 @@ def test_build_decon_payload_does_not_return_removed_phi_values():
   assert "Johnson" not in payload["safe_context"]
   assert "LP-2024-08432" not in payload["destination_prompt"]
   assert "Marcus" not in str(payload["removed_categories"])
+  assert "Marcus" not in str(payload["removed_spans"])
+  assert any(span["category"] == "mrn" for span in payload["removed_spans"])
+  assert all("start" in span and "end" in span for span in payload["removed_spans"])
   assert payload["handoff"]["open_url"] == "https://chatgpt.com/"
   assert payload["handoff"]["copy_text"] == payload["destination_prompt"]
   assert payload["handoff"]["copy_text"] not in payload["handoff"]["open_url"]

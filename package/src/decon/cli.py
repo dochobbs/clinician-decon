@@ -110,6 +110,7 @@ def _result_payload(result, *, requested_destination: str) -> dict[str, object]:
     "open_url": result.open_url,
     "action_label": result.action_label,
     "removed_categories": result.removed_categories,
+    "removed_spans": result.removed_spans,
     "safe_context": result.safe_context,
     "safe_query": result.safe_query,
     "destination_prompt": result.destination_prompt,

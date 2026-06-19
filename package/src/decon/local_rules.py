@@ -28,6 +28,7 @@ class LocalDeconResult:
   safe_query: str
   destination_prompt: str
   removed_categories: dict[str, int]
+  removed_spans: list[dict[str, int | str]]
   risk_level: str
   risk_reasons: list[str]
   copy_allowed: bool
@@ -42,6 +43,7 @@ LOCAL_RULES_ENGINE = "local-rules"
 OPENMED_ENGINE = "rules+openmed"
 AUTO_ENGINE = "auto"
 SUPPORTED_ENGINES = {AUTO_ENGINE, LOCAL_RULES_ENGINE, OPENMED_ENGINE}
+REVIEW_SPAN_CATEGORIES = {"date", "location", "pharmacy", "school", "camp"}
 
 
 AGE_UNITS = r"yo|y/o|yrs?|years? old|months? old|months?|mo"
@@ -713,6 +715,18 @@ def _apply_spans(text: str, spans: list[Span], reference_date: date) -> tuple[st
   return safe, dict(sorted(counts.items()))
 
 
+def _span_metadata(spans: list[Span]) -> list[dict[str, int | str]]:
+  return [
+    {
+      "category": span.category,
+      "start": span.start,
+      "end": span.end,
+      "confidence": "review" if span.category in REVIEW_SPAN_CATEGORIES else "confident",
+    }
+    for span in sorted(spans, key=lambda item: item.start)
+  ]
+
+
 def _replacement_for_span(text: str, span: Span, reference_date: date) -> str:
   raw = text[span.start:span.end]
   if span.category == "prompt_injection":
@@ -1115,6 +1129,7 @@ def decontextualize_text(
     safe_query=safe_query,
     destination_prompt=destination_prompt,
     removed_categories=removed_categories,
+    removed_spans=_span_metadata(spans),
     risk_level=risk_level,
     risk_reasons=risk_reasons,
     copy_allowed=risk_level != "high",

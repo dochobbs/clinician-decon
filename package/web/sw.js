@@ -1,5 +1,5 @@
-const CACHE_NAME = "decon-static-v6";
-const OLD_CACHES = ["decon-static-v1", "decon-static-v2", "decon-static-v3", "decon-static-v4", "decon-static-v5"];
+const CACHE_NAME = "decon-static-v9";
+const OLD_CACHES = ["decon-static-v1", "decon-static-v2", "decon-static-v3", "decon-static-v4", "decon-static-v5", "decon-static-v6", "decon-static-v7", "decon-static-v8"];
 const STATIC_ASSETS = [
   "/",
   "/index.html",
@@ -7,6 +7,7 @@ const STATIC_ASSETS = [
   "/app.js",
   "/manifest.json",
   "/favicon.ico",
+  "/icons/decon-mark.svg",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
 ];

@@ -1,7 +1,7 @@
 import Cocoa
 import WebKit
 
-final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler {
   private let serverURL = URL(string: "http://127.0.0.1:8769/")!
   private let statusURL = URL(string: "http://127.0.0.1:8769/api/setup/status")!
 
@@ -11,7 +11,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
   private var detailLabel: NSTextField!
   private var launcherProcess: Process?
   private var pollTimer: Timer?
+  private var serverMonitorTimer: Timer?
   private var didLoadApp = false
+  private var serverMissCount = 0
   private lazy var nativeLogURL: URL = {
     let logsDir = FileManager.default.homeDirectoryForCurrentUser
       .appendingPathComponent("Library/Application Support/Clinician Decon/logs", isDirectory: true)
@@ -55,6 +57,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
   private func buildWindow() {
     let configuration = WKWebViewConfiguration()
     configuration.websiteDataStore = .default()
+    configuration.userContentController.add(self, name: "deconNative")
 
     webView = WKWebView(frame: .zero, configuration: configuration)
     webView.navigationDelegate = self
@@ -130,25 +133,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     process.environment = environment
     process.terminationHandler = { [weak self] _ in
       DispatchQueue.main.async {
-        guard let self, !self.didLoadApp else { return }
-        self.logNative("launcher terminated before app loaded")
-        self.showLaunchFailure("The local privacy engine stopped before the app was ready.")
-  }
-}
-
-@main
-struct ClinicianDeconMain {
-  private static var retainedDelegate: AppDelegate?
-
-  static func main() {
-    let app = NSApplication.shared
-    let delegate = AppDelegate()
-    retainedDelegate = delegate
-    app.delegate = delegate
-    app.setActivationPolicy(.regular)
-    app.run()
-  }
-}
+        guard let self else { return }
+        if !self.didLoadApp {
+          self.logNative("launcher terminated before app loaded")
+          self.showLaunchFailure("The local privacy engine stopped before the app was ready.")
+        }
+      }
+    }
 
     do {
       try process.run()
@@ -191,6 +182,7 @@ struct ClinicianDeconMain {
     didLoadApp = true
     pollTimer?.invalidate()
     pollTimer = nil
+    startServerMonitor()
     webView.isHidden = false
     statusLabel.isHidden = true
     detailLabel.isHidden = true
@@ -204,6 +196,8 @@ struct ClinicianDeconMain {
     logNative("launch failure: \(message)")
     pollTimer?.invalidate()
     pollTimer = nil
+    serverMonitorTimer?.invalidate()
+    serverMonitorTimer = nil
     webView.isHidden = true
     statusLabel.stringValue = "Clinician Decon did not start"
     detailLabel.stringValue = message
@@ -214,6 +208,8 @@ struct ClinicianDeconMain {
     logNative("stopping local server")
     pollTimer?.invalidate()
     pollTimer = nil
+    serverMonitorTimer?.invalidate()
+    serverMonitorTimer = nil
 
     var request = URLRequest(url: URL(string: "http://127.0.0.1:8769/api/shutdown")!)
     request.httpMethod = "POST"
@@ -230,6 +226,36 @@ struct ClinicianDeconMain {
     }
   }
 
+  private func startServerMonitor() {
+    serverMissCount = 0
+    serverMonitorTimer?.invalidate()
+    serverMonitorTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+      self?.checkServerStillRunning()
+    }
+  }
+
+  private func checkServerStillRunning() {
+    var request = URLRequest(url: statusURL)
+    request.cachePolicy = .reloadIgnoringLocalCacheData
+    request.timeoutInterval = 1.0
+
+    URLSession.shared.dataTask(with: request) { [weak self] _, response, _ in
+      guard let self else { return }
+      let isRunning = (response as? HTTPURLResponse)?.statusCode == 200
+      DispatchQueue.main.async {
+        if isRunning {
+          self.serverMissCount = 0
+          return
+        }
+        self.serverMissCount += 1
+        if self.serverMissCount >= 2 {
+          self.logNative("local server stopped; terminating native app")
+          NSApp.terminate(nil)
+        }
+      }
+    }.resume()
+  }
+
   private func logNative(_ message: String) {
     let line = "\(ISO8601DateFormatter().string(from: Date())) \(message)\n"
     guard let data = line.data(using: .utf8) else { return }
@@ -240,6 +266,16 @@ struct ClinicianDeconMain {
       try? handle.write(contentsOf: data)
     } else {
       try? data.write(to: nativeLogURL, options: .atomic)
+    }
+  }
+
+  func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+    guard message.name == "deconNative" else { return }
+    if let body = message.body as? [String: Any],
+       let action = body["action"] as? String,
+       action == "quit" {
+      logNative("received web quit message")
+      NSApp.terminate(nil)
     }
   }
 
@@ -269,5 +305,19 @@ struct ClinicianDeconMain {
       NSWorkspace.shared.open(url)
     }
     return nil
+  }
+}
+
+@main
+struct ClinicianDeconMain {
+  private static var retainedDelegate: AppDelegate?
+
+  static func main() {
+    let app = NSApplication.shared
+    let delegate = AppDelegate()
+    retainedDelegate = delegate
+    app.delegate = delegate
+    app.setActivationPolicy(.regular)
+    app.run()
   }
 }

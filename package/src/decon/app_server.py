@@ -65,6 +65,7 @@ def build_decon_payload(request: dict[str, Any]) -> dict[str, Any]:
     "safe_query": result.safe_query,
     "destination_prompt": result.destination_prompt,
     "removed_categories": result.removed_categories,
+    "removed_spans": result.removed_spans,
     "risk_level": result.risk_level,
     "risk_reasons": result.risk_reasons,
     "copy_allowed": result.copy_allowed,
