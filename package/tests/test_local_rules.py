@@ -1280,6 +1280,45 @@ def test_decontextualize_text_can_apply_openmed_detector_spans():
   assert result.engine_fallback_reason == ""
 
 
+def test_decontextualize_text_completes_partial_openmed_span_for_bare_full_name():
+  source = "milo north"
+
+  def fake_openmed_detector(text: str):
+    return [Span(category="name", start=0, end=len("milo"))]
+
+  result = decontextualize_text(
+    source,
+    destination="copy_only",
+    engine="rules+openmed",
+    span_detector=fake_openmed_detector,
+  )
+
+  assert result.safe_context == "[NAME]"
+  assert result.removed_spans == [{
+    "category": "name",
+    "start": 0,
+    "end": len(source),
+    "confidence": "confident",
+  }]
+  assert result.copy_allowed is True
+
+
+def test_partial_openmed_name_span_does_not_consume_clinical_sentence():
+  source = "milo has asthma"
+
+  def fake_openmed_detector(text: str):
+    return [Span(category="name", start=0, end=len("milo"))]
+
+  result = decontextualize_text(
+    source,
+    destination="copy_only",
+    engine="rules+openmed",
+    span_detector=fake_openmed_detector,
+  )
+
+  assert result.safe_context == "[NAME] has asthma"
+
+
 def test_local_rules_cover_reviewed_false_negative_examples():
   examples = [
     ("Maria Gonzalez-Lopez here for her 2 week checkup.", ("Maria", "Gonzalez-Lopez"), ("name",)),

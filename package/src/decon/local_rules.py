@@ -89,6 +89,8 @@ NAME_TOKEN = (
   r"(?:[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+|[A-ZÀ-ÖØ-Þ])"
   r"(?:[-'][A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+)?"
 )
+BARE_NAME_TOKEN = r"[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[-'][A-Za-zÀ-ÖØ-öø-ÿ]+)*"
+BARE_TWO_TOKEN_NAME = re.compile(rf"^\s*({BARE_NAME_TOKEN}\s+{BARE_NAME_TOKEN})\s*$")
 LABEL_NAME_VALUE = (
   r"[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'-]*"
   r"(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'-]*){0,3}"
@@ -678,7 +680,7 @@ def _engine_extra_spans(
   if requested_engine == LOCAL_RULES_ENGINE:
     return LOCAL_RULES_ENGINE, "", []
   if span_detector is not None:
-    return OPENMED_ENGINE, "", list(span_detector(text))
+    return OPENMED_ENGINE, "", _complete_bare_name_span(text, span_detector(text))
 
   try:
     from .model_setup import get_model_status
@@ -690,13 +692,41 @@ def _engine_extra_spans(
     from .openmed_ner import OpenMedUnavailable, get_openmed_span_detector
     try:
       detector = get_openmed_span_detector(status.model_id, str(status.model_dir))
-      return OPENMED_ENGINE, "", list(detector(text))
+      return OPENMED_ENGINE, "", _complete_bare_name_span(text, detector(text))
     except OpenMedUnavailable as exc:
       reason = f"OpenMed unavailable: {exc}; used local-rules engine."
       return LOCAL_RULES_ENGINE, reason if requested_engine == OPENMED_ENGINE else "", []
   except Exception as exc:
     reason = f"OpenMed setup failed: {exc}; used local-rules engine."
     return LOCAL_RULES_ENGINE, reason if requested_engine == OPENMED_ENGINE else "", []
+
+
+def _complete_bare_name_span(text: str, detected_spans: Iterable[Span]) -> list[Span]:
+  """Complete a two-token name when OpenMed recognizes only one token.
+
+  A bare first-and-last-name paste has no clinical value to preserve. Restricting
+  this expansion to the entire two-token input avoids guessing at adjacent words
+  inside a note while ensuring a partial model span cannot approve a leaked
+  surname.
+  """
+  spans = list(detected_spans)
+  match = BARE_TWO_TOKEN_NAME.fullmatch(text)
+  if match is None:
+    return spans
+
+  phrase_start, phrase_end = match.span(1)
+  has_name_detection = any(
+    span.category == "name"
+    and span.start < phrase_end
+    and span.end > phrase_start
+    for span in spans
+  )
+  if not has_name_detection:
+    return spans
+
+  return [span for span in spans if span.category != "name"] + [
+    Span(category="name", start=phrase_start, end=phrase_end),
+  ]
 
 
 def _propagated_patient_name_spans(text: str) -> list[Span]:
