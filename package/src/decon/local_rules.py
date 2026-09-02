@@ -89,8 +89,6 @@ NAME_TOKEN = (
   r"(?:[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+|[A-ZÀ-ÖØ-Þ])"
   r"(?:[-'][A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ]+)?"
 )
-BARE_NAME_TOKEN = r"[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[-'][A-Za-zÀ-ÖØ-öø-ÿ]+)*"
-BARE_TWO_TOKEN_NAME = re.compile(rf"^\s*({BARE_NAME_TOKEN}\s+{BARE_NAME_TOKEN})\s*$")
 LABEL_NAME_VALUE = (
   r"[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'-]*"
   r"(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'-]*){0,3}"
@@ -106,6 +104,9 @@ PARENTHETICAL_NAME_EXCLUSIONS = (
   r"Tylenol|Acetaminophen|Ibuprofen|Motrin|Advil|Tums|Pentacel|Prevnar|"
   r"Rotavirus|Dupixent|Magnesium|Vitamin|DTaP|IPV|Hib|HepB|PCV|MMRV"
 )
+PARENTHETICAL_SCHOOL_STAGE = (
+  r",\s*(?:\d{1,2}(?:st|nd|rd|th)\s+grade|pre-?[kK]|kindergarten|pre-?school)"
+)
 CAREGIVER_SUBJECT_TERMS = r"Mom|Mother|Dad|Father|Parent|Caregiver|Guardian|Caller|MOC|FOC"
 CAREGIVER_REPORT_VERBS = (
   r"reports?|reported|says|said|states?|stated|notes?|noted|mentions?|mentioned|"
@@ -116,6 +117,13 @@ PATIENT_NAME_FOLLOWERS = (
   r"stopped|takes|will|should|could|presented|presents|came|comes|reports|at"
 )
 PATIENT_NAME_INTRO_PATTERNS: tuple[re.Pattern[str], ...] = (
+  re.compile(
+    rf"\b(?i:the\s+patient\s+is)\s+({FULL_NAME})(?=\s*,|\s+(?i:age)\b)"
+  ),
+  re.compile(
+    rf"\b({FULL_NAME})\s+(?i:(?:lives|resides)\s+(?:at|in))\b"
+  ),
+  re.compile(rf"\b(?i:belongs\s+to)\s+({FULL_NAME})\b"),
   re.compile(rf"\b({NAME_TOKEN})\s+(?i:is\s+a\s+patient)\b"),
   re.compile(rf"\b({NAME_TOKEN})\s+(?i:returns\s+for\s+(?:follow-up|followup))\b"),
   re.compile(
@@ -161,7 +169,7 @@ PATIENT_NAME_INTRO_PATTERNS: tuple[re.Pattern[str], ...] = (
     r"(?=\s+(?i:had|has|reports|reported|was|is|returns|presents|presented|came|comes)\b)",
   ),
 )
-EPONYM_FOLLOWERS = r"syndrome|disease|criteria|sign|triad|classification|test"
+EPONYM_FOLLOWERS = r"syndrome|disease|palsy|criteria|sign|triad|classification|test"
 
 PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("prompt_injection", re.compile(
@@ -215,6 +223,30 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("identifier", re.compile(r"\b[A-Za-z0-9_+-]+\.(?:jpg|jpeg|png|gif|pdf)\b", re.IGNORECASE)),
   ("identifier", re.compile(r"@[A-Za-z0-9_.-]+\b")),
   ("mrn", re.compile(r"\bMR\s*#\s*[A-Z0-9][A-Z0-9-]{3,}\b", re.IGNORECASE)),
+  ("mrn", re.compile(
+    r"\b(?i:patient\s+record|record(?:\s+(?:number|id|identifier))?)\s*[:#-]?\s*"
+    r"((?=[A-Z0-9 -]{8,}\b)[A-Z0-9](?:[ -]?[A-Z0-9]){7,})\b",
+  )),
+  ("identifier", re.compile(
+    r"\b(?:Patient|Person|RelatedPerson|Practitioner)/([A-Za-z0-9.-]{6,})\b",
+    re.IGNORECASE,
+  )),
+  ("mrn", re.compile(
+    r"(?m)^PID\|[^|\r\n]*\|[^|\r\n]*\|([A-Z0-9][A-Z0-9.-]{5,})(?=\^|\|)",
+    re.IGNORECASE,
+  )),
+  ("mrn", re.compile(
+    r"\"(?:mrn|medical_record_number|patient_id|chart_id|account_id)\"\s*:\s*"
+    r"\"([A-Za-z0-9._-]{4,})\"",
+    re.IGNORECASE,
+  )),
+  ("identifier", re.compile(
+    r"\b(?i:Records?)\s+([A-Z0-9][A-Z0-9-]{7,})(?=\s+(?:(?i:and)\s+)?[A-Za-z])",
+  )),
+  ("identifier", re.compile(
+    r"\b(?i:Records?)\s+[A-Z0-9][A-Z0-9-]{7,}\s+(?i:and)\s+"
+    r"([A-Z0-9][A-Z0-9-]{7,})\b",
+  )),
   ("address", re.compile(
     rf"\b\d{{1,6}}\s+(?:[A-Za-z0-9'.-]+\s+){{0,5}}(?:{STREET_TYPES})\b\.?",
     re.IGNORECASE,
@@ -432,12 +464,12 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
   ("name", re.compile(
     rf"\b[A-Za-z][A-Za-z/ &-]{{2,80}}\s+\("
     rf"((?!(?:{PARENTHETICAL_NAME_EXCLUSIONS})\b){NAME_TOKEN})"
-    rf"(?:,\s*\d{{1,2}}(?:st|nd|rd|th)\s+grade)?\)(?=\s*:)"
+    rf"(?:{PARENTHETICAL_SCHOOL_STAGE})?\)(?=\s*:)"
   )),
   ("name", re.compile(
     rf"\("
     rf"((?!(?:{PARENTHETICAL_NAME_EXCLUSIONS})\b){NAME_TOKEN})"
-    rf",\s*\d{{1,2}}(?:st|nd|rd|th)\s+grade\)"
+    rf"{PARENTHETICAL_SCHOOL_STAGE}\)"
   )),
   ("name", re.compile(rf"\|\|({NAME_TOKEN}\^{NAME_TOKEN})\|\|")),
   ("name", re.compile(rf"\bPAT=({NAME_TOKEN}-{NAME_TOKEN})\b")),
@@ -563,6 +595,23 @@ PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
 )
 
 RESIDUAL_HIGH_RISK: tuple[tuple[str, re.Pattern[str]], ...] = (
+  ("partial structured identifier remains beside a placeholder", re.compile(
+    r"(?:[A-Z0-9]{3,}\[(?:MRN|IDENTIFIER)\][A-Z0-9]{3,}|"
+    r"\[(?:MRN|IDENTIFIER)\][A-Z0-9]{6,})",
+    re.IGNORECASE,
+  )),
+  ("OCR-spaced identifier fragment remains beside a placeholder", re.compile(
+    r"\[(?:MRN|IDENTIFIER)\](?:[ -]+[A-Z0-9]{2}){3,}",
+  )),
+  ("possible FHIR patient identifier remains", re.compile(
+    r"\b(?:Patient|Person|RelatedPerson|Practitioner)/[A-Za-z0-9.-]{6,}\b",
+    re.IGNORECASE,
+  )),
+  ("possible HL7 patient identifier remains", re.compile(
+    r"(?m)^PID\|[^|\r\n]*\|[^|\r\n]*\|"
+    r"(?!\[(?:MRN|IDENTIFIER)\](?:\^|\|))[A-Za-z0-9][^|\r\n]{5,}(?=\^|\|)",
+    re.IGNORECASE,
+  )),
   ("possible MRN or record identifier remains", re.compile(r"\b(?:MRN|MR#)\s+[A-Z0-9-]{6,}\b", re.IGNORECASE)),
   ("possible MRN or record identifier remains", re.compile(
     r"\brecord\s+(?!(?:number|id|identifier)\b)[A-Z0-9-]{6,}\b",
@@ -661,9 +710,78 @@ def _collect_spans(text: str, extra_spans: Iterable[Span] = ()) -> list[Span]:
         start, end = match.span(0)
       if start != end:
         spans.append(Span(category=category, start=start, end=end))
+  spans.extend(_propagated_structured_identifier_spans(text, spans))
   spans.extend(extra_spans)
   spans.extend(_propagated_patient_name_spans(text))
+  spans.extend(_bare_name_run_rule_spans(text))
   return _select_non_overlapping(spans)
+
+
+def _propagated_structured_identifier_spans(
+  text: str,
+  deterministic_spans: Iterable[Span],
+) -> list[Span]:
+  """Remove every recurrence of a confidently rule-detected identifier."""
+  values: dict[str, tuple[str, str]] = {}
+  for span in deterministic_spans:
+    if span.category not in {"identifier", "mrn"}:
+      continue
+    value = text[span.start:span.end].strip()
+    canonical = re.sub(r"[^A-Za-z0-9]", "", value)
+    if len(canonical) < 6:
+      continue
+    values.setdefault(value.casefold(), (value, span.category))
+
+  propagated = []
+  for value, category in values.values():
+    pattern = re.compile(
+      r"(?<![A-Za-z0-9])" + re.escape(value) + r"(?![A-Za-z0-9])",
+      re.IGNORECASE,
+    )
+    propagated.extend(
+      Span(category=category, start=match.start(), end=match.end())
+      for match in pattern.finditer(text)
+    )
+  return propagated
+
+
+def _bare_name_run_rule_spans(text: str) -> list[Span]:
+  """Mask capitalized bare name runs that deterministic cue patterns miss.
+
+  Short cue-free pastes such as ``Mila Northworth fever and headache`` give
+  FULL_NAME patterns nothing to anchor on. When the entire input is one run
+  of alphabetic tokens whose leading unguarded portion holds two or more
+  capitalized tokens, that portion is treated as a name. Guard vocabulary
+  stops the run so clinical fragments (``Chest Pain``) keep their content.
+  """
+  from .span_composition import (
+    BARE_NAME_CLINICAL_GUARD_TERMS,
+    BARE_NAME_LEAD_IN_VETO_TERMS,
+    BARE_NAME_RUN,
+    BARE_NAME_SENTENCE_GUARD_TERMS,
+    BARE_NAME_TOKEN,
+  )
+  match = BARE_NAME_RUN.fullmatch(text)
+  if match is None:
+    return []
+
+  run_start, _run_end = match.span(1)
+  guarded_terms = BARE_NAME_SENTENCE_GUARD_TERMS | BARE_NAME_CLINICAL_GUARD_TERMS
+  head_end = run_start
+  head_token_count = 0
+  for token_match in re.finditer(BARE_NAME_TOKEN, text[run_start:]):
+    token = token_match.group(0)
+    lowered = token.lower()
+    if head_token_count == 0 and lowered in BARE_NAME_LEAD_IN_VETO_TERMS:
+      return []
+    if lowered in guarded_terms or not token[0].isupper():
+      break
+    head_end = run_start + token_match.end()
+    head_token_count += 1
+
+  if head_token_count < 2:
+    return []
+  return [Span(category="name", start=run_start, end=head_end)]
 
 
 def _engine_extra_spans(
@@ -679,8 +797,10 @@ def _engine_extra_spans(
     )
   if requested_engine == LOCAL_RULES_ENGINE:
     return LOCAL_RULES_ENGINE, "", []
+  from .span_composition import complete_bare_name_spans, drop_clinical_eponym_spans
   if span_detector is not None:
-    return OPENMED_ENGINE, "", _complete_bare_name_span(text, span_detector(text))
+    model_spans = complete_bare_name_spans(text, span_detector(text))
+    return OPENMED_ENGINE, "", drop_clinical_eponym_spans(text, model_spans)
 
   try:
     from .model_setup import get_model_status
@@ -692,7 +812,8 @@ def _engine_extra_spans(
     from .openmed_ner import OpenMedUnavailable, get_openmed_span_detector
     try:
       detector = get_openmed_span_detector(status.model_id, str(status.model_dir))
-      return OPENMED_ENGINE, "", _complete_bare_name_span(text, detector(text))
+      model_spans = complete_bare_name_spans(text, detector(text))
+      return OPENMED_ENGINE, "", drop_clinical_eponym_spans(text, model_spans)
     except OpenMedUnavailable as exc:
       reason = f"OpenMed unavailable: {exc}; used local-rules engine."
       return LOCAL_RULES_ENGINE, reason if requested_engine == OPENMED_ENGINE else "", []
@@ -701,43 +822,23 @@ def _engine_extra_spans(
     return LOCAL_RULES_ENGINE, reason if requested_engine == OPENMED_ENGINE else "", []
 
 
-def _complete_bare_name_span(text: str, detected_spans: Iterable[Span]) -> list[Span]:
-  """Complete a two-token name when OpenMed recognizes only one token.
-
-  A bare first-and-last-name paste has no clinical value to preserve. Restricting
-  this expansion to the entire two-token input avoids guessing at adjacent words
-  inside a note while ensuring a partial model span cannot approve a leaked
-  surname.
-  """
-  spans = list(detected_spans)
-  match = BARE_TWO_TOKEN_NAME.fullmatch(text)
-  if match is None:
-    return spans
-
-  phrase_start, phrase_end = match.span(1)
-  has_name_detection = any(
-    span.category == "name"
-    and span.start < phrase_end
-    and span.end > phrase_start
-    for span in spans
-  )
-  if not has_name_detection:
-    return spans
-
-  return [span for span in spans if span.category != "name"] + [
-    Span(category="name", start=phrase_start, end=phrase_end),
-  ]
-
-
 def _propagated_patient_name_spans(text: str) -> list[Span]:
   names = _introduced_patient_names(text)
   spans = []
   for name in names:
-    pattern = re.compile(r"(?<![A-Za-z0-9])" + re.escape(name) + r"(?![A-Za-z0-9])")
-    for match in pattern.finditer(text):
-      if _is_clinical_eponym_context(text, match.end()):
-        continue
-      spans.append(Span(category="name", start=match.start(), end=match.end()))
+    tokens = tuple(re.findall(NAME_TOKEN, name))
+    variants = [name]
+    if len(tokens) >= 2:
+      variants.extend((tokens[0], tokens[-1], "-".join(tokens)))
+    for variant in dict.fromkeys(item for item in variants if len(item) >= 3):
+      pattern = re.compile(
+        r"(?<![A-Za-z0-9])" + re.escape(variant) + r"(?![A-Za-z0-9])",
+        re.IGNORECASE,
+      )
+      for match in pattern.finditer(text):
+        if _is_clinical_eponym_context(text, match.end()):
+          continue
+        spans.append(Span(category="name", start=match.start(), end=match.end()))
   return spans
 
 

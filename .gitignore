@@ -13,3 +13,4 @@ package/reports/*.json
 package/local-models/
 package/.decon-home/
 historical-fixtures/**/results/**/*.json
+*.egg-info/

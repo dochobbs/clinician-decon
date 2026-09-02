@@ -16,6 +16,8 @@ from .usability_eval import (
   evaluation_to_dict,
   evaluate_output,
 )
+from .conversation_eval import generate_cross_turn_cases
+from .structured_boundary_eval import generate_structured_boundary_cases
 
 
 PACKAGE_DIR = Path(__file__).resolve().parents[2]
@@ -32,6 +34,13 @@ CURRENT_SUITES = {
   "persona-regression": DATA_DIR / "decon_persona_regression_2000_2026-06-15.json",
   "external-deid-adversarial-addon": DATA_DIR / "decon_external_deid_adversarial_addon_50_2026-06-16.json",
   "realworld-adversarial": DATA_DIR / "decon_realworld_adversarial_24_2026-06-19.json",
+  "bare-name-shapes": DATA_DIR / "decon_bare_name_shapes_20_2026-08-22.json",
+  "residual-identifier-redteam": DATA_DIR / "decon_residual_identifier_redteam_12_2026-09-02.json",
+}
+
+GENERATED_CLINICAL_SUITES = {
+  "conversation-repeat": generate_cross_turn_cases,
+  "structured-boundary": generate_structured_boundary_cases,
 }
 
 LEGACY_PHI_SUITES = {
@@ -64,6 +73,15 @@ def run_validation(
         destinations=destination_names,
         reference_date=reference_date,
         engine=engine,
+      ))
+    elif suite_name in GENERATED_CLINICAL_SUITES:
+      suite_results.append(_run_clinical_cases(
+        suite_name=suite_name,
+        cases=GENERATED_CLINICAL_SUITES[suite_name](),
+        destinations=destination_names,
+        reference_date=reference_date,
+        engine=engine,
+        source="generated",
       ))
     elif suite_name in LEGACY_PHI_SUITES:
       suite_results.append(_run_legacy_phi_suite(
@@ -132,6 +150,9 @@ def _expand_suite_names(suites: tuple[str, ...]) -> tuple[str, ...]:
   for suite in suites:
     if suite == "current":
       expanded.extend(("usability", "adversarial", "external-deid-adversarial-addon"))
+    elif suite == "release":
+      expanded.extend(CURRENT_SUITES.keys())
+      expanded.extend(GENERATED_CLINICAL_SUITES.keys())
     elif suite == "legacy-phi":
       expanded.extend(("legacy-synth-500", "legacy-synth-500-b", "legacy-stress"))
     elif suite == "all":
@@ -161,6 +182,25 @@ def _run_clinical_suite(
   engine: str,
 ) -> dict[str, object]:
   cases = _load_usability_cases(path)
+  return _run_clinical_cases(
+    suite_name=suite_name,
+    cases=cases,
+    destinations=destinations,
+    reference_date=reference_date,
+    engine=engine,
+    source=str(path.relative_to(REPO_ROOT)),
+  )
+
+
+def _run_clinical_cases(
+  *,
+  suite_name: str,
+  cases: list[UsabilityCase],
+  destinations: tuple[str, ...],
+  reference_date: date,
+  engine: str,
+  source: str,
+) -> dict[str, object]:
   records = []
   timings = []
 
@@ -199,7 +239,7 @@ def _run_clinical_suite(
   )
   return {
     "suite": suite_name,
-    "path": str(path.relative_to(REPO_ROOT)),
+    "path": source,
     "kind": "clinical-usability",
     "summary": summary,
     "failures": _representative_failures(records),

@@ -1,6 +1,6 @@
 # Decon Design QA
 
-source visual truth path: `/Users/dochobbs/Downloads/Consult/clinician-decon/decon-mockup.html`
+source visual truth: [`decon-mockup.html`](decon-mockup.html)
 
 source screenshot: `/private/tmp/decon-mockup-source.png`
 

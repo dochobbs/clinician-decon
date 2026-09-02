@@ -153,7 +153,7 @@ class OpenMedSpanDetector:
       start, end = _trim_span(text, int(entity["start"]), int(entity["end"]))
       if category == "name" and _is_word_fragment(text, start, end):
         continue
-      if category == "name" and _is_clinical_name_shield(text, start, end):
+      if _is_clinical_name_shield(text, start, end):
         continue
       if start < end:
         spans.append(Span(category=category, start=start, end=end))

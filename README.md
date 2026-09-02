@@ -149,8 +149,10 @@ Current behavior:
 
 ## OpenMed Work Used
 
-The optional model-backed engine uses OpenMed's published PHI/PII token-classification model as a
-second detector after deterministic local rules:
+The model-backed engine is a hybrid pipeline: deterministic rules identify well-defined structures,
+OpenMed adds semantic PHI detection in clinical prose, span composition makes authoritative
+whole-field matches win over partial model spans, and a final residual scan blocks copying when
+masking still looks incomplete.
 
 - Model: [OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1](https://huggingface.co/OpenMed/OpenMed-PII-SuperClinical-Large-434M-v1)
 - Publisher page: [OpenMed on Hugging Face](https://huggingface.co/OpenMed)
@@ -240,22 +242,27 @@ PYTHONPATH=src python -m pytest
 Current local snapshot:
 
 ```text
-140 passed
+181 passed
 ```
 
 Run the model-backed headless validation gate:
 
 ```bash
 PYTHONPATH=package/src /path/to/python-with-transformers \
-  package/scripts/run_validation.py --engine rules+openmed
+  package/scripts/run_validation.py --suite release --engine rules+openmed
 ```
 
-Current validation snapshot:
+`--suite release` runs every registered suite, including the bare-name, residual-identifier,
+cross-turn, structured-boundary, and real-world adversarial gates. Current release snapshot
+(cached detector comparison harness, with all three product renderers):
 
 ```text
-1,050 source cases, 3,150 destination outputs, 0 PHI leaks, 0 missing clinical facts,
-100% handoff usable, max avg runtime 100.098 ms, max p95 runtime 123.279 ms
+3,587 source cases, 10,761 destination outputs, 0 PHI leaks, 0 missing clinical facts,
+100% handoff usable, detector mean 153.687 ms, detector p95 188.747 ms
 ```
+
+The same production-style runner separately passed the three newly hardened gates with 416 source
+cases and 1,248 outputs, zero leaks, zero missing facts, and 100% handoff usability.
 
 Additional useful gates:
 
@@ -265,7 +272,26 @@ python3 package/scripts/run_validation.py --suite persona-regression --engine ru
 python3 package/scripts/run_validation.py --suite phi-field-prose --engine rules+openmed
 python3 package/scripts/run_validation.py --suite validation-blindspot-redteam --engine rules+openmed
 python3 package/scripts/run_validation.py --suite validation-blindspot-redteam-r2 --engine rules+openmed
+python3 package/scripts/run_validation.py --suite realworld-adversarial --engine rules+openmed
+python3 package/scripts/run_validation.py --suite bare-name-shapes --engine rules+openmed
+python3 package/scripts/run_validation.py --suite residual-identifier-redteam --engine rules+openmed
+python3 package/scripts/run_validation.py --suite conversation-repeat --engine rules+openmed
+python3 package/scripts/run_validation.py --suite structured-boundary --engine rules+openmed
 ```
+
+### Artifact smoke gate
+
+Repository validation proves the source tree is safe; it says nothing about a built app
+running from an older snapshot. After building or installing the DMG, start the app and run
+the smoke gate against it:
+
+```bash
+python3 package/scripts/smoke_installed_app.py --base-url http://127.0.0.1:8769
+```
+
+It posts known-adversarial cases (header-plus-body name recurrence, bare names, prompt
+injection, eponym collisions, clinical fragments that must survive) at the running server and
+fails on any leaked term or lost clinical fact.
 
 ## Important Docs
 
@@ -281,6 +307,11 @@ python3 package/scripts/run_validation.py --suite validation-blindspot-redteam-r
 - [External de-ID baseline head-to-head](docs/qa/2026-06-16-external-deid-baseline-head-to-head.md)
 - [External de-ID baseline error samples](docs/qa/2026-06-16-external-deid-baseline-error-samples.md)
 - [External de-ID adversarial add-on](docs/qa/2026-06-16-external-deid-adversarial-addon-head-to-head.md)
+- [Philter-UCSF head-to-head](docs/qa/2026-06-16-philter-ucsf-head-to-head.md)
+- [Philter-UCSF error samples](docs/qa/2026-06-16-philter-error-samples.md)
+- [Philter adversarial add-on](docs/qa/2026-06-16-philter-adversarial-addon-head-to-head.md)
+- [Bare name span hardening](docs/qa/2026-08-22-bare-name-span-hardening.md)
+- [Artifact smoke gate and bare-name suite](docs/qa/2026-08-22-artifact-smoke-gate-and-bare-name-suite.md)
 - [Mac installer implementation plan](docs/superpowers/plans/2026-06-15-mac-installer-implementation-plan.md)
 - [Clinician tool brief](package/docs/clinician-decon-tool-brief.md)
 

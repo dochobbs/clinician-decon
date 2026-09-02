@@ -67,6 +67,11 @@ def evaluate_output(
   """Evaluate one copied output for safety and retained clinical usefulness."""
   leak_terms = case.forbidden_terms or case.phi
   leaked_phi = [term for term in leak_terms if _contains_term(output, term)]
+  leaked_phi.extend(
+    leak
+    for leak in _partial_structured_phi_leaks(output, case.phi)
+    if leak not in leaked_phi
+  )
   missing = [
     fact.label
     for fact in case.critical_facts
@@ -209,6 +214,72 @@ def _contains_term(text: str, term: str) -> bool:
     return False
   pattern = re.compile(r"(?<![A-Za-z0-9])" + re.escape(term) + r"(?![A-Za-z0-9])", re.IGNORECASE)
   return bool(pattern.search(text))
+
+
+def _partial_structured_phi_leaks(output: str, phi_terms: Iterable[str]) -> list[str]:
+  """Find meaningful remnants of structured PHI after partial masking.
+
+  Exact-string scoring misses outputs such as ``[MRN]DEFGHIJK`` when the
+  source identifier was ``ABCDEFGHIJK``. Restrict this check to long,
+  identifier-shaped values so ordinary names and clinical prose do not create
+  substring false positives.
+  """
+  # These can legitimately survive as surrounding field labels or prose even
+  # when they also happen to prefix a synthetic identifier (for example,
+  # ``PATIENT556677`` -> ``Patient record [MRN]``). They carry no identifying
+  # suffix on their own and must not turn a correctly masked output into a
+  # false positive.
+  nonidentifying_fragments = {
+    "account", "chart", "identifier", "medical", "patient", "portal",
+    "record", "token",
+  }
+  output_tokens = tuple(re.findall(r"[A-Za-z0-9]{6,}", output))
+  masked_clusters = tuple(re.findall(
+    r"(?:[A-Za-z0-9]+)?(?:\[[A-Z_]+\](?:[A-Za-z0-9]+)?)+",
+    output,
+  ))
+  leaks = []
+  for phi in phi_terms:
+    canonical = re.sub(r"[^A-Za-z0-9]", "", phi)
+    identifier_shaped = (
+      len(canonical) >= 8
+      and (
+        any(character.isdigit() for character in canonical)
+        or canonical.isupper()
+      )
+    )
+    if not identifier_shaped:
+      continue
+    lowered = canonical.lower()
+    found = False
+    for token in output_tokens:
+      token_lower = token.lower()
+      if token_lower == lowered:
+        continue
+      if token_lower in nonidentifying_fragments:
+        continue
+      if token_lower in lowered and len(token_lower) / len(lowered) >= 0.5:
+        leaks.append(f"{phi} (partial: {token})")
+        found = True
+        break
+    if found:
+      continue
+    for cluster in masked_clusters:
+      visible_parts = re.findall(r"[A-Za-z0-9]+", re.sub(r"\[[A-Z_]+\]", " ", cluster))
+      visible_length = sum(len(part) for part in visible_parts)
+      if visible_length / len(canonical) < 0.5:
+        continue
+      position = 0
+      for part in visible_parts:
+        index = lowered.find(part.lower(), position)
+        if index < 0:
+          break
+        position = index + len(part)
+      else:
+        visible = "...".join(visible_parts)
+        leaks.append(f"{phi} (partial: {visible})")
+        break
+  return leaks
 
 
 def _expanded_fact_terms(fact: CriticalFact) -> tuple[str, ...]:

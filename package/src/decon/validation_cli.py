@@ -10,6 +10,7 @@ from typing import Sequence
 
 from .validation_runner import (
   DEFAULT_DESTINATIONS,
+  GENERATED_CLINICAL_SUITES,
   LEGACY_PHI_SUITES,
   CURRENT_SUITES,
   passes_thresholds,
@@ -21,9 +22,11 @@ from .local_rules import OPENMED_ENGINE, SUPPORTED_ENGINES
 
 SUITE_CHOICES = (
   "current",
+  "release",
   "all",
   "legacy-phi",
   *CURRENT_SUITES.keys(),
+  *GENERATED_CLINICAL_SUITES.keys(),
   *LEGACY_PHI_SUITES.keys(),
 )
 

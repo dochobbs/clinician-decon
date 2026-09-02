@@ -12,7 +12,7 @@ Decontextualization asks:
 
 > Can this clinician safely ask a useful question without sending raw PHI?
 
-That difference matters. A de-ID system often tries to remove, mask, or transform identifiers
+A de-ID system often tries to remove, mask, or transform identifiers
 inside a note. A decon system is more task-aware: it removes direct identifiers and risky context,
 then preserves the minimum clinical facts needed for the next question.
 

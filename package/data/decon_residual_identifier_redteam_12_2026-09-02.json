@@ -1,0 +1,141 @@
+[
+  {
+    "id": "RIR-001",
+    "category": "unlabeled_uppercase_patient_record",
+    "query": "Please answer for patient record ABCDEFGHIJK with fatigue and bruising.",
+    "phi": ["ABCDEFGHIJK"],
+    "forbidden_terms": ["ABCDEFGHIJK", "DEFGHIJK"],
+    "critical_facts": [
+      {"label": "fatigue", "acceptable_terms": ["fatigue"]},
+      {"label": "bruising", "acceptable_terms": ["bruising"]}
+    ]
+  },
+  {
+    "id": "RIR-002",
+    "category": "labeled_long_alpha_mrn",
+    "query": "MRN QWERTYUIOPAS: persistent cough and wheeze; using albuterol every four hours.",
+    "phi": ["QWERTYUIOPAS"],
+    "forbidden_terms": ["QWERTYUIOPAS", "TYUIOPAS"],
+    "critical_facts": [
+      {"label": "symptoms", "acceptable_terms": ["cough", "wheeze"]},
+      {"label": "medication", "acceptable_terms": ["albuterol"]},
+      {"label": "frequency", "acceptable_terms": ["every four hours"]}
+    ]
+  },
+  {
+    "id": "RIR-003",
+    "category": "alphanumeric_chart_id",
+    "query": "Chart ID ZXCVB1234567 belongs to the child with peanut allergy and prior anaphylaxis.",
+    "phi": ["ZXCVB1234567"],
+    "forbidden_terms": ["ZXCVB1234567", "B1234567"],
+    "critical_facts": [
+      {"label": "allergy", "acceptable_terms": ["peanut allergy"]},
+      {"label": "reaction", "acceptable_terms": ["anaphylaxis"]}
+    ]
+  },
+  {
+    "id": "RIR-004",
+    "category": "fhir_patient_resource_id",
+    "query": "FHIR reference Patient/ABCDEF123456789: creatinine 1.8 and potassium 5.6; review lisinopril.",
+    "phi": ["ABCDEF123456789", "Patient/ABCDEF123456789"],
+    "forbidden_terms": ["ABCDEF123456789", "F123456789"],
+    "critical_facts": [
+      {"label": "creatinine", "acceptable_terms": ["creatinine 1.8"]},
+      {"label": "potassium", "acceptable_terms": ["potassium 5.6"]},
+      {"label": "medication", "acceptable_terms": ["lisinopril"]}
+    ]
+  },
+  {
+    "id": "RIR-005",
+    "category": "hl7_pid_identifier",
+    "query": "PID|1||LMNOPQRSTUVX^^^MRN|| followed by fever, neck stiffness, and photophobia.",
+    "phi": ["LMNOPQRSTUVX"],
+    "forbidden_terms": ["LMNOPQRSTUVX", "PQRSTUVX"],
+    "critical_facts": [
+      {"label": "fever", "acceptable_terms": ["fever"]},
+      {"label": "meningismus", "acceptable_terms": ["neck stiffness"]},
+      {"label": "photophobia", "acceptable_terms": ["photophobia"]}
+    ]
+  },
+  {
+    "id": "RIR-006",
+    "category": "json_medical_record_number",
+    "query": "{\"medical_record_number\":\"NMBVCXZLKJHG\",\"condition\":\"asthma\",\"medication\":\"budesonide\"}",
+    "phi": ["NMBVCXZLKJHG"],
+    "forbidden_terms": ["NMBVCXZLKJHG", "CXZLKJHG"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["asthma"]},
+      {"label": "medication", "acceptable_terms": ["budesonide"]}
+    ]
+  },
+  {
+    "id": "RIR-007",
+    "category": "identifier_in_export_filename",
+    "query": "Imported file visit_ASDFGHJKLQWE_2026.pdf says ferritin 3200, ANC 450, platelets 41.",
+    "phi": ["ASDFGHJKLQWE", "visit_ASDFGHJKLQWE_2026.pdf"],
+    "forbidden_terms": ["ASDFGHJKLQWE", "GHJKLQWE"],
+    "critical_facts": [
+      {"label": "ferritin", "acceptable_terms": ["ferritin 3200"]},
+      {"label": "anc", "acceptable_terms": ["ANC 450"]},
+      {"label": "platelets", "acceptable_terms": ["platelets 41"]}
+    ]
+  },
+  {
+    "id": "RIR-008",
+    "category": "ocr_spaced_record_identifier",
+    "query": "Patient record AB CD EF GH IJ KL; migraine with aura, vomiting, and sumatriptan use.",
+    "phi": ["AB CD EF GH IJ KL"],
+    "forbidden_terms": ["AB CD EF GH IJ KL", "EF GH IJ KL"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["migraine with aura"]},
+      {"label": "symptom", "acceptable_terms": ["vomiting"]},
+      {"label": "medication", "acceptable_terms": ["sumatriptan"]}
+    ]
+  },
+  {
+    "id": "RIR-009",
+    "category": "repeated_identifier_after_first_mask",
+    "query": "Record POIUYTREWQLK has eczema. Recheck POIUYTREWQLK because hydrocortisone is helping.",
+    "phi": ["POIUYTREWQLK"],
+    "forbidden_terms": ["POIUYTREWQLK", "YTREWQLK"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["eczema"]},
+      {"label": "medication", "acceptable_terms": ["hydrocortisone"]}
+    ]
+  },
+  {
+    "id": "RIR-010",
+    "category": "compound_account_identifier",
+    "query": "Account ACCT-987654321XYZ is attached to the AOM question about amoxicillin 80-90 mg/kg/day.",
+    "phi": ["ACCT-987654321XYZ"],
+    "forbidden_terms": ["ACCT-987654321XYZ", "987654321XYZ"],
+    "critical_facts": [
+      {"label": "condition", "acceptable_terms": ["AOM"]},
+      {"label": "medication", "acceptable_terms": ["amoxicillin"]},
+      {"label": "dose", "acceptable_terms": ["80-90 mg/kg/day"]}
+    ]
+  },
+  {
+    "id": "RIR-011",
+    "category": "two_long_identifiers",
+    "query": "Records MNBVCXZASDFG and LKJHGFDSAPOI concern siblings: one has asthma and one has peanut allergy.",
+    "phi": ["MNBVCXZASDFG", "LKJHGFDSAPOI"],
+    "forbidden_terms": ["MNBVCXZASDFG", "CXZASDFG", "LKJHGFDSAPOI", "GFDSAPOI"],
+    "critical_facts": [
+      {"label": "condition_one", "acceptable_terms": ["asthma"]},
+      {"label": "condition_two", "acceptable_terms": ["peanut allergy"]}
+    ]
+  },
+  {
+    "id": "RIR-012",
+    "category": "portal_token_with_identifier_suffix",
+    "query": "Portal token tok_ABC123456789XYZ was pasted with the note: oxygen saturation 89% and wheezing every three hours.",
+    "phi": ["tok_ABC123456789XYZ", "ABC123456789XYZ"],
+    "forbidden_terms": ["tok_ABC123456789XYZ", "ABC123456789XYZ", "123456789XYZ"],
+    "critical_facts": [
+      {"label": "oxygen", "acceptable_terms": ["oxygen saturation 89%"]},
+      {"label": "symptom", "acceptable_terms": ["wheezing"]},
+      {"label": "frequency", "acceptable_terms": ["every three hours"]}
+    ]
+  }
+]

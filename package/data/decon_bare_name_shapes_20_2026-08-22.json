@@ -1,0 +1,221 @@
+[
+  {
+    "id": "BNS-001",
+    "category": "bare_name_run_symptom_tail",
+    "query": "Mila Northworth fever and headache since Monday.",
+    "phi": ["Mila", "Northworth"],
+    "forbidden_terms": ["Mila", "Northworth"],
+    "critical_facts": [
+      {"label": "symptom_1", "acceptable_terms": ["fever"]},
+      {"label": "symptom_2", "acceptable_terms": ["headache"]}
+    ]
+  },
+  {
+    "id": "BNS-002",
+    "category": "three_token_name_run",
+    "query": "Mary Jane Watson has fever and vomiting.",
+    "phi": ["Mary Jane Watson"],
+    "forbidden_terms": ["Mary", "Jane", "Watson"],
+    "critical_facts": [
+      {"label": "symptom_1", "acceptable_terms": ["fever"]},
+      {"label": "symptom_2", "acceptable_terms": ["vomiting"]}
+    ]
+  },
+  {
+    "id": "BNS-003",
+    "category": "particle_surname_run",
+    "query": "Jean Claude Van Damme severe stomach pain.",
+    "phi": ["Jean Claude Van Damme"],
+    "forbidden_terms": ["Jean", "Claude", "Damme"],
+    "critical_facts": [
+      {"label": "severity", "acceptable_terms": ["severe"]},
+      {"label": "symptom", "acceptable_terms": ["stomach pain"]}
+    ]
+  },
+  {
+    "id": "BNS-004",
+    "category": "hyphenated_surname_run",
+    "query": "Anne Parker-Wells knee pain after a fall.",
+    "phi": ["Anne Parker-Wells"],
+    "forbidden_terms": ["Anne", "Parker-Wells"],
+    "critical_facts": [
+      {"label": "symptom", "acceptable_terms": ["knee pain"]}
+    ]
+  },
+  {
+    "id": "BNS-005",
+    "category": "apostrophe_surname_run",
+    "query": "Darcy O'Neill vomiting and diarrhea overnight.",
+    "phi": ["Darcy O'Neill"],
+    "forbidden_terms": ["Darcy", "O'Neill"],
+    "critical_facts": [
+      {"label": "symptom_1", "acceptable_terms": ["vomiting"]},
+      {"label": "symptom_2", "acceptable_terms": ["diarrhea"]}
+    ]
+  },
+  {
+    "id": "BNS-006",
+    "category": "name_sentence_punctuation_split",
+    "query": "Jonas Reyes rash and itching for two days.",
+    "phi": ["Jonas Reyes"],
+    "forbidden_terms": ["Jonas", "Reyes"],
+    "critical_facts": [
+      {"label": "symptom_1", "acceptable_terms": ["rash"]},
+      {"label": "symptom_2", "acceptable_terms": ["itching"]}
+    ]
+  },
+  {
+    "id": "BNS-007",
+    "category": "header_intro_body_recurrence",
+    "query": "Patient: Milo Jax Northworth. DOB: 2019-04-16.\nADHD concerns (Milo, pre-K): parent notes distraction and impulsivity at school.",
+    "phi": ["Milo", "Jax", "Northworth", "2019-04-16"],
+    "forbidden_terms": ["Milo", "Jax", "Northworth", "2019-04-16"],
+    "critical_facts": [
+      {"label": "behavior", "acceptable_terms": ["distraction", "impulsivity"]},
+      {"label": "setting", "acceptable_terms": ["school"]}
+    ]
+  },
+  {
+    "id": "BNS-008",
+    "category": "standalone_parenthetical_name",
+    "query": "ADHD concerns (Johnny, 2nd grade): teacher notes inattention and calling out.",
+    "phi": ["Johnny"],
+    "forbidden_terms": ["Johnny"],
+    "critical_facts": [
+      {"label": "concern", "acceptable_terms": ["inattention"]},
+      {"label": "setting", "acceptable_terms": ["grade", "teacher"]}
+    ]
+  },
+  {
+    "id": "BNS-009",
+    "category": "all_caps_name_run",
+    "query": "SOFIA NGUYEN wheezing and chest tightness.",
+    "phi": ["SOFIA NGUYEN", "Sofia", "Nguyen"],
+    "forbidden_terms": ["SOFIA", "NGUYEN", "Sofia", "Nguyen"],
+    "critical_facts": [
+      {"label": "symptom_1", "acceptable_terms": ["wheezing"]},
+      {"label": "symptom_2", "acceptable_terms": ["tightness"]}
+    ]
+  },
+  {
+    "id": "BNS-010",
+    "category": "label_prefixed_name_run",
+    "query": "Patient Elias Thornberg presents with fever and cough.",
+    "phi": ["Elias Thornberg"],
+    "forbidden_terms": ["Elias", "Thornberg"],
+    "critical_facts": [
+      {"label": "symptom_1", "acceptable_terms": ["fever"]},
+      {"label": "symptom_2", "acceptable_terms": ["cough"]}
+    ]
+  },
+  {
+    "id": "BNS-011",
+    "category": "clinical_bigram_preserved",
+    "query": "chest pain",
+    "phi": [],
+    "forbidden_terms": [],
+    "critical_facts": [
+      {"label": "symptom_1", "acceptable_terms": ["chest"]},
+      {"label": "symptom_2", "acceptable_terms": ["pain"]}
+    ]
+  },
+  {
+    "id": "BNS-012",
+    "category": "clinical_trigram_preserved",
+    "query": "sore throat worse today",
+    "phi": [],
+    "forbidden_terms": [],
+    "critical_facts": [
+      {"label": "symptom_1", "acceptable_terms": ["sore throat"]},
+      {"label": "symptom_2", "acceptable_terms": ["worse"]}
+    ]
+  },
+  {
+    "id": "BNS-013",
+    "category": "anatomy_fragment_preserved",
+    "query": "ear pain left side since swimming",
+    "phi": [],
+    "forbidden_terms": [],
+    "critical_facts": [
+      {"label": "symptom", "acceptable_terms": ["ear pain"]},
+      {"label": "laterality", "acceptable_terms": ["left"]}
+    ]
+  },
+  {
+    "id": "BNS-014",
+    "category": "spelled_age_phrase_preserved",
+    "query": "two month old with cough",
+    "phi": [],
+    "forbidden_terms": [],
+    "critical_facts": [
+      {"label": "age_band", "acceptable_terms": ["infant", "two month old", "month old"]},
+      {"label": "symptom", "acceptable_terms": ["cough"]}
+    ]
+  },
+  {
+    "id": "BNS-015",
+    "category": "spelled_age_rash_preserved",
+    "query": "three year old rash spreading to trunk",
+    "phi": [],
+    "forbidden_terms": [],
+    "critical_facts": [
+      {"label": "age_band", "acceptable_terms": ["preschool", "three year old", "year old"]},
+      {"label": "symptom", "acceptable_terms": ["rash"]}
+    ]
+  },
+  {
+    "id": "BNS-016",
+    "category": "sentence_control_diagnosis_preserved",
+    "query": "Marcus has asthma and needs a refill.",
+    "phi": ["Marcus"],
+    "forbidden_terms": ["Marcus"],
+    "critical_facts": [
+      {"label": "diagnosis", "acceptable_terms": ["asthma"]},
+      {"label": "task", "acceptable_terms": ["refill"]}
+    ]
+  },
+  {
+    "id": "BNS-017",
+    "category": "anatomy_only_fragment_preserved",
+    "query": "stomach ache after lunch",
+    "phi": [],
+    "forbidden_terms": [],
+    "critical_facts": [
+      {"label": "symptom", "acceptable_terms": ["stomach ache"]},
+      {"label": "timing", "acceptable_terms": ["after lunch"]}
+    ]
+  },
+  {
+    "id": "BNS-018",
+    "category": "teen_fragment_preserved",
+    "query": "teenager fatigue and dizziness after sports",
+    "phi": [],
+    "forbidden_terms": [],
+    "critical_facts": [
+      {"label": "age_band", "acceptable_terms": ["adolescent", "teenager"]},
+      {"label": "symptom", "acceptable_terms": ["fatigue", "dizziness"]}
+    ]
+  },
+  {
+    "id": "BNS-019",
+    "category": "infant_fragment_preserved",
+    "query": "infant congestion and fever overnight",
+    "phi": [],
+    "forbidden_terms": [],
+    "critical_facts": [
+      {"label": "age_band", "acceptable_terms": ["infant"]},
+      {"label": "symptom", "acceptable_terms": ["congestion", "fever"]}
+    ]
+  },
+  {
+    "id": "BNS-020",
+    "category": "toddler_night_fragment_preserved",
+    "query": "toddler wheezing at night needs albuterol",
+    "phi": [],
+    "forbidden_terms": [],
+    "critical_facts": [
+      {"label": "age_band", "acceptable_terms": ["toddler", "preschool"]},
+      {"label": "medication", "acceptable_terms": ["albuterol"]}
+    ]
+  }
+]

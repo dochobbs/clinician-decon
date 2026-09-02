@@ -2,6 +2,7 @@ from datetime import date
 
 from decon.validation_runner import (
   CURRENT_SUITES,
+  GENERATED_CLINICAL_SUITES,
   passes_thresholds,
   run_validation,
 )
@@ -36,6 +37,60 @@ def test_phi_field_prose_suite_is_registered_as_current_gate():
   assert CURRENT_SUITES["phi-field-prose"].name == (
     "decon_phi_field_prose_25_2026-06-15.json"
   )
+
+
+def test_bare_name_shapes_suite_is_registered():
+  assert "bare-name-shapes" in CURRENT_SUITES
+  assert CURRENT_SUITES["bare-name-shapes"].name == (
+    "decon_bare_name_shapes_20_2026-08-22.json"
+  )
+
+
+def test_residual_identifier_redteam_suite_is_registered():
+  assert "residual-identifier-redteam" in CURRENT_SUITES
+  assert CURRENT_SUITES["residual-identifier-redteam"].name == (
+    "decon_residual_identifier_redteam_12_2026-09-02.json"
+  )
+
+
+def test_residual_identifier_redteam_suite_passes_with_zero_failures():
+  result = run_validation(
+    suites=("residual-identifier-redteam",),
+    destinations=("chatgpt", "gemini", "web_search"),
+    reference_date=date(2026, 6, 15),
+  )
+
+  assert result["summary"]["source_cases"] == 12
+  assert result["summary"]["outputs"] == 36
+  assert result["summary"]["phi_leaked_outputs"] == 0
+  assert result["summary"]["unsafe_copy_allowed_outputs"] == 0
+  assert result["summary"]["missing_critical_fact_outputs"] == 0
+  assert result["summary"]["handoff_usable_rate"] == 1.0
+  assert passes_thresholds(result, fail_on_phi=True, min_clinical_usable=1.0) == []
+
+
+def test_bare_name_shapes_suite_passes_with_zero_failures():
+  result = run_validation(
+    suites=("bare-name-shapes",),
+    destinations=("chatgpt", "gemini", "web_search"),
+    reference_date=date(2026, 8, 22),
+  )
+
+  assert result["summary"]["source_cases"] == 20
+  assert result["summary"]["outputs"] == 60
+  assert result["summary"]["clinical_labeled_outputs"] == 60
+  assert result["summary"]["phi_leaked_outputs"] == 0
+  assert result["summary"]["missing_critical_fact_outputs"] == 0
+  assert result["summary"]["clinical_usable_rate"] == 1.0
+  assert result["summary"]["handoff_usable_rate"] == 1.0
+  assert passes_thresholds(result, fail_on_phi=True, min_clinical_usable=1.0) == []
+
+
+def test_release_alias_expands_to_every_registered_suite():
+  from decon.validation_runner import _expand_suite_names
+
+  expanded = _expand_suite_names(("release",))
+  assert set(expanded) == set(CURRENT_SUITES) | set(GENERATED_CLINICAL_SUITES)
 
 
 def test_external_deid_adversarial_addon_suite_is_registered():

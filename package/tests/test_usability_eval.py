@@ -36,6 +36,73 @@ def test_evaluate_output_flags_phi_leaks_even_when_copy_allowed():
   assert result.handoff_usable is False
 
 
+def test_evaluate_output_flags_partial_structured_identifier_residual():
+  case = UsabilityCase(
+    id="partial-identifier",
+    category="residual_identifier",
+    query="Patient record ABCDEFGHIJK with fatigue and bruising.",
+    phi=("ABCDEFGHIJK",),
+    critical_facts=(
+      CriticalFact("fatigue", ("fatigue",)),
+      CriticalFact("bruising", ("bruising",)),
+    ),
+  )
+
+  result = evaluate_output(
+    case,
+    output="Patient record [MRN]DEFGHIJK with fatigue and bruising.",
+    destination="gemini",
+    copy_allowed=True,
+    risk_level="low",
+  )
+
+  assert result.leaked_phi == ["ABCDEFGHIJK (partial: DEFGHIJK)"]
+  assert "phi_leak" in result.flags
+  assert "unsafe_copy_allowed" in result.flags
+
+
+def test_evaluate_output_flags_identifier_fragments_split_by_placeholder():
+  case = UsabilityCase(
+    id="split-identifier",
+    category="residual_identifier",
+    query="Record POIUYTREWQLK has eczema.",
+    phi=("POIUYTREWQLK",),
+    critical_facts=(CriticalFact("condition", ("eczema",)),),
+  )
+
+  result = evaluate_output(
+    case,
+    output="Record POI[IDENTIFIER]QLK has eczema.",
+    destination="chatgpt",
+    copy_allowed=True,
+    risk_level="low",
+  )
+
+  assert result.leaked_phi == ["POIUYTREWQLK (partial: POI...QLK)"]
+  assert "unsafe_copy_allowed" in result.flags
+
+
+def test_evaluate_output_does_not_treat_generic_patient_label_as_identifier_residual():
+  case = UsabilityCase(
+    id="generic-prefix",
+    category="structured_identifier",
+    query="Patient record PATIENT556677 has eczema.",
+    phi=("PATIENT556677",),
+    critical_facts=(CriticalFact("condition", ("eczema",)),),
+  )
+
+  result = evaluate_output(
+    case,
+    output="Patient record [MRN] has eczema.",
+    destination="chatgpt",
+    copy_allowed=True,
+    risk_level="low",
+  )
+
+  assert result.leaked_phi == []
+  assert result.handoff_usable is True
+
+
 def test_evaluate_output_flags_safe_but_clinically_unusable_signal_loss():
   case = UsabilityCase(
     id="T002",

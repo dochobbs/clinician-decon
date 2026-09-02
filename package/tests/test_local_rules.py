@@ -1,6 +1,7 @@
 from datetime import date
 
 from decon.local_rules import Span, decontextualize_text
+from decon.span_composition import complete_bare_name_spans
 
 
 def test_decontextualize_text_removes_common_identifiers_without_returning_values():
@@ -266,15 +267,102 @@ def test_decontextualize_text_removes_signature_block_name():
   assert "MMR rash" in result.destination_prompt
 
 
-def test_decontextualize_text_blocks_copy_when_residual_mrn_remains():
+def test_decontextualize_text_removes_complete_patient_record_identifier():
   source = "Please answer for patient record ABCDEFGHIJK with fatigue and bruising."
 
   result = decontextualize_text(source, destination="gemini")
 
+  assert "ABCDEFGHIJK" not in result.safe_context
+  assert "DEFGHIJK" not in result.safe_context
+  assert result.copy_allowed is True
+  assert result.risk_level == "low"
+
+
+def test_decontextualize_text_blocks_copy_when_model_leaves_identifier_fragment():
+  source = "Opaque key ABCDEFGHIJK with fatigue and bruising."
+
+  def partial_detector(text: str):
+    start = text.index("ABCDEFGHIJK")
+    return [Span(category="mrn", start=start, end=start + 3)]
+
+  result = decontextualize_text(
+    source,
+    destination="gemini",
+    engine="rules+openmed",
+    span_detector=partial_detector,
+  )
+
+  assert "[MRN]DEFGHIJK" in result.safe_context
   assert result.copy_allowed is False
   assert result.risk_level == "high"
-  assert any("identifier" in reason.lower() or "record" in reason.lower()
+  assert any("partial structured identifier" in reason.lower()
              for reason in result.risk_reasons)
+
+
+def test_decontextualize_text_blocks_copy_for_ocr_fragment_after_placeholder():
+  source = "Opaque key A1 23 45 67 89 0B with fatigue and bruising."
+
+  def partial_detector(text: str):
+    start = text.index("A1 23 45 67 89 0B")
+    return [Span(category="mrn", start=start, end=start + 2)]
+
+  result = decontextualize_text(
+    source,
+    destination="gemini",
+    engine="rules+openmed",
+    span_detector=partial_detector,
+  )
+
+  assert "[MRN] 23 45 67 89 0B" in result.safe_context
+  assert result.copy_allowed is False
+  assert result.risk_level == "high"
+  assert any("ocr-spaced identifier fragment" in reason.lower()
+             for reason in result.risk_reasons)
+
+
+def test_decontextualize_text_propagates_explicit_full_name_parts_across_turns():
+  source = (
+    "User: The patient is Sofia Ibarra, age 9, with peanut allergy.\n"
+    "Assistant: What happened to Sofia?\n"
+    "User: Ibarra developed hives; epinephrine was not used."
+  )
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  assert "Sofia" not in result.safe_context
+  assert "Ibarra" not in result.safe_context
+  assert "peanut allergy" in result.safe_context
+  assert "hives" in result.safe_context
+  assert "epinephrine" in result.safe_context
+
+
+def test_decontextualize_text_propagates_portal_name_handle_across_turns():
+  source = (
+    "User: Portal https://portal.example.test/patient/Amara-Voss belongs to Amara Voss.\n"
+    "Assistant: I will avoid using the Amara-Voss portal path.\n"
+    "User: Keep migraine with aura, vomiting, and sumatriptan use."
+  )
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  assert "Amara" not in result.safe_context
+  assert "Voss" not in result.safe_context
+  assert "migraine with aura" in result.safe_context
+  assert "vomiting" in result.safe_context
+  assert "sumatriptan" in result.safe_context
+
+
+def test_decontextualize_text_preserves_eponym_after_explicit_name_introduction():
+  source = (
+    "The patient is Asha Bell, age 9, with facial weakness. "
+    "Could this be Bell palsy?"
+  )
+
+  result = decontextualize_text(source, destination="copy_only", engine="local-rules")
+
+  assert "Asha" not in result.safe_context
+  assert "Bell palsy" in result.safe_context
+  assert "facial weakness" in result.safe_context
 
 
 def test_decontextualize_text_renders_destination_prompt():
@@ -1317,6 +1405,182 @@ def test_partial_openmed_name_span_does_not_consume_clinical_sentence():
   )
 
   assert result.safe_context == "[NAME] has asthma"
+
+
+def test_complete_bare_name_spans_covers_three_token_lowercase_name():
+  source = "mary jane watson"
+
+  spans = complete_bare_name_spans(
+    source,
+    [Span(category="name", start=0, end=len("mary"))],
+  )
+
+  assert spans == [Span(category="name", start=0, end=len(source))]
+
+
+def test_complete_bare_name_spans_merges_separately_detected_name_tokens():
+  source = "Sofia Maria Reyes"
+  first_end = len("Sofia")
+  last_start = source.index("Reyes")
+
+  spans = complete_bare_name_spans(
+    source,
+    [
+      Span(category="name", start=0, end=first_end),
+      Span(category="name", start=last_start, end=len(source)),
+    ],
+  )
+
+  assert spans == [Span(category="name", start=0, end=len(source))]
+
+
+def test_complete_bare_name_spans_covers_particle_surname_run():
+  source = "jean claude van damme"
+
+  spans = complete_bare_name_spans(
+    source,
+    [Span(category="name", start=0, end=len("jean"))],
+  )
+
+  assert spans == [Span(category="name", start=0, end=len(source))]
+
+
+def test_complete_bare_name_spans_excludes_surrounding_whitespace_from_span():
+  source = "  milo north  "
+
+  spans = complete_bare_name_spans(
+    source,
+    [Span(category="name", start=2, end=2 + len("milo"))],
+  )
+
+  assert spans == [Span(category="name", start=2, end=2 + len("milo north"))]
+
+
+def test_decontextualize_text_does_not_over_strip_clinical_bigram():
+  source = "chest pain"
+
+  def fake_openmed_detector(text: str):
+    return [Span(category="name", start=text.index("pain"), end=len(text))]
+
+  result = decontextualize_text(
+    source,
+    destination="copy_only",
+    engine="rules+openmed",
+    span_detector=fake_openmed_detector,
+  )
+
+  assert result.safe_context == "chest [NAME]"
+  assert "chest" in result.safe_context
+
+
+def test_decontextualize_text_does_not_over_strip_symptom_phrase():
+  source = "sore throat"
+
+  def fake_openmed_detector(text: str):
+    return [Span(category="name", start=0, end=len("sore"))]
+
+  result = decontextualize_text(
+    source,
+    destination="copy_only",
+    engine="rules+openmed",
+    span_detector=fake_openmed_detector,
+  )
+
+  assert result.safe_context == "[NAME] throat"
+  assert "throat" in result.safe_context
+
+
+def test_decontextualize_text_does_not_over_strip_spelled_out_age_phrase():
+  source = "two month old"
+
+  def fake_openmed_detector(text: str):
+    return [Span(category="name", start=4, end=4 + len("month"))]
+
+  result = decontextualize_text(
+    source,
+    destination="copy_only",
+    engine="rules+openmed",
+    span_detector=fake_openmed_detector,
+  )
+
+  assert result.safe_context == "two [NAME] old"
+  assert "two" in result.safe_context and "old" in result.safe_context
+
+
+def test_complete_bare_name_spans_leaves_sentence_shaped_phrases_untouched():
+  source = "liam needs refills"
+  detected = [Span(category="name", start=0, end=len("liam"))]
+
+  assert complete_bare_name_spans(source, detected) == detected
+
+
+def test_complete_bare_name_spans_stops_head_at_guarded_clinical_tail():
+  source = "milo north fever and headache"
+  detected = [Span(category="name", start=0, end=len("milo"))]
+
+  spans = complete_bare_name_spans(source, detected)
+
+  assert spans == [Span(category="name", start=0, end=len("milo north"))]
+
+
+def test_complete_bare_name_spans_tolerates_trailing_punctuation():
+  source = "milo north."
+  detected = [Span(category="name", start=0, end=len("milo"))]
+
+  spans = complete_bare_name_spans(source, detected)
+
+  assert spans == [Span(category="name", start=0, end=len("milo north"))]
+
+
+def test_decontextualize_text_masks_name_run_before_clinical_tail():
+  source = "mary jane watson has a fever"
+
+  def fake_openmed_detector(text: str):
+    return [Span(category="name", start=0, end=len("mary"))]
+
+  result = decontextualize_text(
+    source,
+    destination="copy_only",
+    engine="rules+openmed",
+    span_detector=fake_openmed_detector,
+  )
+
+  assert result.safe_context == "[NAME] has a fever"
+
+
+def test_decontextualize_text_preserves_eponym_mislabeled_as_location():
+  source = "Could this be Kawasaki and what red flags need urgent evaluation?"
+
+  def fake_openmed_detector(text: str):
+    start = text.index("Kawasaki")
+    return [Span(category="location", start=start, end=start + len("Kawasaki"))]
+
+  result = decontextualize_text(
+    source,
+    destination="copy_only",
+    engine="rules+openmed",
+    span_detector=fake_openmed_detector,
+  )
+
+  assert "Kawasaki" in result.safe_context
+  assert "[LOCATION]" not in result.safe_context
+
+
+def test_decontextualize_text_preserves_real_location_without_eponym_cues():
+  source = "Clinic visit while traveling near Wilson."
+
+  def fake_openmed_detector(text: str):
+    start = text.index("Wilson")
+    return [Span(category="location", start=start, end=start + len("Wilson"))]
+
+  result = decontextualize_text(
+    source,
+    destination="copy_only",
+    engine="rules+openmed",
+    span_detector=fake_openmed_detector,
+  )
+
+  assert "[LOCATION]" in result.safe_context
 
 
 def test_local_rules_cover_reviewed_false_negative_examples():
