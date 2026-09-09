@@ -8,8 +8,10 @@ records the latest local result.
 
 Related docs:
 
-- `docs/qa/2026-06-19-project-pickup-handoff.md`: current project state, recent cleanup, validation
-  status, and next steps.
+- `docs/qa/2026-09-09-hybrid-decon-hardening-handoff.md`: current canonical closeout for the
+  OpenMed-plus-rules hybrid, PPLX comparison, release gates, and remaining evidence boundary.
+- `docs/qa/2026-06-19-project-pickup-handoff.md`: historical project state, cleanup, validation
+  status, and next steps before the September hybrid hardening.
 - `docs/qa/headless-validation.md`: how to run the validation gate from a clone or CI.
 - `docs/qa/synthetic-trace-generation.md`: how to generate higher-quality synthetic traces from
   clinician-reviewed archetypes.

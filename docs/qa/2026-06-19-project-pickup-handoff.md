@@ -1,5 +1,8 @@
 # Project Pickup Handoff
 
+> Superseded for current hybrid-pipeline work by
+> `docs/qa/2026-09-09-hybrid-decon-hardening-handoff.md`.
+
 Date: 2026-06-19
 
 Repo: `clinician-decon`
